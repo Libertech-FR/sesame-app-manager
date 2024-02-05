@@ -1,0 +1,49 @@
+{
+  "name": "@libertech-fr/sesame-app-manager",
+  "version": "0.0.1",
+  "type": "module",
+  "scripts": {
+    "build": "nuxt build",
+    "dev": "nuxt dev",
+    "generate": "nuxt generate",
+    "preview": "nuxt preview",
+    "postinstall": "nuxt prepare"
+  },
+  "dependencies": {
+    "@nuxt-alt/auth": "^3.1.6",
+    "@nuxt-alt/http": "^1.7.10",
+    "@pinia/nuxt": "^0.5.1",
+    "@quasar/extras": "^1.16.9",
+    "@vueuse/router": "^10.7.2",
+    "cookie": "^0.6.0",
+    "openapi-fetch": "^0.8.2",
+    "pinia": "^2.1.7",
+    "quasar": "^2.14.3",
+    "sass": "^1.70.0",
+    "vue-eslint-parser": "^9.4.2"
+  },
+  "devDependencies": {
+    "@nuxt/devtools": "^1.0.8",
+    "@nuxt/eslint-config": "^0.2.0",
+    "@types/node": "^18.17.3",
+    "@typescript-eslint/eslint-plugin": "^6.19.1",
+    "@typescript-eslint/parser": "^6.19.1",
+    "@vue/language-plugin-pug": "^1.8.27",
+    "@vueuse/core": "^10.7.2",
+    "@vueuse/nuxt": "^10.7.2",
+    "dayjs-nuxt": "^2.1.9",
+    "eslint": "^8.56.0",
+    "nuxt": "^3.9.3",
+    "nuxt-quasar-ui": "^2.0.7",
+    "openapi-typescript": "^6.7.4",
+    "prettier": "^3.2.4",
+    "typescript": "^5.3.3",
+    "vite-plugin-pug": "^0.3.2",
+    "vue": "^3.4.14",
+    "vue-router": "^4.2.5",
+    "vue-tsc": "^1.8.27"
+  },
+  "resolutions": {
+    "string-width": "^1.0.2 || 2 || 3 || 4"
+  }
+}
