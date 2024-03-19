@@ -101,7 +101,7 @@ export default defineNuxtConfig({
     iconSet: 'mdi-v5',
     plugins: ['Notify', 'Dialog'],
     config: {
-      dark: 'auto',
+      dark: false,
       notify: {
         timeout: 2500,
         position: 'top-right',
@@ -120,6 +120,15 @@ export default defineNuxtConfig({
         compilerOptions: {},
       }),
     ],
+    server: {
+      proxy: {
+        '/api': {
+          target: SESAME_APP_API_URL,
+          rewrite: (path) => path.replace(/^\/api/, ''),
+          changeOrigin: true,
+        },
+      },
+    },
   },
   alias: {
     cookie: resolve(__dirname, '../node_modules/cookie'),
