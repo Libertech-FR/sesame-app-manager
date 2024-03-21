@@ -20,6 +20,9 @@ import {
 
 import type { JsonFormsChangeEvent } from '@jsonforms/vue';
 import { QuasarJsonformRenderer } from './quasar-jsonform';
+import { computed, provide, ref } from 'vue';
+import { useFetch } from 'nuxt/app';
+import type { ErrorObject } from 'ajv';
 
 const customStyle = mergeStyles(defaultStyles, {
     control: {
