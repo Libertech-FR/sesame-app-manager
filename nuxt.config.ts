@@ -58,8 +58,6 @@ export default defineNuxtConfig({
           property: 'user',
           autoFetch: true,
         },
-        clientId: false,
-        grantType: false,
         endpoints: {
           login: {
             url: `${SESAME_APP_API_URL}/core/auth/local`,
@@ -72,7 +70,7 @@ export default defineNuxtConfig({
             headers: { 'Content-Type': 'application/json' },
           },
           logout: { url: `${SESAME_APP_API_URL}/core/auth/logout`, method: 'post' },
-          user: { url: `${SESAME_APP_API_URL}/core/auth/session`, method: 'get', propertyName: 'user' },
+          user: { url: `${SESAME_APP_API_URL}/core/auth/session`, method: 'get' },
         },
         redirect: {
           logout: '/login',
@@ -93,9 +91,6 @@ export default defineNuxtConfig({
     defaultLocale: 'fr',
     defaultTimezone: 'Paris',
     plugins: ['timezone', 'relativeTime'],
-  },
-  pinia: {
-    autoImports: ['defineStore'],
   },
   quasar: {
     iconSet: 'mdi-v5',
@@ -133,8 +128,10 @@ export default defineNuxtConfig({
   alias: {
     cookie: resolve(__dirname, '../node_modules/cookie'),
   },
-  experimental: {
+  future: {
     typescriptBundlerResolution: true,
+  },
+  experimental: {
     appManifest: false,
   },
   typescript: {
