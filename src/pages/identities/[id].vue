@@ -8,8 +8,8 @@ q-page
 
     q-btn.q-mx-xs(@click="submit" label="Enregistrer" color="primary" icon="mdi-check")
       q-tooltip.text-body2(slot="trigger") Enregistrer les modifications
-    q-btn.q-mx-xs(@click="sync" label="Synchroniser" color="primary" v-if="identity" :disabled="identity.state < IdentityState.TO_VALIDATE || identity.state == IdentityState.SYNCED" icon="mdi-sync")
-      q-tooltip(slot="trigger" v-if="identity.state == IdentityState.TO_SYNC") Syncroniser l'identité
+    q-btn.q-mx-xs(@click="sync" label="Synchroniser" color="primary" v-if="identity" :disabled="identity.state != IdentityState.TO_VALIDATE" icon="mdi-sync")
+      q-tooltip(slot="trigger" v-if="identity.state == IdentityState.TO_VALIDATE") Syncroniser l'identité
       q-tooltip.text-body2(slot="trigger" v-else) L'état de l'identité ne permet pas de la synchroniser
     q-btn.q-mx-xs(@click="logs" label="Logs" color="primary" icon="mdi-file-document")
       q-tooltip.text-body2(slot="trigger") Voir les logs de l'identité
@@ -22,8 +22,8 @@ q-page
       q-tooltip.text-body2(slot="trigger") Retour à la liste des identités
 
   q-tabs(v-model="tab" align="justify")
-    q-tab(name="inetOrgPerson" label="inetOrgPerson")
-    q-tab(v-for="tab in tabs" :key="tab" :name="tab" :label="tab")
+    q-tab(name="inetOrgPerson" label="inetOrgPerson" :alert="getTabValidations('inetOrgPerson')" alert-icon="mdi-alert" :class="`q-mr-xs`")
+    q-tab(v-for="tab in tabs" :key="tab" :name="tab" :label="tab" :alert="getTabValidations(tab)" alert-icon="mdi-alert" :class="`q-mr-xs`")
 
   q-tab-panels(v-model="tab")
     q-tab-panel(name="inetOrgPerson")
@@ -78,14 +78,14 @@ async function submit() {
     body: sanitizedIdentity,
   });
   if (error.value) {
-    $q.notify({
-      message: 'Erreur lors de la sauvegarde',
-      color: 'negative',
-      position: 'top-right',
-      icon: 'mdi-alert-circle-outline',
-    })
-    console.log(error)
-    validations.value = error.value.data.validations
+    // $q.notify({
+    //   message: 'Erreur lors de la sauvegarde',
+    //   color: 'negative',
+    //   position: 'top-right',
+    //   icon: 'mdi-alert-circle-outline',
+    // })
+    // console.log(error)
+    // validations.value = error.value.data.validations
   } else {
     $q.notify({
       message: 'Sauvegarde effectuée',
@@ -93,6 +93,7 @@ async function submit() {
       position: 'top-right',
       icon: 'mdi-check-circle-outline',
     })
+    identity.value = result.value.data
   }
 }
 
@@ -106,8 +107,35 @@ const stateColor = computed(() => {
   return getStateColor(state)
 })
 
-function sync() {
-  console.log('sync')
+function getTabValidations(tab: string) {
+  return validations.value?.hasOwnProperty(tab) ? 'red' : false
+}
+
+async function sync() {
+  const { data: result, pending, error, refresh } = await useFetch(`/api/management/identities/${id.value}/state`, {
+    method: 'PATCH',
+    body: {
+      state: IdentityState.TO_SYNC,
+    },
+  });
+
+  if (error.value) {
+    $q.notify({
+      message: error.value.data.message || 'Erreur lors de la synchronisation',
+      color: 'negative',
+      position: 'top-right',
+      icon: 'mdi-alert-circle-outline',
+    })
+    console.log(error)
+  } else {
+    $q.notify({
+      message: 'Synchronisation effectuée',
+      color: 'positive',
+      position: 'top-right',
+      icon: 'mdi-check-circle-outline',
+    })
+    identity.value = result.value.data
+  }
 }
 
 function logs() {
