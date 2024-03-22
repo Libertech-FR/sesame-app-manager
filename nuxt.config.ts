@@ -70,7 +70,7 @@ export default defineNuxtConfig({
             headers: { 'Content-Type': 'application/json' },
           },
           logout: { url: `${SESAME_APP_API_URL}/core/auth/logout`, method: 'post' },
-          user: { url: `${SESAME_APP_API_URL}/core/auth/session`, method: 'get' },
+          user: { url: `${SESAME_APP_API_URL}/core/auth/session`, method: 'get'},
         },
         redirect: {
           logout: '/login',
