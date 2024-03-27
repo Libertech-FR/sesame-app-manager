@@ -86,6 +86,11 @@ export default defineNuxtConfig({
       },
     },
   },
+  http: {
+    debug: process.env.NODE_ENV === 'development',
+    browserBaseURL: SESAME_APP_API_URL,
+    baseURL: SESAME_APP_API_URL,
+  },
   dayjs: {
     locales: ['fr', 'en'],
     defaultLocale: 'fr',
@@ -115,15 +120,6 @@ export default defineNuxtConfig({
         compilerOptions: {},
       }),
     ],
-    server: {
-      proxy: {
-        '/api': {
-          target: SESAME_APP_API_URL,
-          rewrite: (path) => path.replace(/^\/api/, ''),
-          changeOrigin: true,
-        },
-      },
-    },
   },
   alias: {
     cookie: resolve(__dirname, '../node_modules/cookie'),

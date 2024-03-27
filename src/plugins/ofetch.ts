@@ -3,6 +3,7 @@ import { useQuasar } from "#imports"
 
 export default defineNuxtPlugin((nuxtApp) => {
   const { tokenStrategy } = useAuth()
+<<<<<<< HEAD
   const $q = useQuasar()
   const instance = $fetch.create({
     baseURL: '/api',
@@ -21,13 +22,22 @@ export default defineNuxtPlugin((nuxtApp) => {
       return Promise.reject(error)
     }
   })
+=======
+  // const instance = $fetch.create({
+  //   baseURL: '/api',
+  //   headers: {
+  //     Accept: 'application/json',
+  //     Authorization: `${tokenStrategy?.token?.get()}`,
+  //   },
+  // })
+>>>>>>> 3eadaab (fix nuxt config)
 
 
-  globalThis.$fetch = instance
+  // globalThis.$fetch = instance
 
   return {
     provide: {
-      fetch: instance,
+      // fetch: instance,
     },
   }
 })
