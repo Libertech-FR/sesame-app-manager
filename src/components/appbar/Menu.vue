@@ -27,27 +27,38 @@ const apps: {
   badge?: { color: string; value: number | undefined }
   to: string
 }[] = [
-  {
-    title: {
-      name: 'Accueil',
-      color: 'primary',
+    {
+      title: {
+        name: 'Accueil',
+        color: 'primary',
+      },
+      icon: {
+        name: 'mdi-home',
+        color: 'secondary',
+      },
+      to: '/',
     },
-    icon: {
-      name: 'mdi-home',
-      color: 'secondary',
+    {
+      title: {
+        name: 'Agents',
+        color: 'primary',
+      },
+      icon: {
+        name: 'mdi-account',
+        color: 'secondary',
+      },
+      to: '/agents',
     },
-    to: '/',
-  },
-  {
-    title: {
-      name: 'Comptes',
-      color: 'secondary',
+    {
+      title: {
+        name: 'Comptes',
+        color: 'secondary',
+      },
+      icon: {
+        name: 'mdi-account-group',
+        color: 'primary',
+      },
+      to: `/identities`,
     },
-    icon: {
-      name: 'mdi-account-group',
-      color: 'primary',
-    },
-    to: `/identities`,
-  },
-]
+  ]
 </script>
