@@ -18,6 +18,10 @@ q-header
 import { useRouter } from 'vue-router'
 import { useQuasar } from 'quasar'
 
+defineOptions({
+  name: 'Appbar',
+})
+
 const $q = useQuasar()
 const router = useRouter()
 

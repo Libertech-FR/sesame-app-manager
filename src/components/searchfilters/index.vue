@@ -22,6 +22,10 @@ type MainData = {
   }
 }
 
+defineOptions({
+  name: 'Searchfilter',
+})
+
 const dayjs = useDayjs()
 const router = useRouter()
 const route = useRoute()

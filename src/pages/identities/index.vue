@@ -39,6 +39,9 @@ div
     :actions="actions"
     :defaultRightPanelButton="false"
   )
+    template(#right-panel-title-before="props")
+      q-icon(name="mdi-circle" :color="getStateColor(props.target.state)" :class="`q-mr-xs`")
+        q-tooltip.text-body2(slot="trigger") {{ getStateName(props.target.state) }}
     template(#top-left)
       sesame-table-top-left(:selected="selected" @updateLifestep="updateLifestep($event)" @clear="selected = []")
     template(#top-right)
@@ -48,8 +51,7 @@ div
     template(#right-panel-actions-content-after="{target}")
       sesame-identity-form-actions(:identity="target" @submit="submit($event)" @sync="sync" @logs="logs")
     template(#right-panel-content="{target}")
-      sesame-identity-form(:identity="target" ref="form")
-
+      sesame-identity-form(:identity="target" ref="form" @refresh="refresh")
 </template>
 
 <script lang="ts" setup>
@@ -60,9 +62,13 @@ import { useQuasar } from 'quasar'
 import type { QTableProps } from 'quasar'
 import type { components, operations } from '#build/types/service-api'
 import { useErrorHandling } from '#imports'
+import { useIdentityStates } from '~/composables'
 type Identity = components['schemas']['IdentitiesDto']
 type Response = operations['IdentitiesController_search']['responses']['200']['content']['application/json']
 
+defineOptions({
+  name: 'Identities',
+})
 
 const daysjs = useDayjs()
 const route = useRoute()
@@ -70,12 +76,12 @@ const router = useRouter()
 const $q = useQuasar()
 const { handleError } = useErrorHandling()
 const form = ref<any>(null)
+const { getStateColor, getStateName } = useIdentityStates()
 
 onMounted(() => {
   initializePagination(identities.value?.total)
 })
 
-const closeTicketsDialog = ref<boolean>(false)
 const { pagination, onRequest, initializePagination } = usePagination()
 
 const queryWithoutRead = computed(() => {
@@ -195,7 +201,7 @@ const crud = {
   create: true,
   read: true,
   update: true,
-  delete: true,
+  delete: false,
 }
 
 async function submit(identity: Identity) {
@@ -205,6 +211,7 @@ async function submit(identity: Identity) {
 
 async function sync(identity: Identity) {
   console.log('sync')
+  form.value.sync()
 }
 
 function logs(identity: Identity) {

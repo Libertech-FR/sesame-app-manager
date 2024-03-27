@@ -111,6 +111,10 @@ import { useResizeObserver } from '@vueuse/core'
 import type { PropType } from 'vue'
 import { crush, pick } from 'radash'
 
+defineOptions({
+  name: '2pan',
+})
+
 const $q = useQuasar()
 const splitterModel = ref($q.screen.xs ? 100 : 50)
 
