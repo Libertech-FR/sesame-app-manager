@@ -1,0 +1,32 @@
+@import "quasar/src/css/variables.sass"
+
+blockquote
+  padding: 10px 20px
+  margin: 0 0 20px
+  border-left: 4px solid $primary
+
+
+.sesame-sticky-last-column-table
+  thead tr:last-child th:last-child
+    background-color: $tooltip-color
+  td:last-child
+    background-color: $tooltip-color
+  th:last-child,
+  td:last-child
+    position: sticky
+    right: -1px
+    z-index: 1
+
+body.body--dark
+  .q-editor__content
+    color: $dark
+    background-color: $tooltip-color
+  .tk-sticky-last-column-table
+    thead tr:last-child th:last-child
+      background-color: $dark
+    td:last-child
+      background-color: $dark
+
+.sesame-table-td-highlight
+  color: $primary
+  font-weight: bold
