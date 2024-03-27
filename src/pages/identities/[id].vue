@@ -49,6 +49,7 @@ import type { components, operations } from '#build/types/service-api'
 import { routerKey, useRoute, useRouter } from 'vue-router';
 import { useFetch } from 'nuxt/app';
 import { useIdentityStates } from '~/composables'
+import { useErrorHandling } from '#imports';
 
 type IdentityResponse = operations['IdentitiesController_search']['responses']['200']['content']['application/json']
 type Identity = components['schemas']['IdentitiesDto']
@@ -59,8 +60,17 @@ const router = useRouter()
 const $q = useQuasar()
 const id = shallowRef(route.params.id)
 const { getStateColor, getStateName } = useIdentityStates()
+const { handleError } = useErrorHandling()
 
 const { data: result, pending, error, refresh } = await useFetch<IdentityResponse>(`/api/management/identities/${id.value}`);
+if (error.value) {
+  handleError({
+    error: error.value,
+    redirect: true,
+    message: error.value.message
+  })
+}
+
 const identity = ref<Identity>(result.value?.data)
 const validations = ref(identity.value?.additionalFields?.validations)
 
@@ -78,14 +88,11 @@ async function submit() {
     body: sanitizedIdentity,
   });
   if (error.value) {
-    // $q.notify({
-    //   message: 'Erreur lors de la sauvegarde',
-    //   color: 'negative',
-    //   position: 'top-right',
-    //   icon: 'mdi-alert-circle-outline',
-    // })
-    // console.log(error)
-    // validations.value = error.value.data.validations
+    handleError({
+      error: error.value,
+      message: 'Erreur lors de la sauvegarde'
+    })
+    validations.value = error.value.data.validations
   } else {
     $q.notify({
       message: 'Sauvegarde effectuée',
@@ -120,13 +127,7 @@ async function sync() {
   });
 
   if (error.value) {
-    $q.notify({
-      message: error.value.data.message || 'Erreur lors de la synchronisation',
-      color: 'negative',
-      position: 'top-right',
-      icon: 'mdi-alert-circle-outline',
-    })
-    console.log(error)
+
   } else {
     $q.notify({
       message: 'Synchronisation effectuée',
