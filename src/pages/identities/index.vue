@@ -94,7 +94,7 @@ const {
   pending,
   refresh,
   error,
-} = await useFetch<Response>('/management/identities', {
+} = await useHttp<Response>('/management/identities', {
   method: 'get',
   query: queryWithoutRead
 })

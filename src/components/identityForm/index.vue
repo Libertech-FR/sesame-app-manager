@@ -59,7 +59,7 @@ async function submit() {
   delete sanitizedIdentity.metadata
   if (sanitizedIdentity.additionalFields?.validations) delete sanitizedIdentity.additionalFields.validations
 
-  const { data: result, pending, error, refresh } = await useFetch(`/api/management/identities/${props.identity._id}`, {
+  const { data: result, pending, error, refresh } = await useHttp(`/management/identities/${props.identity._id}`, {
     method: 'PATCH',
     body: sanitizedIdentity,
   });
@@ -96,7 +96,7 @@ function getTabValidations(tab: string) {
 }
 
 async function sync() {
-  const { data: result, pending, error, refresh } = await useFetch(`/api/management/identities/${props.identity._id}/state`, {
+  const { data: result, pending, error, refresh } = await useHttp(`/management/identities/${props.identity._id}/state`, {
     method: 'PATCH',
     body: {
       state: IdentityState.TO_SYNC,

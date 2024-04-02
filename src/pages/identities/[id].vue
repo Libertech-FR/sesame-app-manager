@@ -62,7 +62,7 @@ const id = shallowRef(route.params.id)
 const { getStateColor, getStateName } = useIdentityStates()
 const { handleError } = useErrorHandling()
 
-const { data: result, pending, error, refresh } = await useFetch<IdentityResponse>(`/api/management/identities/${id.value}`);
+const { data: result, pending, error, refresh } = await useHttp<IdentityResponse>(`/management/identities/${id.value}`);
 if (error.value) {
   handleError({
     error: error.value,
@@ -83,7 +83,7 @@ async function submit() {
   if (sanitizedIdentity.additionalFields?.validations) delete sanitizedIdentity.additionalFields.validations
 
 
-  const { data: result, pending, error, refresh } = await useFetch(`/api/management/identities/${id.value}`, {
+  const { data: result, pending, error, refresh } = await useHttp(`/management/identities/${id.value}`, {
     method: 'PATCH',
     body: sanitizedIdentity,
   });
@@ -119,7 +119,7 @@ function getTabValidations(tab: string) {
 }
 
 async function sync() {
-  const { data: result, pending, error, refresh } = await useFetch(`/api/management/identities/${id.value}/state`, {
+  const { data: result, pending, error, refresh } = await useHttp(`/management/identities/${id.value}/state`, {
     method: 'PATCH',
     body: {
       state: IdentityState.TO_SYNC,

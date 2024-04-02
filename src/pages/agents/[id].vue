@@ -51,7 +51,7 @@ const router = useRouter()
 const $q = useQuasar()
 const id = shallowRef(route.params.id)
 
-const { data: result, pending, error, refresh } = await useHttp<AgentsResponse>(`/api/core/agents/${id.value}`);
+const { data: result, pending, error, refresh } = await useHttp<AgentsResponse>(`/core/agents/${id.value}`);
 const agent = ref<Agents>(result.value?.data)
 
 async function submit() {
@@ -59,7 +59,7 @@ async function submit() {
   delete sanitizedAgent.metadata
 
 
-  const { data: result, pending, error, refresh } = await useHttp(`/api/core/agents/${id.value}`, {
+  const { data: result, pending, error, refresh } = await useHttp(`/core/agents/${id.value}`, {
     method: 'PATCH',
     body: sanitizedAgent,
   });
