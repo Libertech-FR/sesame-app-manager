@@ -136,6 +136,9 @@ export default defineNuxtConfig({
     // typeCheck: true,
     // strict: true,
   },
+  pinia: {
+    storesDirs: ['~/stores'],
+  },
   hooks: {
     ready: async () => {
       console.log('[OpenapiTS] Generating .nuxt/types/service-api.d.ts...')
