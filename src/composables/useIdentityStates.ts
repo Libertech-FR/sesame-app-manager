@@ -15,29 +15,34 @@ export enum IdentityState {
 }
 
 export const IdentityStateList = [
-    { value: IdentityState.SYNCED, text: 'Synchronized', color: 'info', icon: 'mdi-circle' },
-    { value: IdentityState.TO_SYNC, text: 'To sync', color: 'grey', icon: 'mdi-circle' },
-    { value: IdentityState.TO_VALIDATE, text: 'To validate', color: 'positive', icon: 'mdi-circle' },
-    { value: IdentityState.UNKNOWN, text: 'Unknown', color: 'grey', icon: 'mdi-circle' },
-    { value: IdentityState.TO_CREATE, text: 'To create', color: 'grey', icon: 'mdi-circle' },
-    { value: IdentityState.TO_COMPLETE, text: 'To complete', color: 'warning', icon: 'mdi-circle' },
-    { value: IdentityState.ON_ERROR, text: 'On error', color: 'negative', icon: 'mdi-circle' },
+    { value: IdentityState.SYNCED, text: 'Synchronisé', color: 'info', icon: 'mdi-circle', display: true},
+    { value: IdentityState.TO_SYNC, text: 'A syncroniser', color: 'info', icon: 'mdi-circle', display: true },
+    { value: IdentityState.TO_VALIDATE, text: 'A valider', color: 'positive', icon: 'mdi-circle', display: true },
+    { value: IdentityState.UNKNOWN, text: 'Inconnu', color: 'grey', icon: 'mdi-circle', display: true},
+    { value: IdentityState.TO_CREATE, text: 'A créer', color: 'grey', icon: 'mdi-circle', display: false},
+    { value: IdentityState.TO_COMPLETE, text: 'A compléter', color: 'warning', icon: 'mdi-circle', display: true },
+    { value: IdentityState.ON_ERROR, text: 'En erreur', color: 'negative', icon: 'mdi-circle', display: true },
 ];
 
 export function useIdentityStates(): useIdentityStateReturnType
 {
     function getStateColor(state: number): string {
-        return IdentityStateList.find(item => item.value === state)?.color || 'grey';
+      const found = IdentityStateList.find(item => item.value === state);
+      if (found && found?.display) return found.color;
+      return 'grey';
     }
 
     function getStateName(state: number): string {
-        return IdentityStateList.find(item => item.value === state)?.text || 'Unknown';
+      const found = IdentityStateList.find(item => item.value === state);
+      if (found && found?.display) return found.text;
+      return 'Inconnu';
     }
 
     function getStateIcon(state: number): string {
-            return IdentityStateList.find(item => item.value === state)?.icon || 'mdi-circle';
+      const found = IdentityStateList.find(item => item.value === state);
+      if (found && found?.display) return found.icon;
+      return 'mdi-circle';
     }
-
 
     function getStateInfos(state: number): { color: string, name: string, icon: string, value: number }{
         const found = IdentityStateList.find(item => item.value === state);
