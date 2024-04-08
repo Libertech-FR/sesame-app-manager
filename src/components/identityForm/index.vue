@@ -10,7 +10,7 @@ div
         schemaName="inetorgperson"
         v-model:data="identity.inetOrgPerson"
         v-model:validations="validations"
-        )
+      )
     q-tab-panel(v-for="tab in tabs" :key="tab" :name="tab")
       sesame-json-form-renderer(
         :schemaName="tab"
@@ -29,6 +29,10 @@ import { useFetch } from 'nuxt/app'
 import { useIdentityStates } from '~/composables'
 import { useErrorHandling } from '#imports'
 
+defineOptions({
+  name: 'IdentityForm',
+})
+
 type IdentityResponse = operations['IdentitiesController_search']['responses']['200']['content']['application/json']
 type Identity = components['schemas']['IdentitiesDto'] & { _id: string }
 
@@ -37,19 +41,26 @@ const props = defineProps(
     identity: {
       type: Object as PropType<Identity>,
       required: true,
-    },
+    }
   }
 )
+
+const emits = defineEmits(['refreshTarget'])
 
 const $q = useQuasar()
 const router = useRouter()
 const { getStateColor, getStateName } = useIdentityStates()
 const { handleError } = useErrorHandling()
 
+const identity = ref<Identity>(props.identity)
+const validations = ref<Record<string, unknown> | null>(props.identity.additionalFields?.validations ?? {})
 
-const validations = ref(props.identity?.additionalFields?.validations)
+watch(() => props.identity, () => {
+  identity.value = props.identity
+  validations.value = props.identity.additionalFields?.validations ?? null
+})
 
-const tabs = ref(props.identity?.additionalFields?.objectClasses || [])
+const tabs = ref(props.identity?.additionalFields?.objectClasses ?? [])
 const tab = ref('inetOrgPerson')
 const error = ref(null)
 
@@ -64,8 +75,9 @@ async function submit() {
     body: sanitizedIdentity,
   });
   if (error.value) {
-    validations.value = error.value.cause.response._data.validations
-    error.value = error.value.cause.response._data
+    console.log('error', error.value.data.validations)
+    validations.value = error.value.data.validations
+    // error.value = error.value.cause.response._data
     handleError({
       error: error.value,
       message: 'Erreur lors de la sauvegarde'
@@ -78,6 +90,7 @@ async function submit() {
       position: 'top-right',
       icon: 'mdi-check-circle-outline',
     })
+    emits('refreshTarget')
   }
 }
 
@@ -112,6 +125,7 @@ async function sync() {
       position: 'top-right',
       icon: 'mdi-check-circle-outline',
     })
+    emits('refreshTarget')
     // props.identity. = result.value.data
   }
 }

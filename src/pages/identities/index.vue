@@ -24,6 +24,7 @@ div
   //-         span {{ props.row.inetOrgPerson.cn }} {{ props.row.inetOrgPerson.givenName }}
 
   sesame-2pan(
+    ref="twopan"
     :data="identities?.data"
     :total="identities?.total"
     :columns="columns"
@@ -49,7 +50,13 @@ div
     template(#right-panel-actions-content-after="{target}")
       sesame-identity-form-actions(:identity="target" @submit="submit($event)" @sync="sync" @logs="logs")
     template(#right-panel-content="{target}")
-      sesame-identity-form(:identity="target" ref="form" @refresh="refresh")
+      sesame-identity-form(
+        :identity="target"
+        ref="form" @refresh="refresh"
+        @submit="submit($event)"
+        @sync="sync" @logs="logs"
+        @refreshTarget="refreshTarget(target)"
+      )
 </template>
 
 <script lang="ts" setup>
@@ -61,6 +68,7 @@ import type { QTableProps } from 'quasar'
 import type { components, operations } from '#build/types/service-api'
 import { useErrorHandling } from '#imports'
 import { useIdentityStates } from '~/composables'
+import { identity } from '@vueuse/core'
 type Identity = components['schemas']['IdentitiesDto']
 type Response = operations['IdentitiesController_search']['responses']['200']['content']['application/json']
 
@@ -68,6 +76,7 @@ defineOptions({
   name: 'Identities',
 })
 
+const twopan = ref<any>(null)
 const daysjs = useDayjs()
 const route = useRoute()
 const router = useRouter()
@@ -79,6 +88,11 @@ const { getStateColor, getStateName } = useIdentityStates()
 onMounted(() => {
   initializePagination(identities.value?.total)
 })
+
+function refreshTarget(target: Identity) {
+  console.log('refreshTarget', target)
+  twopan.value.read(target)
+}
 
 const { pagination, onRequest, initializePagination } = usePagination()
 

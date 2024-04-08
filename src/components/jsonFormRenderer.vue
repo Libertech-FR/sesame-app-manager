@@ -44,10 +44,14 @@ const props = defineProps({
     type: String,
     default: '',
   },
+  validations: {
+    type: Object || null,
+    default: {},
+  },
 });
 
 const validations = defineModel('validations', {
-  type: Object,
+  type: Object || null,
   default: {},
 });
 
@@ -61,8 +65,11 @@ function onChange(event: JsonFormsChangeEvent) {
 }
 
 const getSchemaValidations = computed(() => {
+  if (!props.validations || !props.validations[props.schemaName]) {
+    return [];
+  }
   const errorObject: ErrorObject[] = [];
-  const validationList = validations.value[props.schemaName] || {};
+  let validationList = props.validations[props.schemaName]
   for (const key in validationList) {
     errorObject.push({
       message: validationList[key],

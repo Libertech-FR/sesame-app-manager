@@ -230,7 +230,7 @@ const route = useRoute()
 const { pagination, onRequest, initializePagination } = usePagination()
 initializePagination(props.total)
 
-const emit = defineEmits(['add', 'refresh', 'read'])
+const emit = defineEmits(['create', 'refresh', 'read', 'update', 'delete'])
 const debug = process.env.NODE_ENV === 'development'
 
 const selected = ref([])
@@ -255,31 +255,37 @@ function highlightRow(rowKey) {
 async function refresh() {
   await props.refresh()
   initializePagination(props.total)
+  emit('refresh')
 }
 
 async function cancel() {
   await props.actions.cancel()
   target.value = null
   selected.value = []
+
 }
 async function read(row) {
   const response = await props.actions.read(row)
   target.value = response
+  emit('read', response)
 }
 
 async function create(row) {
   const response = await props.actions.create(row)
   target.value = response
+  emit('create', response)
 }
 
 async function update(row) {
   const response = await props.actions.update(row)
   target.value = response
+  emit('update', response)
 }
 
 async function remove(row) {
   const response = await props.actions.delete(row)
   target.value = response
+  emit('delete', response)
 }
 
 const getTitle = computed(() => {
@@ -288,6 +294,15 @@ const getTitle = computed(() => {
   const crushed = crush(target.value)
   const valuesList = target.value ? pick(crushed, keys) : {}
   return Object.values(valuesList).join(' ')
+})
+
+defineExpose({
+  cancel,
+  create,
+  read,
+  update,
+  remove,
+  refresh,
 })
 
 onMounted(async () => {
