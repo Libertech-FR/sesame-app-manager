@@ -1,9 +1,9 @@
 <template lang="pug">
 q-td
   q-icon(:name="stateInfo.icon" :color="stateInfo.color" :class="`q-mr-md`")
-    q-tooltip.text-body2(slot="trigger") {{ stateInfo.name }}
+    q-tooltip.text-body2(slot="trigger") Etat : {{ stateInfo.name }}
   q-icon(:name="lifecycleInfo.icon" :color="lifecycleInfo.color" :class="`q-mr-md`")
-    q-tooltip.text-body2(slot="trigger") {{ lifecycleInfo.name }}
+    q-tooltip.text-body2(slot="trigger") Cycle de vie : {{ lifecycleInfo.name }}
 </template>
 
 <script lang="ts" setup>

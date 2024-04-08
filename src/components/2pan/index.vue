@@ -48,7 +48,7 @@ q-splitter(
                 q-menu(max-width="350px" max-height="350px").q-pa-md
                   .row
                     .col-6(v-for="column in columns" :key="column.value")
-                      q-toggle(v-model='visibleColumnsComputed' :label="column.label" :val="column.name")
+                      q-toggle(v-model='visibleColumnsInternal' :label="column.label" :val="column.name")
               sesame-2pan-btns-refresh(@refresh="refresh")
               slot(name="top-right-btn-grp-content-after")
 
@@ -250,6 +250,11 @@ function highlightRow(rowKey) {
   if (target.value[props.rowKey] === rowKey) {
     return 'sesame-table-td-highlight'
   }
+}
+
+async function refresh() {
+  await props.refresh()
+  initializePagination(props.total)
 }
 
 async function cancel() {

@@ -44,8 +44,6 @@ div
         q-tooltip.text-body2(slot="trigger") {{ getStateName(props.target.state) }}
     template(#top-left)
       sesame-table-top-left(:selected="selected" @updateLifestep="updateLifestep($event)" @clear="selected = []")
-    template(#top-right)
-      sesame-table-top-right(:columns="columns" v-model="visibleColumns" @refresh="refresh")
     template(#body-cell-states="props")
       sesame-table-state-col(:identity="props.row")
     template(#right-panel-actions-content-after="{target}")
@@ -221,7 +219,10 @@ function logs(identity: Identity) {
 const actions = {
   read: async (row, onMounted = false) => {
     if (!onMounted) pushQuery({ key: 'read', value: row._id })
-    return row
+    const { data } = await useHttp<Identity>(`/management/identities/${row._id}`, {
+      method: 'get',
+    })
+    return data.value?.data
   },
   onMounted: async () => {
     if (route.query.read) {

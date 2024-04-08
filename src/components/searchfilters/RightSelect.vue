@@ -24,7 +24,7 @@ q-select(
 import { ref, computed, onMounted, watch, inject } from 'vue'
 import type { Ref } from 'vue'
 import { pushQuery } from '~/composables'
-import { useIdentityStates, IdentityStateList } from '~/composables'
+import { useIdentityStates, IdentityStateList, IdentityState } from '~/composables'
 
 import type { components } from '#build/types/service-api'
 import { useRoute, useRouter } from 'nuxt/app'
@@ -35,56 +35,55 @@ import type { FilterOption } from '~/types'
 // type CateforyFetch = components['schemas']['PaginatedResponseDto'] & { data: Category[] }
 // type StateFetch = components['schemas']['PaginatedResponseDto'] & { data: State[] }
 
+
+
 const route = useRoute()
 const router = useRouter()
 const { getStateColor, getStateName } = useIdentityStates()
+
+type Options = {
+  label: string;
+  value: IdentityState;
+  group: string;
+  icon: string;
+  color: string;
+}
 
 // const { data: statesData } = inject('stateFetch') as StateFetch
 // const { data: categoriesData } = inject('categoriesFetch') as CateforyFetch
 
 onMounted(() => {
-  getFilters()
+  updateFilters()
 })
 
 watch(
   () => route.query,
   () => {
-    getFilters()
+    updateFilters()
   },
 )
 
 const filters = ref<FilterOption[]>([])
-const getFilters = () => {
-  filters.value = []
+const parseQueryFilters = (query) => {
+  return Object.entries(query).reduce((acc: Options[], [key, value]) => {
+    if (!key.startsWith('filters[@') || value === null) return acc;
 
-  // Use destructuring assignment to clone the route.query object
-  const query = { ...route.query }
+    const group = key.replace('filters[@', '').replace(']', '').replace('[]', '');
+    const values = Array.isArray(value) ? value : [value];
 
-  // Use a functional approach with filter and map for better readability
-  let group: string
-  const filteredOptions = Object.entries(query)
-    .filter(([key, value]) => key.startsWith('filters[@') && value !== null)
-    .map(([key, value]) => {
-      group = key.replace('filters[@', '').replace(']', '').replace('[]', '')
-      if (Array.isArray(value)) {
-        return value.map((val: string) => {
-          return {
-            value: val,
-            group,
-          }
-        })
-      } else {
-        return {
-          value,
-          group,
-        }
-      }
-    })
-    .flat()
-    .map((filter) => options.value.find((option) => option.value?.toString() === filter.value?.toString() && option.group === filter.group))
-    .filter((option) => option !== undefined)
-  filters.value = filteredOptions
-}
+    values.forEach(val => {
+      const option = options.value.find(option => option.value?.toString() === val.toString() && option.group === group);
+      if (option) acc.push(option);
+    });
+
+    return acc;
+  }, []);
+};
+
+const updateFilters = () => {
+  const query = { ...route.query };
+  filters.value = parseQueryFilters(query);
+};
 
 const options = computed(() => {
   return IdentityStateList.map((state) => {
@@ -110,20 +109,7 @@ const regroupFilters = async () => {
   }, {})
 }
 
-const pushQueries = async () => {
-  // Regroup the filters by key
-  const regroupedFilters = await regroupFilters()
-
-  // Push the filters to the url
-  for (const key in regroupedFilters) {
-    const values = regroupedFilters[key]
-    for (const value of values) {
-      pushQuery({ value, key, multiple: true, pagination: { limit: 10, skip: 0 } })
-    }
-  }
-}
-
-const addFilter = (option: FilterOption) => {
+const addFilter = async (option: Options) => {
   // Find the index of the option in the filters array
   const index = filters.value.findIndex((filter) => {
     return filter.group === option.group && filter.value === option.value
@@ -134,8 +120,15 @@ const addFilter = (option: FilterOption) => {
   } else {
     filters.value.splice(index, 1)
   }
+
+  const payload = {
+    key: `filters[@${option.group}]`,
+    value: option.value,
+    multiple: true,
+    pagination: { limit: 10, skip: 0 },
+  };
   // Push the new filters to the url
-  pushQueries()
+  await pushQuery(payload);
 }
 
 defineExpose({
