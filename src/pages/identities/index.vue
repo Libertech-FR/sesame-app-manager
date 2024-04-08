@@ -90,8 +90,8 @@ onMounted(() => {
 })
 
 function refreshTarget(target: Identity) {
-  console.log('refreshTarget', target)
   twopan.value.read(target)
+  refreshEvent()
 }
 
 const { pagination, onRequest, initializePagination } = usePagination()
