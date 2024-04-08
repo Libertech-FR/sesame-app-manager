@@ -19,29 +19,57 @@ q-layout
             q-tooltip.text-body2(anchor="center right" self="center left") Liste des agents
           q-space
           q-separator
-          q-item(@click="push('/identities?sort[metadata.lastUpdatedAt]=desc&skip=0&limit=10&filters[@state][]=1')" clickable)
+          q-item(@click="push(`/identities?sort[metadata.lastUpdatedAt]=desc&skip=0&limit=10&filters[@state][]=${IdentityState.TO_VALIDATE}`)" clickable)
             q-item-section(avatar)
               q-icon(name="mdi-account-check")
-              q-badge(color="primary" floating ) 1
+              q-badge(color="primary" floating ) {{ TO_VALIDATE }}
             q-tooltip.text-body2(anchor="center right" self="center left") A valider
 
-          q-item(@click="push('/identities?sort[metadata.lastUpdatedAt]=desc&skip=0&limit=10&filters[@state][]=-2')" clickable)
+          q-item(@click="push(`/identities?sort[metadata.lastUpdatedAt]=desc&skip=0&limit=10&filters[@state][]=${IdentityState.TO_COMPLETE}`)" clickable)
             q-item-section(avatar)
               q-icon(name="mdi-account-alert")
-            q-badge(color="primary" floating) 2
-            q-tooltip.text-body2(anchor="center right" self="center left") A complèter
-          q-item(@click="push('/identities?sort[metadata.lastUpdatedAt]=desc&skip=0&limit=10&filters[@state][]=-3')" clickable)
+            q-badge(color="primary" floating) {{ TO_COMPLETE }}
+            q-tooltip.text-body2(anchor="center right" self="center left") A compléter
+          q-item(@click="push(`/identities?sort[metadata.lastUpdatedAt]=desc&skip=0&limit=10&filters[@state][]=${IdentityState.ON_ERROR}`)" clickable)
             q-item-section(avatar)
               q-icon(name="mdi-account-remove")
             q-tooltip.text-body2(anchor="center right" self="center left") En erreur
-            q-badge(color="primary" floating) 3
+            q-badge(color="primary" floating) {{ ON_ERROR }}
 
+          q-item(@click="push(`/identities?sort[metadata.lastUpdatedAt]=desc&skip=0&limit=10&filters[@state][]=${IdentityState.TO_SYNC}`)" clickable)
+            q-item-section(avatar)
+              q-icon(name="mdi-sync")
+            q-tooltip.text-body2(anchor="center right" self="center left") A synchroniser
+            q-badge(color="primary" floating) {{ TO_SYNC }}
+
+          q-item(@click="push(`/identities?sort[metadata.lastUpdatedAt]=desc&skip=0&limit=10&filters[@state][]=${IdentityState.SYNCED}`)" clickable)
+            q-item-section(avatar)
+              q-icon(name="mdi-check")
+            q-tooltip.text-body2(anchor="center right" self="center left") Synchronisées
+            q-badge(color="primary" floating) {{ SYNCED }}
+
+          q-separator
+          q-item(@click="push('/identities?sort[metadata.lastUpdatedAt]=desc&skip=0&limit=10&filters[^additionalFields.attributes.supann.supannTypeEntiteAffectation]=/etd/i')" clickable)
+            q-item-section(avatar)
+              q-icon(name="mdi-account-off")
+            q-tooltip.text-body2(anchor="center right" self="center left") Etudiants
+            q-badge(color="primary" floating) {{ ETD }}
+          q-item(@click="push('/identities?sort[metadata.lastUpdatedAt]=desc&skip=0&limit=10&filters[^additionalFields.attributes.supann.supannTypeEntiteAffectation]=/adm/i')" clickable)
+            q-item-section(avatar)
+              q-icon(name="mdi-account-tie")
+            q-tooltip.text-body2(anchor="center right" self="center left") Administratifs
+            q-badge(color="primary" floating) {{ ADM }}
+          q-item(@click="push('/identities?sort[metadata.lastUpdatedAt]=desc&skip=0&limit=10&filters[^additionalFields.attributes.supann.supannTypeEntiteAffectation]=/esn/i')" clickable)
+            q-item-section(avatar)
+              q-icon(name="mdi-account-group")
+            q-tooltip.text-body2(anchor="center right" self="center left") Enseignants
+            q-badge(color="primary" floating) {{ ESN }}
           q-separator
           q-item(@click="push('/settings')" clickable)
             q-item-section(avatar)
               q-icon(name="mdi-cog")
             q-tooltip.text-body2(anchor="center right" self="center left") Paramètres
-          q-item(@click="logout" clickable)
+          q-item(@click="test" clickable)
             q-item-section(avatar)
               q-icon(name="mdi-logout")
             q-tooltip.text-body2(anchor="center right" self="center left") Déconnexion
@@ -52,9 +80,34 @@ q-layout
 
 <script lang="ts" setup>
 import { ref } from 'vue'
+import { IdentityState } from '~/composables'
+import { useIdentityStateStore } from '~/stores/identityState'
+import { useIdentityAffectationStore } from '~/stores/identityAffectation'
+const drawer = ref(true)
 
 const router = useRouter()
-const drawer = ref(true)
+
+const identityStore = useIdentityStateStore()
+const identityAffectationStore = useIdentityAffectationStore()
+const { fetchAllStateCount } = identityStore
+const { fetchAllAffectationCount } = identityAffectationStore
+fetchAllStateCount()
+fetchAllAffectationCount()
+
+
+const TO_COMPLETE = computed(() => identityStore.getToCompleteCount > 99 ? '99+' : identityStore.getToCompleteCount)
+const TO_VALIDATE = computed(() => identityStore.getToValidateCount > 99 ? '99+' : identityStore.getToValidateCount)
+const ON_ERROR = computed(() => identityStore.getOnErrorCount > 99 ? '99+' : identityStore.getOnErrorCount)
+const TO_SYNC = computed(() => identityStore.getToSyncCount > 99 ? '99+' : identityStore.getToSyncCount)
+const SYNCED = computed(() => identityStore.getSyncedCount > 99 ? '99+' : identityStore.getSyncedCount)
+
+const ADM = computed(() => identityAffectationStore.getAdmCount > 9999 ? '9999+' : identityAffectationStore.getAdmCount)
+const ETD = computed(() => identityAffectationStore.getEtdCount > 9999 ? '9999+' : identityAffectationStore.getEtdCount)
+const ESN = computed(() => identityAffectationStore.getEsnCount > 9999 ? '9999+' : identityAffectationStore.getEsnCount)
+
+// const { fetchAllStateCount } = identityStore
+// await identityStore.fetchAllStateCount()
+
 
 function push(path: string) {
   router.push(path)
