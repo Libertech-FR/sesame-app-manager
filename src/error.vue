@@ -9,7 +9,7 @@ div(class="q-pa-md flex flex-center full-height" style="background-color: #f5f5f
 
     q-card-actions(align="around")
       q-btn(flat label="Retour à l'accueil" @click="$router.push('/')")
-      //q-btn(flat label="Contacter le support" @click="contactSupport")
+      q-btn(flat label="Retour a la page précédente" @click="$router.go(-1)")
       q-btn(flat label="Essayer à nouveau" @click="reloadPage")
 
 </template>
@@ -17,7 +17,6 @@ div(class="q-pa-md flex flex-center full-height" style="background-color: #f5f5f
 <script lang="ts" setup>
 import type { NuxtError } from '#app'
 import type { PropType } from 'vue'
-import { defineProps } from 'vue'
 import { useRouter } from 'vue-router'
 
 defineProps({
@@ -28,11 +27,6 @@ defineProps({
 })
 
 const router = useRouter();
-
-function contactSupport() {
-  // Implement your contact support logic here
-  // For example, redirect to a contact form or display contact info
-}
 
 function reloadPage() {
   location.reload();
