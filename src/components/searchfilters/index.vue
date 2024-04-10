@@ -1,6 +1,8 @@
 <template lang="pug" @keypress.enter="addFilter">
 .q-pa-sm
   sesameSearchfiltersMain(ref="mainData")
+    template(#rightSelect)
+      slot(name="rightSelect")
   //Filters chips
   .row.q-gutter-sm.items-center.q-mt-sm
     q-chip(
@@ -25,6 +27,13 @@ type MainData = {
 defineOptions({
   name: 'Searchfilter',
 })
+
+// const props = defineProps({
+//   test: {
+//     type: Boolean,
+//     default: false,
+//   },
+// })
 
 const dayjs = useDayjs()
 const router = useRouter()

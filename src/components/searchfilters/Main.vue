@@ -26,7 +26,8 @@
     q-btn(color="primary" @click="addFilter" :disable="isFieldDisabled.addButton") Ajouter
   q-space
   .col-12.col-md-2
-    sesameSearchfiltersRightSelect(ref="rightSelect")
+    slot(name="rightSelect")
+      sesameSearchfiltersRightSelect(ref="rightSelect")
 </template>
 
 <script lang="ts" setup>
