@@ -13,7 +13,7 @@ q-layout
             q-item-section(avatar)
               q-icon(name="mdi-account")
             q-tooltip.text-body2(anchor="center right" self="center left") Liste des identités
-          q-item(@click="push('/account')" clickable)
+          q-item(@click="push('/agents')" clickable)
             q-item-section(avatar)
               q-icon(name="mdi-card-account-details")
             q-tooltip.text-body2(anchor="center right" self="center left") Liste des agents
@@ -115,6 +115,10 @@ function push(path: string) {
 
 function logout() {
   router.push({ name: 'login' })
+}
+
+function test() {
+  console.log('test')
 }
 
 </script>
