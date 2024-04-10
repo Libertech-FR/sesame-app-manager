@@ -1,22 +1,45 @@
 <template lang="pug">
 div
-  //- .q-px-md
-    sesame-searchfilters(:fields="fieldsList")
   .q-px-md
-    q-table.sesamesticky-last-column-table(
-      :rows="agents?.data"
-      :rows-per-page-options="[5, 10, 15]" :loading="pending" :columns="columns" row-key="_id" :visible-columns="visibleColumns"
-      v-model:pagination="pagination" title="Agents" @request="onRequest($event, agents.total)"
-      rows-per-page-label="Lignes par page" no-data-label="Aucune donnée" loading-label="Chargement..." no-results-label="Aucun résultat"
-      :pagination-label="(firstRowIndex, endRowIndex, totalRowsNumber) => `${firstRowIndex}-${endRowIndex} sur ${totalRowsNumber} lignes`"
-    )
-      template(#top-right)
-        //- sesame-table-top-right(:columns="columns" v-model="visibleColumns" @refresh="refresh")
-      template(#body-cell-actions="props")
-        q-td
-          q-btn-group(flat rounded dark)
-            q-btn(icon="mdi-pencil" color="primary" :to="'/agents/' + props.row._id" size="sm" flat)
-              q-tooltip.text-body2(transition-show="scale" transition-hide="scale") Afficher l'agent
+    sesame-searchfilters(:fields="fieldsList")
+      template(#rightSelect)
+        div
+
+  sesame-2pan(
+    :simple="true"
+    :data="agents?.data"
+    :total="agents?.total"
+    :columns="columns"
+    :visibleColumns="visibleColumns"
+    :fieldsList="fieldsList"
+    :selected="selected"
+    :pagination="pagination"
+    :pending="pending"
+    :refresh="refreshEvent"
+    :error="error"
+    :titleKey=["username"]
+    :crud="crud"
+    :actions="actions"
+    :defaultRightPanelButton="true"
+  )
+    //- template(#top-left)
+    //- sesame-table-top-left(:selected="selected" @updateLifestep="updateLifestep($event)" @clear="selected = []")
+    //- template(#body-cell-states="props")
+    //-   sesame-table-state-col(:identity="props.row")
+    //- template(#right-panel-actions-content-after="{target}")
+    //-   sesame-identity-form-actions(:identity="target" @submit="submit($event)" @sync="sync" @logs="logs")
+    template(#right-panel-content="{ payload }")
+      sesame-generic-form(
+        :payload="payload" ref="form"
+        :schema="schema"
+        :uischema="uischema"
+      )
+      //- sesame-json-form-renderer(
+      //-   v-model:data="payload.target"
+      //-   v-model:validations="validations"
+      //-   :schema="schema"
+      //-   :uischema="uischema"
+      //-   )
 </template>
 
 <script lang="ts" setup>
@@ -26,19 +49,63 @@ import { useFetch, useRoute, useRouter } from 'nuxt/app'
 import { useQuasar } from 'quasar'
 import type { QTableProps } from 'quasar'
 import type { components, operations } from '#build/types/service-api'
-type Agents = components['schemas']['AgentsDto']
+import { useErrorHandling } from '#imports'
+type Agent = components['schemas']['AgentsDto']
 type Response = operations['AgentsController_search']['responses']['200']['content']['application/json']
+
+defineOptions({
+  name: 'Agents',
+})
+
+const schema = ref({
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "displayName": {
+      "type": "string",
+      "description": "Common name of the inetOrgPerson."
+    },
+  },
+  "required": ["displayName"]
+})
+const uischema = ref({
+  "type": "Group",
+  "label": "inetOrgPerson",
+  "elements": [
+    {
+      "type": "HorizontalLayout",
+      "elements": [
+        {
+          "type": "Control",
+          "label": "Display Name",
+          "scope": "#/properties/displayName",
+          "options": {
+            "required": true
+          }
+        },
+      ]
+    },
+  ]
+})
+const validations = ref([])
 
 const daysjs = useDayjs()
 const route = useRoute()
 const router = useRouter()
 const $q = useQuasar()
+const { handleError } = useErrorHandling()
+const form = ref<any>(null)
 
 onMounted(() => {
   initializePagination(agents.value?.total)
 })
 
 const { pagination, onRequest, initializePagination } = usePagination()
+
+const queryWithoutRead = computed(() => {
+  const { read, ...rest } = route.query
+  return rest
+})
 
 const {
   data: agents,
@@ -47,16 +114,12 @@ const {
   error,
 } = await useHttp<Response>('/core/agents', {
   method: 'get',
-  query: computed(() => {
-    return {
-      ...route.query,
-    }
-  }),
+  query: queryWithoutRead
 })
 
 if (error.value) {
   $q.notify({
-    message: 'Impossible de récupérer les Agents',
+    message: 'Impossible de récupérer les agents',
     type: 'negative',
   })
 }
@@ -65,14 +128,14 @@ const columns = ref<QTableProps['columns']>([
   {
     name: 'username',
     label: 'Nom d\'utilisateur',
-    field: (row: Agents) => row.username,
+    field: (row: Agent) => row.username,
     align: 'left',
     sortable: true,
   },
   {
     name: 'email',
     label: 'Email',
-    field: (row: Agents) => row.email,
+    field: (row: Agent) => row.email,
     align: 'left',
     sortable: true,
   },
@@ -96,8 +159,86 @@ const columnsType = ref([
   { name: 'actions', type: 'text' },
 ])
 
+const selected = ref([])
+
 function refreshEvent() {
   refresh()
+  selected.value = []
+}
+
+const crud = {
+  create: true,
+  read: true,
+  update: true,
+  delete: true,
+}
+
+async function submit(agent: Agent) {
+  console.log('submit from index')
+  form.value.submit()
+}
+
+async function sync(agent: Agent) {
+  console.log('sync')
+  form.value.sync()
+}
+
+function logs(agent: Agent) {
+  console.log('logs')
+}
+
+const actions = {
+  cancel: async (row: Agent) => {
+    console.log('cancel')
+  },
+  create: async (row: Agent) => {
+    return row
+  },
+  update: async (row: Agent) => {
+    const sanitizedAgent = { ...row }
+    delete sanitizedAgent.metadata
+
+    const { data: result, pending, error, refresh } = await useHttp(`/core/agents/${row._id}`, {
+      method: 'PATCH',
+      body: sanitizedAgent,
+    });
+    if (error.value) {
+      handleError({
+        error: error.value,
+        message: 'Erreur lors de la sauvegarde'
+      })
+      validations.value = error.value.data.validations
+    } else {
+      $q.notify({
+        message: 'Sauvegarde effectuée',
+        color: 'positive',
+        position: 'top-right',
+        icon: 'mdi-check-circle-outline',
+      })
+    }
+    return row
+  },
+  delete: async (row: Agent) => {
+    return row
+  },
+  read: async (row, onMounted = false) => {
+    if (!onMounted) pushQuery({ key: 'read', value: row._id })
+    const { data } = await useHttp<Agent>(`/core/agents/${row._id}`, {
+      method: 'get',
+    })
+    return data.value?.data
+  },
+  onMounted: async () => {
+    if (route.query.read) {
+      const id = route.query.read as string
+      const row = agents.value?.data.find((row) => row._id === id)
+      if (row) {
+        return row
+      }
+    }
+    return null
+  }
+
 }
 
 const fieldsList = computed(() => {

@@ -1,7 +1,7 @@
 <template lang="pug">
 q-page
   q-toolbar
-    q-toolbar-title {{ agent.username }} | {{ agent.email }}
+    q-toolbar-title {{ agent.displayName }}
     q-space
 
     q-btn.q-mx-xs(@click="submit" label="Enregistrer" color="primary" icon="mdi-check")
@@ -11,28 +11,16 @@ q-page
 
     q-btn.q-mx-xs(@click="refresh" color="primary" icon="mdi-refresh")
       q-tooltip.text-body2(slot="trigger") Rafraichir les données
-    q-btn.q-mx-xs(to="/agents" label="Retour" color="primary" icon="mdi-arrow-left")
+    q-btn.q-mx-xs(@click="back" label="Retour" color="primary" icon="mdi-arrow-left")
       q-tooltip.text-body2(slot="trigger") Retour à la liste des identités
 
-  q-card-section
-    q-form
-      div.row.items-start
-        .col-4.q-pa-sm
-          q-input(v-model="agent.username" label="Username" filled)
-        .col-4.q-pa-sm
-          q-input(v-model="agent.displayName" label="Display Name" filled)
-        .col-4.q-pa-sm
-          q-input(v-model="agent.email" label="Email" type="email" filled)
-        .col-4.q-pa-sm
-          q-input(v-model="agent.password" label="Password" type="password" filled)
-        .col-4.q-pa-sm
-          q-input(v-model="agent.thirdPartyAuth" label="Third Party Auth" filled)
-        .col-4.q-pa-sm
-          q-select(v-model="agent.state.current" :options="stateOptions" label="Current State" filled)
-        .col-4.q-pa-sm
-          q-input(v-model="agent.baseURL" label="Base URL" filled)
-        .col-4.q-pa-sm
-          q-select(v-model="agent.roles" :options="rolesOptions" label="Roles" multiple filled)
+  sesame-json-form-renderer(
+    v-model:data="agent"
+    v-model:validations="validations"
+    :schema="schema"
+    :uischema="uischema"
+    )
+
 </template>
 
 <script lang="ts" setup>
@@ -40,37 +28,75 @@ import { computed, defineComponent, ref, shallowRef } from 'vue'
 import { useQuasar } from 'quasar';
 import type { components, operations } from '#build/types/service-api'
 import { routerKey, useRoute, useRouter } from 'vue-router';
-import { useHttp } from 'nuxt/app';
+import { useFetch } from 'nuxt/app';
+import { useErrorHandling } from '#imports';
 
-type AgentsResponse = operations['AgentsController_search']['responses']['200']['content']['application/json']
-type Agents = components['schemas']['AgentsDto']
+type AgentResponse = operations['AgentsController_search']['responses']['200']['content']['application/json']
+type Agent = components['schemas']['AgentsDto']
 
 
 const route = useRoute()
 const router = useRouter()
 const $q = useQuasar()
 const id = shallowRef(route.params.id)
+const { handleError } = useErrorHandling()
 
-const { data: result, pending, error, refresh } = await useHttp<AgentsResponse>(`/core/agents/${id.value}`);
-const agent = ref<Agents>(result.value?.data)
+const schema = ref({
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "displayName": {
+      "type": "string",
+      "description": "Common name of the inetOrgPerson."
+    },
+  },
+  "required": ["cn", "sn", "uid"]
+})
+const uischema = ref({
+  "type": "Group",
+  "label": "inetOrgPerson",
+  "elements": [
+    {
+      "type": "HorizontalLayout",
+      "elements": [
+        {
+          "type": "Control",
+          "label": "Display Name",
+          "scope": "#/properties/displayName",
+          "options": {
+            "required": true
+          }
+        },
+      ]
+    },
+  ]
+})
+
+const { data: result, pending, error, refresh } = await useHttp<AgentResponse>(`/core/agents/${id.value}`);
+if (error.value) {
+  handleError({
+    error: error.value,
+    redirect: true,
+    message: error.value.message
+  })
+}
+
+const agent = ref<Agent>(result.value?.data)
+const validations = ref(agent.value?.additionalFields?.validations)
 
 async function submit() {
   const sanitizedAgent = { ...agent.value }
   delete sanitizedAgent.metadata
-
 
   const { data: result, pending, error, refresh } = await useHttp(`/core/agents/${id.value}`, {
     method: 'PATCH',
     body: sanitizedAgent,
   });
   if (error.value) {
-    $q.notify({
-      message: 'Erreur lors de la sauvegarde',
-      color: 'negative',
-      position: 'top-right',
-      icon: 'mdi-alert-circle-outline',
+    handleError({
+      error: error.value,
+      message: 'Erreur lors de la sauvegarde'
     })
-    console.log(error)
     validations.value = error.value.data.validations
   } else {
     $q.notify({
@@ -79,7 +105,16 @@ async function submit() {
       position: 'top-right',
       icon: 'mdi-check-circle-outline',
     })
+    agent.value = result.value.data
   }
+}
+
+function logs() {
+  console.log('logs')
+}
+
+function back() {
+  router.push('/agents')
 }
 </script>
 
