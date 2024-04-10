@@ -40,9 +40,13 @@ const renderers = Object.freeze([
 ]);
 
 const props = defineProps({
-  schemaName: {
-    type: String,
-    default: '',
+  schema: {
+    type: Object,
+    default: () => ({}),
+  },
+  uischema: {
+    type: Object,
+    default: () => ({}),
   },
   validations: {
     type: Object || null,
@@ -61,7 +65,10 @@ const data = defineModel('data', {
 });
 
 function onChange(event: JsonFormsChangeEvent) {
-  data.value = event.data;
+  for (const key in event.data) {
+    const evdata = event.data[key];
+    data.value[key] = evdata;
+  }
 }
 
 const getSchemaValidations = computed(() => {
@@ -79,20 +86,7 @@ const getSchemaValidations = computed(() => {
     });
   }
   return errorObject;
-})
-
-
-const { data: result, pending, error, refresh } = await useHttp(`/management/identities/validation/${props.schemaName}`, {
-  method: 'GET',
 });
-
-const { data: resultUi, pending: pendingUi, error: errorUi, refresh: refreshUi } = await useHttp(`/management/identities/jsonforms/${props.schemaName}`, {
-  method: 'GET',
-});
-
-const schema = ref(result.value.data);
-const uischema = ref(resultUi.value.data);
-
 </script>
 
 <style>

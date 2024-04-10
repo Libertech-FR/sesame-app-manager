@@ -49,9 +49,9 @@ div
       sesame-table-state-col(:identity="props.row")
     template(#right-panel-actions-content-after="{target}")
       sesame-identity-form-actions(:identity="target" @submit="submit($event)" @sync="sync" @logs="logs")
-    template(#right-panel-content="{target}")
+    template(#right-panel-content="{payload}")
       sesame-identity-form(
-        :identity="target"
+        :identity="payload.target"
         ref="form" @refresh="refresh"
         @submit="submit($event)"
         @sync="sync" @logs="logs"
@@ -231,6 +231,9 @@ function logs(identity: Identity) {
 }
 
 const actions = {
+  cancel: async (row: Identity) => {
+    console.log('cancel')
+  },
   read: async (row, onMounted = false) => {
     if (!onMounted) pushQuery({ key: 'read', value: row._id })
     const { data } = await useHttp<Identity>(`/management/identities/${row._id}`, {
