@@ -6,13 +6,13 @@ div
 
   q-tab-panels(v-model="tab")
     q-tab-panel(name="inetOrgPerson")
-      sesame-json-form-renderer(
+      sesame-json-form-renderer-api(
         schemaName="inetorgperson"
         v-model:data="identity.inetOrgPerson"
         v-model:validations="validations"
       )
     q-tab-panel(v-for="tab in tabs" :key="tab" :name="tab")
-      sesame-json-form-renderer(
+      sesame-json-form-renderer-api(
         :schemaName="tab"
         v-model:data="identity.additionalFields.attributes[tab]"
         v-model:validations="validations"
