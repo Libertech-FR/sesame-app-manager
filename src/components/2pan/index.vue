@@ -4,12 +4,12 @@ q-splitter(
   separator-style="width: 8px"
   background-color="primary"
   class="full-height"
-  :limits="!$q.platform.is.mobile ? [20,80] : [0,100]"
-  :horizontal='$q.platform.is.mobile'
-  :style='{ "padding": $q.platform.is.mobile ? "6px 0" : "0" }'
+  :limits="!isSimple ? [20,80] : [0,100]"
+  :horizontal='isSimple'
+  :style='{ "padding": isSimple ? "6px 0" : "0" }'
 )
   template(#before)
-    q-card.full-height.q-pa-sm(bordered :class='{"desktop-only": target}')
+    q-card.full-height.q-pa-sm(bordered :class='{"hidden": isSimple && target}')
       q-table.sesame-sticky-last-column-table.full-height(
         v-bind="$attrs"
         selection="multiple"
@@ -43,6 +43,7 @@ q-splitter(
             slot(name="top-right-btn-grp")
               slot(name="top-right-btn-grp-content-before")
               sesame-2pan-btns-add(@add="create" v-if="crud.create")
+              q-btn(:label="isSimple ? 'Simple' : 'Two'" @click="simple = !simple")
               q-btn(flat icon="mdi-table-headers-eye" color="primary")
                 q-tooltip.text-body2(transition-show="scale" transition-hide="scale") Afficher/cacher des colones
                 q-menu(max-width="350px" max-height="350px").q-pa-md
@@ -62,10 +63,10 @@ q-splitter(
                 slot(name="body-cell-actions-content-after")
 
   template(#separator)
-    q-avatar(v-if='!$q.platform.is.mobile' size="sm" color="primary" icon="mdi-unfold-more-vertical" class="text-white")
+    q-avatar(v-if='!isSimple' size="sm" color="primary" icon="mdi-unfold-more-vertical" class="text-white")
 
   template(#after)
-    q-card.full-height.q-pa-sm(bordered :class='{"desktop-only": !target}')
+    q-card.full-height.q-pa-sm(bordered :class='{"hidden": isSimple && !target}')
       q-card-section.q-pa-none.flex.items-center.full-height.justify-center(v-if='!target')
         slot(name="right-panel-empty")
           slot(name="right-panel-empty-content-before")
@@ -92,7 +93,7 @@ q-splitter(
                 q-tooltip.text-body2 Supprimer
             slot(name="right-panel-actions-content-after" :target="target")
         q-card-section.q-pa-none.fit.flex(style='flex-flow: column; overflow: hidden;')
-          slot(name="right-panel-content" :target="target")
+          slot(name="right-panel-content" :payload="{ target }")
             slot(name="right-panel-content-before")
             slot(name="right-panel-content-after")
         q-expansion-item.bg-blue-grey-10(v-if='debug' label='Debug' icon='mdi-bug' dense)
@@ -110,15 +111,20 @@ import { useResizeObserver } from '@vueuse/core'
 // import type { components } from '#build/types/service-api'
 import type { PropType } from 'vue'
 import { crush, pick } from 'radash'
+import { routerKey } from 'vue-router'
 
 defineOptions({
   name: '2pan',
 })
 
 const $q = useQuasar()
-const splitterModel = ref($q.screen.xs ? 100 : 50)
+const router = useRouter()
 
 const props = defineProps({
+  simple: {
+    type: Boolean,
+    default: false,
+  },
   rowKey: {
     type: String,
     default: '_id',
@@ -206,6 +212,16 @@ const props = defineProps({
   },
 })
 
+const simple = ref(props.simple)
+const isSimple = computed(() => {
+  if ($q.platform.is.mobile) return true
+  return simple.value
+})
+watch(simple, (v) => {
+  splitterModel.value = v ? 100 : 50
+})
+const splitterModel = ref(isSimple.value ? 100 : 50)
+
 const visibleColumnsInternal = ref(props.visibleColumns)
 const visibleColumnsComputed = computed({
   get() {
@@ -240,7 +256,7 @@ const daysjs = useDayjs()
 
 watch(target, (t) => {
   // if (t) selected.value = [t]
-  if ($q.platform.is.mobile) {
+  if (isSimple) {
     splitterModel.value = !t ? 100 : 0
   }
 })
@@ -262,7 +278,7 @@ async function cancel() {
   await props.actions.cancel()
   target.value = null
   selected.value = []
-
+  router.push({ query: { ...route.query, read: undefined } })
 }
 async function read(row) {
   const response = await props.actions.read(row)
