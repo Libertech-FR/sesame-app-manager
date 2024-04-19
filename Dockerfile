@@ -4,7 +4,7 @@ ARG NODE_ENV=production
 ENV NODE_ENV=${NODE_ENV}
 ENV NODE_OPTIONS=--openssl-legacy-provider
 
-WORKDIR /usr/src/app
+WORKDIR /data
 
 # Install dependencies. Note that the package names and the package manager are different for Debian-based images.
 RUN apt-get update && apt-get -y --no-install-recommends upgrade && apt-get install -y --no-install-recommends \
