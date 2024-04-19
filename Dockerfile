@@ -33,6 +33,8 @@ RUN yarn install \
   && yarn autoclean --init \
   && yarn autoclean --force
 
+RUN yarn build
+
 EXPOSE 3000
 
 CMD ["yarn", "run", "start:prod"]
