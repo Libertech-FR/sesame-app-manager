@@ -28,10 +28,10 @@ RUN yarn install \
   --prefer-offline \
   --frozen-lockfile \
   --non-interactive \
-  --production=false \
-  && yarn cache clean \
-  && yarn autoclean --init \
-  && yarn autoclean --force
+  --production=false
+# && yarn cache clean \
+# && yarn autoclean --init \
+# && yarn autoclean --force
 
 RUN yarn build
 
