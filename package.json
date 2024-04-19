@@ -8,7 +8,8 @@
     "generate": "nuxt generate",
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
-    "start:prod": "node .output/server/index.mjs",
+    "start": "node .output/server/index.mjs",
+    "start:prod": "node start.mjs",
     "lint": "eslint .",
     "lint:fix": "eslint --ext .ts,.js,.vue --ignore-path .gitignore . --fix"
   },
