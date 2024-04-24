@@ -6,8 +6,16 @@ import { defineNuxtConfig } from 'nuxt/config'
 
 const SESAME_APP_API_URL = process.env.SESAME_APP_API_URL || 'http://localhost:4002'
 
+let SESAME_APP_DARK_MODE: 'auto' | boolean = false
+if (process.env.SESAME_APP_DARK_MODE) {
+  if (process.env.SESAME_APP_DARK_MODE === 'auto') {
+    SESAME_APP_DARK_MODE = 'auto'
+  } else {
+    SESAME_APP_DARK_MODE = /true|on|yes|1/i.test(process.env.SESAME_APP_DARK_MODE)
+  }
+}
+
 // https://nuxt.com/docs/api/configuration/nuxt-config
-// noinspection JSUnusedGlobalSymbols
 export default defineNuxtConfig({
   ssr: false,
   telemetry: false,
@@ -101,7 +109,7 @@ export default defineNuxtConfig({
     iconSet: 'mdi-v5',
     plugins: ['Notify', 'Dialog'],
     config: {
-      dark: false,
+      dark: SESAME_APP_DARK_MODE,
       notify: {
         timeout: 2500,
         position: 'top-right',
