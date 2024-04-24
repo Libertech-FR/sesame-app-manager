@@ -32,6 +32,7 @@ const TO_COMPLETE = computed(() => identityStore.getToCompleteCount > 99 ? '99+'
 const TO_VALIDATE = computed(() => identityStore.getToValidateCount > 99 ? '99+' : identityStore.getToValidateCount)
 const ON_ERROR = computed(() => identityStore.getOnErrorCount > 99 ? '99+' : identityStore.getOnErrorCount)
 const TO_SYNC = computed(() => identityStore.getToSyncCount > 99 ? '99+' : identityStore.getToSyncCount)
+const PROCESSING = computed(() => identityStore.getProcessingCount > 99 ? '99+' : identityStore.getProcessingCount)
 const SYNCED = computed(() => identityStore.getSyncedCount > 99 ? '99+' : identityStore.getSyncedCount)
 
 const ADM = computed(() => identityAffectationStore.getAdmCount > 9999 ? '9999+' : identityAffectationStore.getAdmCount)
@@ -43,6 +44,7 @@ const badges = ref({
   TO_VALIDATE,
   ON_ERROR,
   TO_SYNC,
+  PROCESSING,
   SYNCED,
   ADM,
   ETD,
@@ -93,6 +95,14 @@ const menu = ref([
     color: 'primary',
     part: 'Etats',
     badge: 'TO_SYNC'
+  },
+  {
+    icon: 'mdi-loading',
+    label: 'En cours de synchronisation',
+    path: `/identities?sort[metadata.lastUpdatedAt]=desc&skip=0&limit=10&filters[@state][]=${IdentityState.PROCESSING}`,
+    color: 'primary',
+    part: 'Etats',
+    badge: 'SYNCED'
   },
   {
     icon: 'mdi-check',
