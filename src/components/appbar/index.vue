@@ -6,7 +6,7 @@ q-header
 
     q-btn(flat @click="backToIndex()")
       q-avatar(square)
-        img(src="/sesame-logo.svg")
+        q-img(src="/config/logo.png" error-src="/default.png" alt="Sesame logo")
       q-toolbar-title SESAME
     //q-separator(vertical dark inset).q-mx-md
     //sesame-AppbarMenu

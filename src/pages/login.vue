@@ -1,7 +1,10 @@
 <template lang="pug">
-  q-card.column.shadow-24(:style='{width: "250px"}')
-    q-toolbar.bg-primary.text-white
-      q-toolbar-title Connexion
+q-card.shadow-24.row(style="max-width: 800px;")
+  q-toolbar.bg-primary.text-white
+    q-toolbar-title Connexion
+  q-card-section.col-6.flex.items-center
+    q-img(src="/config/login-side.png" error-src="/default.png" alt="Ecole logo" style="max-width: 100%;")
+  q-card-section.col-6.column
     form(@submit.prevent='submit')
       q-card.no-shadow
         q-card-section.q-pt-sm.q-px-lg.q-pb-lg
@@ -9,10 +12,17 @@
           q-input(v-model="formData.password" label="Password" type="password" auto-complete='current-password')
         q-inner-loading(:showing='pending')
           q-spinner-grid(color='primary' size='50px')
-      q-card-actions
-        q-space
-        q-btn(@click.prevent='submit' type='submit' color='primary') Se connecter
-        q-space
+      q-card-actions.column.justify-between
+        .col.q-my-sm.flex.items-center
+          q-btn(@click.prevent='submit' type='submit' color='primary') Se connecter
+        .col.row
+          q-separator
+        .col.row.q-my-sm.justify-between
+          .col-4
+            q-btn(@click="" color="primary" style="height:100%" disabled) Se connecter avec CAS
+          .col-4
+            q-btn(@click="" color="primary" style="height:100%" disabled) Se connecter avec microsoft
+
 </template>
 
 <script lang="ts" setup>
