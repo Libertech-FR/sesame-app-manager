@@ -42,6 +42,12 @@ q-layout
             q-tooltip.text-body2(anchor="center right" self="center left") A synchroniser
             q-badge(color="primary" floating) {{ TO_SYNC }}
 
+          q-item(@click="push(`/identities?sort[metadata.lastUpdatedAt]=desc&skip=0&limit=10&filters[@state][]=${IdentityState.PROCESSING}`)" clickable)
+            q-item-section(avatar)
+              q-icon(name="mdi-loading")
+            q-tooltip.text-body2(anchor="center right" self="center left") En cours de synchronisation
+            q-badge(color="primary" floating) {{ PROCESSING }}
+
           q-item(@click="push(`/identities?sort[metadata.lastUpdatedAt]=desc&skip=0&limit=10&filters[@state][]=${IdentityState.SYNCED}`)" clickable)
             q-item-section(avatar)
               q-icon(name="mdi-check")
@@ -99,6 +105,7 @@ const TO_COMPLETE = computed(() => identityStore.getToCompleteCount > 99 ? '99+'
 const TO_VALIDATE = computed(() => identityStore.getToValidateCount > 99 ? '99+' : identityStore.getToValidateCount)
 const ON_ERROR = computed(() => identityStore.getOnErrorCount > 99 ? '99+' : identityStore.getOnErrorCount)
 const TO_SYNC = computed(() => identityStore.getToSyncCount > 99 ? '99+' : identityStore.getToSyncCount)
+const PROCESSING = computed(() => identityStore.getProcessingCount > 99 ? '99+' : identityStore.getProcessingCount)
 const SYNCED = computed(() => identityStore.getSyncedCount > 99 ? '99+' : identityStore.getSyncedCount)
 
 const ADM = computed(() => identityAffectationStore.getAdmCount > 9999 ? '9999+' : identityAffectationStore.getAdmCount)

@@ -7,6 +7,7 @@ export const useIdentityStateStore = defineStore('identityStates', {
     [IdentityState.TO_VALIDATE]: 0,
     [IdentityState.ON_ERROR]: 0,
     [IdentityState.TO_SYNC]: 0,
+    [IdentityState.PROCESSING]: 0,
     [IdentityState.SYNCED]: 0,
   }),
   getters: {
@@ -14,6 +15,7 @@ export const useIdentityStateStore = defineStore('identityStates', {
     getToValidateCount: state => state[IdentityState.TO_VALIDATE],
     getOnErrorCount: state => state[IdentityState.ON_ERROR],
     getToSyncCount: state => state[IdentityState.TO_SYNC],
+    getProcessingCount: state => state[IdentityState.PROCESSING],
     getSyncedCount: state => state[IdentityState.SYNCED],
   },
   actions: {
@@ -24,6 +26,7 @@ export const useIdentityStateStore = defineStore('identityStates', {
           this.fetchToValidateCount(),
           this.fetchOnErrorCount(),
           this.fetchToSyncCount(),
+          this.fetchProcessingCount(),
           this.fetchSyncedCount(),
         ]);
       } catch (error) {
@@ -58,6 +61,14 @@ export const useIdentityStateStore = defineStore('identityStates', {
       try {
         const { data } = await useHttp(`/management/identities/count?filters[@state][]=${IdentityState.TO_SYNC}&limit=100`);
         this[IdentityState.TO_SYNC] = data.value.data;
+      } catch (error) {
+        console.error(error);
+      }
+    },
+    async fetchProcessingCount() {
+      try {
+        const { data } = await useHttp(`/management/identities/count?filters[@state][]=${IdentityState.PROCESSING}&limit=100`);
+        this[IdentityState.PROCESSING] = data.value.data;
       } catch (error) {
         console.error(error);
       }
