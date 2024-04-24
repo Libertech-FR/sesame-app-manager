@@ -5,7 +5,8 @@ type useIdentityStateReturnType = {
 };
 
 export enum IdentityState {
-  SYNCED = 3,
+  SYNCED = 99,
+  PROCESSING = 50,
   TO_SYNC = 2,
   TO_VALIDATE = 1,
   UNKNOWN = 0,
