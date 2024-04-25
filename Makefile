@@ -25,6 +25,18 @@ dev:
 		-v $(CURDIR):/usr/src/app \
 		$(IMGNAME) yarn dev
 
+prod:
+	docker run --rm -it \
+		-e NODE_ENV=production \
+		-e NODE_TLS_REJECT_UNAUTHORIZED=0 \
+		--add-host host.docker.internal:host-gateway \
+		--name $(APPNAME) \
+		--network dev \
+		-p $(APP_PORT):3000 \
+		-p 24678:24678 \
+		-v $(CURDIR):/usr/src/app \
+		$(IMGNAME) yarn start:prod
+
 install:
 	docker run -it --rm \
 		-e NODE_ENV=development \
