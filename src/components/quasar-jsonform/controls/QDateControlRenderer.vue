@@ -64,9 +64,4 @@ const QDateControlRenderer = defineComponent({
 });
 
 export default QDateControlRenderer;
-
-export const QDateControlRendererEntry: JsonFormsRendererRegistryEntry = {
-    renderer: QDateControlRenderer,
-    tester: rankWith(2, isDateControl),
-};
 </script>

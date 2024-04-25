@@ -110,8 +110,4 @@ const QStringControlRenderer = defineComponent({
 });
 export default QStringControlRenderer;
 
-export const QStringControlRendererEntry: JsonFormsRendererRegistryEntry = {
-  renderer: QStringControlRenderer,
-  tester: rankWith(1, isControl),
-};
 </script>

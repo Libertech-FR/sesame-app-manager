@@ -58,8 +58,4 @@ const QNumberControlRenderer = defineComponent({
 
 export default QNumberControlRenderer;
 
-export const QNumberControlRendererEntry: JsonFormsRendererRegistryEntry = {
-    renderer: QNumberControlRenderer,
-    tester: rankWith(1, isNumberControl),
-};
 </script>
