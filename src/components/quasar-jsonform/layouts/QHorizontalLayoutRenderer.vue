@@ -41,8 +41,4 @@ const QHorizontalLayoutRenderer = defineComponent({
 
 export default QHorizontalLayoutRenderer;
 
-export const QHorizontalLayoutRendererEntry = {
-    renderer: QHorizontalLayoutRenderer,
-    tester: rankWith(2, uiTypeIs('HorizontalLayout')),
-};
 </script>

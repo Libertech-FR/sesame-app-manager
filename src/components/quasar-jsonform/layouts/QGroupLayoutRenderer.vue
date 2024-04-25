@@ -40,8 +40,4 @@ const QGroupLayoutRenderer = defineComponent({
 
 export default QGroupLayoutRenderer;
 
-export const QGroupLayoutRendererEntry = {
-    renderer: QGroupLayoutRenderer,
-    tester: rankWith(2, and(isLayout, uiTypeIs('Group'))),
-};
 </script>

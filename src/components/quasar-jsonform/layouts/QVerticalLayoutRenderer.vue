@@ -35,8 +35,4 @@ const QVerticalLayoutRenderer = defineComponent({
 
 export default QVerticalLayoutRenderer;
 
-export const QVerticalLayoutRendererEntry = {
-    renderer: QVerticalLayoutRenderer,
-    tester: rankWith(2, uiTypeIs('VerticalLayout')),
-};
 </script>
