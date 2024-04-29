@@ -226,8 +226,8 @@ async function sync(identity: Identity) {
   form.value.sync()
 }
 
-function logs(identity: Identity) {
-  console.log('logs')
+function logs(identity: Identity & { _id: string }) {
+  router.push({ name: 'identities-logs', query: { id: identity._id } })
 }
 
 const actions = {
