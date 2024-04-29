@@ -27,7 +27,7 @@ q-card.shadow-24.row(style="max-width: 800px;")
 
 <script lang="ts" setup>
 import { ref } from 'vue'
-
+import { useQuasar } from 'quasar'
 definePageMeta({
   layout: 'simple-centered',
   auth: {
@@ -36,6 +36,7 @@ definePageMeta({
   },
 })
 
+const $q = useQuasar()
 const pending = ref(false)
 const formData = ref({
   username: '',
@@ -44,9 +45,17 @@ const formData = ref({
 
 const submit = async () => {
   pending.value = true
-  await useAuth().loginWith('local', {
-    body: formData.value,
-  })
-  pending.value = false
+  try {
+    await useAuth().loginWith('local', {
+      body: formData.value,
+    })
+  } catch (error) {
+    $q.notify({
+      type: 'negative',
+      message: 'Erreur de connexion',
+    })
+  } finally {
+    pending.value = false
+  }
 }
 </script>
