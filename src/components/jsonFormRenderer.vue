@@ -151,4 +151,4 @@ const getSchemaValidations = computed(() => {
 .description {
   display: none;
 }
-</style>./form/StringControlRenderer.vue./form/QStringControlRenderer.vue./form/controls/QStringControlRenderer.vue
+</style>

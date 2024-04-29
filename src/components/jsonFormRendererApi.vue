@@ -157,4 +157,4 @@ const uischema = ref(resultUi.value.data);
 .description {
   display: none;
 }
-</style>./form/StringControlRenderer.vue./form/QStringControlRenderer.vue./form/controls/QStringControlRenderer.vue
+</style>
