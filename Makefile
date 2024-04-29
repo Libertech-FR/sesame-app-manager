@@ -22,7 +22,7 @@ dev:
 		--network dev \
 		-p $(APP_PORT):3000 \
 		-p 24678:24678 \
-		-v $(CURDIR):/usr/src/app \
+		-v $(CURDIR):/data \
 		$(IMGNAME) yarn dev
 
 prod:
@@ -34,17 +34,17 @@ prod:
 		--network dev \
 		-p $(APP_PORT):3000 \
 		-p 24678:24678 \
-		-v $(CURDIR):/usr/src/app \
+		-v $(CURDIR):/data \
 		$(IMGNAME) yarn start:prod
 
 install:
 	docker run -it --rm \
 		-e NODE_ENV=development \
-		-v $(CURDIR):/usr/src/app \
+		-v $(CURDIR):/data \
 		$(IMGNAME) yarn install
 
 exec:
 	docker run -it --rm \
 		-e NODE_ENV=development \
-		-v $(CURDIR):/usr/src/app \
+		-v $(CURDIR):/data \
 		$(IMGNAME) sh
