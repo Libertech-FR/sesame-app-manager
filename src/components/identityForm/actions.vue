@@ -57,8 +57,7 @@ async function sync() {
 }
 
 function logs() {
-  console.log('logs')
-  router.push(`/logs?filters[^concernedTo]=/${(props.identity as any)._id}/i&sort[metadata.lastUpdatedAt]=desc`)
+  router.push(`/jobs?filters[=concernedTo]=${(props.identity as any)._id}`)
 }
 
 function back() {
