@@ -47,4 +47,4 @@ exec:
 	docker run -it --rm \
 		-e NODE_ENV=development \
 		-v $(CURDIR):/data \
-		$(IMGNAME) sh
+		$(IMGNAME) bash
