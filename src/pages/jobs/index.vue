@@ -7,8 +7,10 @@ div.fit
       q-timeline-entry(heading) November, 2017
       q-timeline-entry(
         v-for="(job, key) in jobs.data" :key="key"
-        :title="job.jobId" :subtitle="job.action" icon="mdi-account" color="orange"
+        icon="mdi-account" color="orange"
       )
+        template(#title) Titre
+        template(#subtitle) Titre
         div
           pre(v-html="JSON.stringify(job, null, 2)")
 </template>

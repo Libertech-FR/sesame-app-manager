@@ -50,7 +50,7 @@ const schema = ref({
       "description": "Common name of the inetOrgPerson."
     },
   },
-  "required": ["cn", "sn", "uid"]
+  "required": ["cn", "sn", "uid", "employeeNumber"]
 })
 const uischema = ref({
   "type": "Group",

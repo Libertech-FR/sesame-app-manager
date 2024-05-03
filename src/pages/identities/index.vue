@@ -133,6 +133,13 @@ const columns = ref<QTableProps['columns']>([
     sortable: true,
   },
   {
+    name: 'inetOrgPerson.employeeNumber',
+    label: 'EmployeeNumber',
+    field: (row: Identity) => row.inetOrgPerson.employeeNumber,
+    align: 'left',
+    sortable: true,
+  },
+  {
     name: 'additionalFields.attributes.supann.supannTypeEntiteAffectation',
     label: 'Affectation',
     field: (row: Identity) => row.additionalFields?.attributes.supann.supannTypeEntiteAffectation,
@@ -178,6 +185,7 @@ const columns = ref<QTableProps['columns']>([
 ])
 const visibleColumns = ref<QTableProps['visibleColumns']>([
   'inetOrgPerson.uid',
+  'inetOrgPerson.employeeNumber',
   'additionalFields.attributes.supann.supannTypeEntiteAffectation',
   'envelope.observers.name',
   'envelope.assigned.name',
@@ -190,6 +198,7 @@ const visibleColumns = ref<QTableProps['visibleColumns']>([
 ])
 const columnsType = ref([
   { name: 'inetOrgPerson.uid', type: 'text' },
+  { name: 'inetOrgPerson.employeeNumber', type: 'text' },
   { name: 'additionalFields.attributes.supann.supannTypeEntiteAffectation', type: 'text' },
   { name: 'envelope.observers.name', type: 'text' },
   { name: 'envelope.assigned.name', type: 'text' },
