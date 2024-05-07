@@ -55,7 +55,7 @@ div
         ref="form" @refresh="refresh"
         @submit="submit($event)"
         @sync="sync" @logs="logs"
-        @refreshTarget="refreshTarget(target)"
+        @refreshTarget="refreshTarget"
       )
 </template>
 

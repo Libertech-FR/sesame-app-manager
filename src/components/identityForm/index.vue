@@ -70,7 +70,7 @@ async function submit() {
   delete sanitizedIdentity.metadata
   if (sanitizedIdentity.additionalFields?.validations) delete sanitizedIdentity.additionalFields.validations
 
-  const { data: result, pending, error, refresh } = await useHttp(`/management/identities/${props.identity._id}`, {
+  const { data: result, pending, error, refresh } = await useHttp<any>(`/management/identities/${props.identity._id}`, {
     method: 'PATCH',
     body: sanitizedIdentity,
   });
@@ -90,7 +90,7 @@ async function submit() {
       position: 'top-right',
       icon: 'mdi-check-circle-outline',
     })
-    emits('refreshTarget')
+    emits('refreshTarget', result.value.data)
   }
 }
 
@@ -109,7 +109,7 @@ function getTabValidations(tab: string) {
 }
 
 async function sync() {
-  const { data: result, pending, error, refresh } = await useHttp(`/management/identities/${props.identity._id}/state`, {
+  const { data: result, pending, error, refresh } = await useHttp<any>(`/management/identities/${props.identity._id}/state`, {
     method: 'PATCH',
     body: {
       state: IdentityState.TO_SYNC,
@@ -125,7 +125,7 @@ async function sync() {
       position: 'top-right',
       icon: 'mdi-check-circle-outline',
     })
-    emits('refreshTarget')
+    emits('refreshTarget', result.value.data)
     // props.identity. = result.value.data
   }
 }
