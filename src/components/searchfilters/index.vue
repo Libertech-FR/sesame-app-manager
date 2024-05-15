@@ -8,7 +8,12 @@
     q-chip(
       v-for="filter in filterArray" :key="filter.field"
       removable @remove="removeFilter(filter)"
-    ) {{ filter.label }} {{ filter.comparator }} {{ filter.search }}
+    )
+      | {{ filter.label }}
+      q-separator.q-mx-xs(vertical)
+      | {{ filter.comparator }}
+      q-separator.q-mx-xs(vertical)
+      | "{{ filter.search }}"
 </template>
 
 <script lang="ts" setup>
