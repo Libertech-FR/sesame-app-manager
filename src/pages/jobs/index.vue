@@ -1,6 +1,14 @@
 <template lang="pug">
 div
-  //- .q-px-md
+  .q-px-md.row
+    q-space
+    q-select.col-4(
+      v-model="jobsBy"
+      :options="jobsByOptions"
+      label="Regrouper par"
+      emit-value
+      map-options
+    )
   //-   sesame-searchfilters(:fields="fieldsList")
   q-timeline.q-px-lg
     q-infinite-scroll.q-px-lg(@load="load" :offset="250")
@@ -8,46 +16,50 @@ div
         .row.justify-center.q-my-md
           q-spinner-dots(color="primary" size="40px")
 
-      q-timeline-entry(heading) November, 2017
-      q-timeline-entry(
-        v-for="(job, key) in jobs" :key="key"
-        icon="mdi-account" color="orange"
-      )
-        template(#title)
-          span(v-text="'[' + job.jobId + ']'")
-          | &nbsp; - &nbsp;
-          span(v-text="job.params?.identity?.identity?.inetOrgPerson?.cn")
-          | &nbsp;
-          span(v-text="job.params?.identity?.identity?.inetOrgPerson?.givenName")
-        template(#subtitle)
-          q-card.bg-transparent(flat)
-            q-card-actions
-              div(v-text="job.action")
-              q-space
-              div
-                q-icon(name="mdi-clock" size="20px" left)
-                time(v-text="$dayjs(job.metadata?.createdAt).format('DD/MM/YYYY HH:mm:ss').toString()")
-        q-card(flat)
-          q-tabs(
-            v-model="tabs[key]"
-            align="justify"
-            dense
-          )
-            q-tab(name="params") Paramètres d'appel
-            q-tab(name="result") Résultat
-            q-btn(
-              v-if="tabs[key]"
-              @click="delete tabs[key]"
-              slot="right"
-              color="primary"
-              icon="mdi-close"
-              flat
+      template(v-for="(day, keyCompute) in computedJobsByDays" :key="keyCompute")
+        q-timeline-entry(heading)
+          time(v-text="keyCompute")
+        q-timeline-entry(
+          v-for="(job, key) in day" :key="key"
+          icon="mdi-account" color="orange"
+        )
+          template(#title)
+            span(v-text="'[' + job.jobId + ']'")
+            | &nbsp; - &nbsp;
+            span(v-text="job.params?.identity?.identity?.inetOrgPerson?.cn")
+            | &nbsp;
+            span(v-text="job.params?.identity?.identity?.inetOrgPerson?.givenName")
+          template(#subtitle)
+            q-card.bg-transparent(flat)
+              q-card-actions
+                div(v-text="job.action")
+                q-space
+                div
+                  q-icon(name="mdi-clock" size="20px" left)
+                  time(v-text="$dayjs(job.metadata?.createdAt).format('DD/MM/YYYY HH:mm:ss').toString()")
+          q-card(flat)
+            q-tabs(
+              v-model="tabs[keyCompute + '_' + key]"
+              align="justify"
+              dense
             )
-          q-tab-panels.overflow-auto(v-model="tabs[key]" style="max-height: 300px")
-            q-tab-panel(name="params")
-              pre(v-html="JSON.stringify(job.params, null, 2)")
-            q-tab-panel(name="result")
-              pre(v-html="JSON.stringify(job.result, null, 2)")
+              q-tab(name="params") Paramètres d'appel
+              q-separator(vertical)
+              q-tab(name="result") Résultat
+              template(v-if="tabs[keyCompute + '_' + key]")
+                q-separator(vertical)
+                q-btn(
+                  @click="delete tabs[keyCompute + '_' + key]"
+                  slot="right"
+                  color="white"
+                  icon="mdi-close"
+                  flat
+                )
+            q-tab-panels.overflow-auto(v-model="tabs[keyCompute + '_' + key]" style="max-height: 300px")
+              q-tab-panel(name="params")
+                pre(v-html="JSON.stringify(job.params, null, 2)")
+              q-tab-panel(name="result")
+                pre(v-html="JSON.stringify(job.result, null, 2)")
 </template>
 
 <script lang="ts" setup>
@@ -69,6 +81,8 @@ const scrollTargetRef = ref(null)
 const tabs = ref([])
 
 const $route = useRoute();
+const $router = useRouter();
+const $dayjs = useDayjs();
 
 const offset = ref(0);
 const query = computed(() => {
@@ -80,10 +94,45 @@ const query = computed(() => {
   };
 });
 
+const jobsBy = computed({
+  get: () => $route.query.jobsBy ? `${$route.query.jobsBy}` : undefined,
+  set: (value) => {
+    tabs.value = [] // Reset tabs when changing jobsBy
+    $router.replace({
+      query: {
+        ...$route.query,
+        jobsBy: value,
+      },
+    })
+  },
+})
+if (!jobsBy.value) {
+  console.log('jobsBy.value', jobsBy.value)
+  jobsBy.value = 'DD/MM/YYYY'
+}
+
+const jobsByOptions = [
+  { label: 'Jour', value: 'DD/MM/YYYY' },
+  { label: 'Mois', value: 'MM/YYYY' },
+  { label: 'Année', value: 'YYYY' },
+]
+
 const jobs = ref<any>([]);
 
+const computedJobsByDays = computed(() => {
+  const jobsByDays = {}
+  jobs.value.forEach((job) => {
+    const day = $dayjs(job.metadata?.createdAt).format(jobsBy.value)
+    if (!jobsByDays[day]) {
+      jobsByDays[day] = []
+    }
+    jobsByDays[day].push(job)
+  })
+  return jobsByDays
+});
+
 const load = async (index, done) => {
-  offset.value = index;
+  offset.value = index - 1;
   const { data, pending, error, refresh } = await useHttp<any>(`/core/jobs/`, {
     method: 'GET',
     query,

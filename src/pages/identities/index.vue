@@ -236,7 +236,7 @@ async function sync(identity: Identity) {
 }
 
 function logs(identity: Identity & { _id: string }) {
-  router.push(`/logs?filters[concernedTo]=${identity._id}`)
+  router.push(`/logs?filters[:concernedTo.id]=${identity._id}`)
 }
 
 const actions = {

@@ -33,7 +33,7 @@ function useMenu(identityStateStore, identityAffectationStore) {
     {
       icon: 'mdi-card-account-details',
       label: 'Liste des agents',
-      path: '/account',
+      path: '/agents',
       color: 'primary',
       part: 'Listes',
     },

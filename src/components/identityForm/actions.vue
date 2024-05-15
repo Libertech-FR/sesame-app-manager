@@ -57,7 +57,7 @@ async function sync() {
 }
 
 function logs() {
-  router.push(`/jobs?filters[%concernedTo]=${(props.identity as any)._id}`)
+  router.push(`/jobs?filters[:concernedTo.id]=${(props.identity as any)._id}`)
 }
 
 function back() {
