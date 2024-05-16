@@ -46,7 +46,7 @@ q-splitter(
               q-btn.desktop-only(flat :icon="isSimple ? 'mdi-table-border' : 'mdi-table-merge-cells'" color="primary" @click="simple = !simple")
                 q-tooltip.text-body2(transition-show="scale" transition-hide="scale") Mode simple/double panneaux
               q-btn(flat icon="mdi-table-headers-eye" color="primary")
-                q-tooltip.text-body2(transition-show="scale" transition-hide="scale") Afficher/cacher des colones
+                q-tooltip.text-body2(transition-show="scale" transition-hide="scale") Afficher/cacher des colonnes
                 q-menu(max-width="350px" max-height="350px").q-pa-md
                   .row
                     .col-6(v-for="column in columns" :key="column.value")
@@ -152,7 +152,7 @@ const props = defineProps({
   },
   refresh: {
     type: Function,
-    default: () => { },
+    default: () => {},
   },
   total: {
     type: Number,
@@ -207,8 +207,8 @@ const props = defineProps({
         return row
       },
 
-      cancel: async () => { },
-      onMounted: async () => { },
+      cancel: async () => {},
+      onMounted: async () => {},
     },
   },
 })
@@ -239,7 +239,6 @@ const cols = computed(() => {
       ...c,
       classes: (row) => highlightRow(row[props.rowKey]),
     }
-
   })
 })
 

@@ -1,7 +1,7 @@
 <template lang="pug">
 q-btn-group(rounded flat)
   q-btn(flat icon="mdi-table-headers-eye" color="primary")
-    q-tooltip.text-body2(transition-show="scale" transition-hide="scale") Afficher/cacher des colones
+    q-tooltip.text-body2(transition-show="scale" transition-hide="scale") Afficher/cacher des colonnes
     q-menu(max-width="350px" max-height="350px").q-pa-md
       .row
         .col-6(v-for="column in columns" :key="column.value")

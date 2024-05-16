@@ -35,7 +35,7 @@ div
     :pending="pending"
     :refresh="refreshEvent"
     :error="error"
-    :titleKey=["inetOrgPerson.cn", "inetOrgPerson.givenName"]
+    :titleKey=["inetOrgPerson.cn"]
     :crud="crud"
     :actions="actions"
     :defaultRightPanelButton="false"
