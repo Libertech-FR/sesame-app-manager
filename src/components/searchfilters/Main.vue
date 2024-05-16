@@ -103,6 +103,7 @@ const addFilter = async () => {
     const { key, value } = parseSimpleFilter(searchFilter)
     await pushQuery({ key, value })
   }
+  clearFields(['field', 'comparator'])
 }
 
 const parseSimpleFilter = (searchFilter: SearchFilter) => {
