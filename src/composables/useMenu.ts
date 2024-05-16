@@ -80,7 +80,7 @@ function useMenu(identityStateStore, identityAffectationStore) {
     {
       icon: 'mdi-account-off',
       label: 'Etudiants',
-      path: '/identities?sort[metadata.lastUpdatedAt]=desc&skip=0&limit=10&filters[^additionalFields.attributes.supann.supannTypeEntiteAffectation]=/etd/i',
+      path: '/identities?sort[metadata.lastUpdatedAt]=desc&skip=0&limit=10&filters[^additionalFields.attributes.supannPerson.supannTypeEntiteAffectation]=/etd/i',
       color: 'primary',
       part: 'Affectations',
       badgeValue: 'ETD',
@@ -88,7 +88,7 @@ function useMenu(identityStateStore, identityAffectationStore) {
     {
       icon: 'mdi-account-tie',
       label: 'Administratifs',
-      path: '/identities?sort[metadata.lastUpdatedAt]=desc&skip=0&limit=10&filters[^additionalFields.attributes.supann.supannTypeEntiteAffectation]=/adm/i',
+      path: '/identities?sort[metadata.lastUpdatedAt]=desc&skip=0&limit=10&filters[^additionalFields.attributes.supannPerson.supannTypeEntiteAffectation]=/adm/i',
       color: 'primary',
       part: 'Affectations',
       badgeValue: 'ADM',
@@ -96,7 +96,7 @@ function useMenu(identityStateStore, identityAffectationStore) {
     {
       icon: 'mdi-account-group',
       label: 'Enseignants',
-      path: '/identities?sort[metadata.lastUpdatedAt]=desc&skip=0&limit=10&filters[^additionalFields.attributes.supann.supannTypeEntiteAffectation]=/esn/i',
+      path: '/identities?sort[metadata.lastUpdatedAt]=desc&skip=0&limit=10&filters[^additionalFields.attributes.supannPerson.supannTypeEntiteAffectation]=/esn/i',
       color: 'primary',
       part: 'Affectations',
       badgeValue: 'ESN',

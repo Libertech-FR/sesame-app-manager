@@ -108,7 +108,7 @@ const {
   error,
 } = await useHttp<Response>('/management/identities', {
   method: 'get',
-  query: queryWithoutRead
+  query: queryWithoutRead,
 })
 
 if (error.value) {
@@ -140,9 +140,9 @@ const columns = ref<QTableProps['columns']>([
     sortable: true,
   },
   {
-    name: 'additionalFields.attributes.supann.supannTypeEntiteAffectation',
+    name: 'additionalFields.attributes.supannPerson.supannTypeEntiteAffectation',
     label: 'Affectation',
-    field: (row: Identity) => row.additionalFields?.attributes.supann.supannTypeEntiteAffectation,
+    field: (row: Identity) => row.additionalFields?.attributes.supannPerson.supannTypeEntiteAffectation,
     align: 'left',
     sortable: true,
   },
@@ -186,7 +186,7 @@ const columns = ref<QTableProps['columns']>([
 const visibleColumns = ref<QTableProps['visibleColumns']>([
   'inetOrgPerson.uid',
   'inetOrgPerson.employeeNumber',
-  'additionalFields.attributes.supann.supannTypeEntiteAffectation',
+  'additionalFields.attributes.supannPerson.supannTypeEntiteAffectation',
   'envelope.observers.name',
   'envelope.assigned.name',
   'inetOrgPerson.cn',
@@ -199,7 +199,7 @@ const visibleColumns = ref<QTableProps['visibleColumns']>([
 const columnsType = ref([
   { name: 'inetOrgPerson.uid', type: 'text' },
   { name: 'inetOrgPerson.employeeNumber', type: 'text' },
-  { name: 'additionalFields.attributes.supann.supannTypeEntiteAffectation', type: 'text' },
+  { name: 'additionalFields.attributes.supannPerson.supannTypeEntiteAffectation', type: 'text' },
   { name: 'envelope.observers.name', type: 'text' },
   { name: 'envelope.assigned.name', type: 'text' },
   { name: 'inetOrgPerson.cn', type: 'text' },
@@ -259,8 +259,7 @@ const actions = {
       }
     }
     return null
-  }
-
+  },
 }
 
 const fieldsList = computed(() => {

@@ -25,7 +25,7 @@ export const useIdentityAffectationStore = defineStore('identityAffectations', {
     },
     async fetchAdmCount() {
       try {
-        const { data } = await useHttp(`/management/identities/count?&filters[^additionalFields.attributes.supann.supannTypeEntiteAffectation]=/adm/i&limit=9999`);
+        const { data } = await useHttp(`/management/identities/count?&filters[^additionalFields.attributes.supannPerson.supannTypeEntiteAffectation]=/adm/i&limit=9999`);
         this['adm'] = data.value.data;
       } catch (error) {
         console.error(error);
@@ -33,7 +33,7 @@ export const useIdentityAffectationStore = defineStore('identityAffectations', {
     },
     async fetchEsnCount() {
       try {
-        const { data } = await useHttp(`/management/identities/count?filters[^additionalFields.attributes.supann.supannTypeEntiteAffectation]=/esn/i&limit=9999`);
+        const { data } = await useHttp(`/management/identities/count?filters[^additionalFields.attributes.supannPerson.supannTypeEntiteAffectation]=/esn/i&limit=9999`);
         this['esn'] = data.value.data;
       } catch (error) {
         console.error(error);
@@ -41,7 +41,7 @@ export const useIdentityAffectationStore = defineStore('identityAffectations', {
     },
     async fetchEtdCount() {
       try {
-        const { data } = await useHttp(`/management/identities/count?filters[^additionalFields.attributes.supann.supannTypeEntiteAffectation]=/etd/i&limit=9999`);
+        const { data } = await useHttp(`/management/identities/count?filters[^additionalFields.attributes.supannPerson.supannTypeEntiteAffectation]=/etd/i&limit=9999`);
         this['etd'] = data.value.data;
       } catch (error) {
         console.error(error);
