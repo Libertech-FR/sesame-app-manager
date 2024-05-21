@@ -74,8 +74,8 @@ const comparatorTypes = ref<Comparator[]>([
   { label: 'Inférieur ou égal à', querySign: '<=', value: '<=', icon: 'mdi-less-than-or-equal', type: ['number', 'date'], multiplefields: false, prefix: '', suffix: '' },
   { label: 'entre', querySign: '<<', value: 'between', icon: 'mdi-arrow-expand-horizontal', type: ['number', 'date'], multiplefields: true, prefix: '', suffix: '' },
   { label: 'Contient', querySign: '^', value: '^', icon: 'mdi-apple-keyboard-control', type: ['text'], multiplefields: false, prefix: '/', suffix: '/i' },
-  { label: 'Commence par', querySign: '^', value: '/^', icon: 'mdi-apple-keyboard-control', type: ['text'], multiplefields: false, prefix: '/^', suffix: '/' },
-  { label: 'Fini par', querySign: '^', value: '$/', icon: 'mdi-apple-keyboard-control', type: ['text'], multiplefields: false, prefix: '/', suffix: '$/' },
+  { label: 'Commence par', querySign: '^', value: '/^', icon: 'mdi-apple-keyboard-control', type: ['text'], multiplefields: false, prefix: '/^', suffix: '/i' },
+  { label: 'Fini par', querySign: '^', value: '$/', icon: 'mdi-apple-keyboard-control', type: ['text'], multiplefields: false, prefix: '/', suffix: '$/i' },
   { label: 'Egal à', querySign: '@', value: '@', icon: 'mdi-apple-keyboard-control', type: [], multiplefields: true, prefix: '', suffix: '' },
 ])
 
