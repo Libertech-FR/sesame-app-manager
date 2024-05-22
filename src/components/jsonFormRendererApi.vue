@@ -92,7 +92,6 @@ const { data: resultUi, pending: pendingUi, error: errorUi, refresh: refreshUi }
 
 const schema = ref(result.value.data);
 const uischema = ref(resultUi.value.data);
-
 </script>
 
 <style>
