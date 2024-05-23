@@ -1,8 +1,9 @@
 import { resolve } from 'path'
-import { writeFileSync } from 'fs'
+import { readFileSync, writeFileSync } from 'fs'
 import pugPlugin from 'vite-plugin-pug'
 import openapiTS from 'openapi-typescript'
 import { defineNuxtConfig } from 'nuxt/config'
+import { parse } from 'yaml'
 
 const SESAME_APP_API_URL = process.env.SESAME_APP_API_URL || 'http://localhost:4002'
 
@@ -148,7 +149,21 @@ export default defineNuxtConfig({
     storesDirs: ['~/stores'],
   },
   hooks: {
-    ready: async () => {
+    ready: async (nuxt) => {
+      try {
+        const menus = parse(readFileSync('./config/menus.yml', 'utf8') || '{}')
+        nuxt.options.appConfig.menus = { ...menus || {} }
+      } catch (error) {
+        console.debug('[Nuxt] Error while reading menus.yml', error)
+      }
+
+      try {
+        const identitiesColumns = parse(readFileSync('./config/identities-columns.yml', 'utf8') || '{}')
+        nuxt.options.appConfig.identitiesColumns = { ...identitiesColumns || {} }
+      } catch (error) {
+        console.debug('[Nuxt] Error while reading identities-columns.yml', error)
+      }
+
       console.log('[OpenapiTS] Generating .nuxt/types/service-api.d.ts...')
       try {
         const fileData = await openapiTS(`${SESAME_APP_API_URL}/swagger/json`)

@@ -3,6 +3,7 @@ import { IdentityState, useIdentityStates } from "./useIdentityStates"
 import { useIdentityStateStore } from "~/stores/identityState"
 
 const { getStateInfos } = useIdentityStates()
+const config = useAppConfig()
 
 type Badge = {
   name: string
@@ -77,30 +78,31 @@ function useMenu(identityStateStore, identityAffectationStore) {
       part: 'Etats',
       badgeValue: 'SYNCED',
     },
-    {
-      icon: 'mdi-account-off',
-      label: 'Etudiants',
-      path: '/identities?sort[metadata.lastUpdatedAt]=desc&skip=0&limit=10&filters[^additionalFields.attributes.supannPerson.supannTypeEntiteAffectation]=/etd/i',
-      color: 'primary',
-      part: 'Affectations',
-      badgeValue: 'ETD',
-    },
-    {
-      icon: 'mdi-account-tie',
-      label: 'Administratifs',
-      path: '/identities?sort[metadata.lastUpdatedAt]=desc&skip=0&limit=10&filters[^additionalFields.attributes.supannPerson.supannTypeEntiteAffectation]=/adm/i',
-      color: 'primary',
-      part: 'Affectations',
-      badgeValue: 'ADM',
-    },
-    {
-      icon: 'mdi-account-group',
-      label: 'Enseignants',
-      path: '/identities?sort[metadata.lastUpdatedAt]=desc&skip=0&limit=10&filters[^additionalFields.attributes.supannPerson.supannTypeEntiteAffectation]=/esn/i',
-      color: 'primary',
-      part: 'Affectations',
-      badgeValue: 'ESN',
-    },
+    ...config?.menus?.entries || [],
+    // {
+    //   icon: 'mdi-account-off',
+    //   label: 'Etudiants',
+    //   path: '/identities?sort[metadata.lastUpdatedAt]=desc&skip=0&limit=10&filters[^additionalFields.attributes.supannPerson.supannTypeEntiteAffectation]=/etd/i',
+    //   color: 'primary',
+    //   part: 'Affectations',
+    //   badgeValue: 'ETD',
+    // },
+    // {
+    //   icon: 'mdi-account-tie',
+    //   label: 'Administratifs',
+    //   path: '/identities?sort[metadata.lastUpdatedAt]=desc&skip=0&limit=10&filters[^additionalFields.attributes.supannPerson.supannTypeEntiteAffectation]=/adm/i',
+    //   color: 'primary',
+    //   part: 'Affectations',
+    //   badgeValue: 'ADM',
+    // },
+    // {
+    //   icon: 'mdi-account-group',
+    //   label: 'Enseignants',
+    //   path: '/identities?sort[metadata.lastUpdatedAt]=desc&skip=0&limit=10&filters[^additionalFields.attributes.supannPerson.supannTypeEntiteAffectation]=/esn/i',
+    //   color: 'primary',
+    //   part: 'Affectations',
+    //   badgeValue: 'ESN',
+    // },
     {
       icon: 'mdi-account-remove',
       label: 'En erreur',

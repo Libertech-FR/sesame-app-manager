@@ -77,7 +77,6 @@ defineOptions({
 })
 
 const twopan = ref<any>(null)
-const daysjs = useDayjs()
 const route = useRoute()
 const router = useRouter()
 const $q = useQuasar()
@@ -118,71 +117,7 @@ if (error.value) {
   })
 }
 
-const columns = ref<QTableProps['columns']>([
-  {
-    name: 'states',
-    label: 'Etats',
-    field: 'states',
-    align: 'left',
-  },
-  {
-    name: 'inetOrgPerson.uid',
-    label: 'ID',
-    field: (row: Identity) => row?.inetOrgPerson?.uid,
-    align: 'left',
-    sortable: true,
-  },
-  {
-    name: 'inetOrgPerson.employeeNumber',
-    label: 'EmployeeNumber',
-    field: (row: Identity) => row?.inetOrgPerson?.employeeNumber,
-    align: 'left',
-    sortable: true,
-  },
-  {
-    name: 'additionalFields.attributes.supannPerson.supannTypeEntiteAffectation',
-    label: 'Affectation',
-    field: (row: Identity) => row.additionalFields?.attributes?.supannPerson?.supannTypeEntiteAffectation,
-    align: 'left',
-    sortable: true,
-  },
-  {
-    name: 'inetOrgPerson.cn',
-    label: 'Nom',
-    field: (row: Identity) => row?.inetOrgPerson?.cn,
-    align: 'left',
-    sortable: true,
-  },
-  {
-    name: 'inetOrgPerson.givenName',
-    label: 'Prénom',
-    field: (row: Identity) => row?.inetOrgPerson?.givenName,
-    align: 'left',
-    sortable: false,
-  },
-  {
-    name: 'metadata.lastUpdatedAt',
-    label: 'Date de modification',
-    field: (row: Identity) => row?.metadata?.lastUpdatedAt,
-    format: (val: string) => daysjs(val).format('DD/MM/YYYY HH:mm'),
-    align: 'left',
-    sortable: true,
-  },
-  {
-    name: 'metadata.createdAt',
-    label: 'Date de création',
-    field: (row: Identity) => row?.metadata?.createdAt,
-    format: (val: string) => daysjs(val).format('DD/MM/YYYY HH:mm'),
-    align: 'left',
-    sortable: true,
-  },
-  {
-    name: 'actions',
-    label: 'Actions',
-    field: 'actions',
-    align: 'left',
-  },
-])
+const { columns } = useColumnsIdentites()
 const visibleColumns = ref<QTableProps['visibleColumns']>([
   'inetOrgPerson.uid',
   'inetOrgPerson.employeeNumber',
