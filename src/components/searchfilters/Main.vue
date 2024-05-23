@@ -23,7 +23,7 @@
   .col-6.col-md-2(v-show="comparator?.multiplefields")
     q-input(v-model="searchMax" label="Max" clearable :type="searchInputType" :disable="isFieldDisabled.search" )
   .col-12.col-md-1
-    q-btn(color="primary" @click="addFilter" :disable="isFieldDisabled.addButton") Ajouter
+    q-btn(color="primary" @click="addFilter" :disable="isFieldDisabled.addButton") Filtrer
   q-space
   .col-12.col-md-2
     slot(name="rightSelect")
@@ -85,11 +85,34 @@ const onFieldChange = (value: Field) => {
 }
 
 const clearFields = (fields: string[]) => {
-  if (fields.includes('field')) field = ref()
-  if (fields.includes('comparator')) comparator = ref()
+  if (fields.includes('field')) field.value = undefined
+  if (fields.includes('comparator')) comparator.value = undefined
   search.value = ''
   searchMin.value = ''
   searchMax.value = ''
+}
+
+const editFilter = (filter: Filter) => {
+  // console.log(filter)
+  if (filter.querySign === '@') {
+    clearFields(['field', 'comparator'])
+    return
+  }
+  if (comparator.value?.multiplefields) {
+    clearFields(['field', 'comparator'])
+    return
+  }
+
+  field.value = fields?.find((field) => field.name === filter.field)
+  comparator.value = comparatorTypes.value.find((comparator) => comparator.value === filter.querySign)
+  fieldType.value = fields?.find((field) => field.name === filter.field)?.type
+
+  if (fieldType.value === 'date') {
+    if (comparator.value.querySign === '<' || comparator.value.querySign === '>=') search.value = dayjs(filter.search).format('YYYY-MM-DD')
+    if (comparator.value.querySign === '>' || comparator.value.querySign === '<=') search.value = dayjs(filter.search).format('YYYY-MM-DD')
+  } else {
+    search.value = filter.search
+  }
 }
 
 const addFilter = async () => {
@@ -179,12 +202,13 @@ const isFieldDisabled = computed(() => {
     field: false,
     comparator: !field.value,
     search: !field.value || !comparator.value,
-    addButton: !field.value || !comparator.value || !search.value,
+    addButton: !field.value || !comparator.value || (!search.value && !searchMin.value && !searchMax.value),
   }
 })
 
 defineExpose({
   comparatorTypes,
   rightSelect,
+  editFilter,
 })
 </script>

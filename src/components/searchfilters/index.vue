@@ -7,7 +7,7 @@
   .row.q-gutter-sm.items-center.q-mt-sm
     q-chip(
       v-for="filter in filterArray" :key="filter.field"
-      removable @remove="removeFilter(filter)"
+      removable @remove="removeFilter(filter)" @click="editFilter(filter)" clickable
     )
       | {{ filter.label }}
       q-separator.q-mx-xs(vertical)
@@ -27,6 +27,7 @@ type MainData = {
   rightSelect: {
     options: Option[]
   }
+  editFilter: (filter: Filter) => void
 }
 
 defineOptions({
@@ -55,6 +56,10 @@ const parseSimpleFilter = (searchFilter: SearchFilter) => {
     key: `filters[${searchFilter.comparator.querySign}${searchFilter.field.name}]`,
     value: `${searchFilter.comparator.prefix}${searchFilter.search}${searchFilter.comparator.suffix}`,
   }
+}
+
+const editFilter = (filter: Filter) => {
+  mainData.value?.editFilter(filter)
 }
 
 const removeFilter = (filter: Filter) => {

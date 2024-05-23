@@ -3,8 +3,14 @@ import type { components } from '#build/types/service-api'
 
 type Identity = components['schemas']['IdentitiesDto']
 
+type ColumnType = {
+  name: string
+  type: string
+}
+
 interface ColumnConfig {
   name: string;
+  type: 'text' | 'number' | 'date';
   label: string;
   field: string | ((row: any) => any);
   required?: boolean;
@@ -37,7 +43,13 @@ function processFormat(value: any, format: any) {
   return value;
 }
 
-export function useColumnsIdentites() {
+type useColumnsIdentitesReturnType = {
+  columns: Ref<QTableProps['columns']>,
+  visibleColumns: Ref<QTableProps['visibleColumns']>,
+  columnsType: Ref<ColumnType[]>,
+}
+
+export function useColumnsIdentites(): useColumnsIdentitesReturnType {
   const columns = ref<QTableProps['columns']>(
     [
       {
@@ -136,7 +148,39 @@ export function useColumnsIdentites() {
   //   },
   // ])
 
+  const visibleColumns = ref<QTableProps['visibleColumns']>([
+    // 'inetOrgPerson.uid',
+    // 'inetOrgPerson.employeeNumber',
+    // 'additionalFields.attributes.supannPerson.supannTypeEntiteAffectation',
+    // 'envelope.observers.name',
+    // 'envelope.assigned.name',
+    // 'inetOrgPerson.cn',
+    // 'inetOrgPerson.givenName',
+    ...config?.identitiesColumns?.entries.map((col: any) => col.name) || [],
+    'metadata.lastUpdatedAt',
+    'metadata.createdAt',
+    'actions',
+    'states',
+  ])
+  const columnsType = ref<ColumnType[]>([
+    // { name: 'inetOrgPerson.uid', type: 'text' },
+    // { name: 'inetOrgPerson.employeeNumber', type: 'text' },
+    // { name: 'additionalFields.attributes.supannPerson.supannTypeEntiteAffectation', type: 'text' },
+    // { name: 'envelope.observers.name', type: 'text' },
+    // { name: 'envelope.assigned.name', type: 'text' },
+    // { name: 'inetOrgPerson.cn', type: 'text' },
+    // { name: 'inetOrgPerson.givenName', type: 'text' },
+    ...config?.identitiesColumns?.entries.map((col: any) => ({ name: col.name, type: col.type || 'text' })) || [],
+    { name: 'metadata.lastUpdatedAt', type: 'date' },
+    { name: 'metadata.createdAt', type: 'date' },
+    // { name: 'actions', type: 'text' },
+    // { name: 'actions', type: 'text' },
+    // { name: 'actions', type: 'text' },
+  ])
+
   return {
     columns,
+    visibleColumns,
+    columnsType,
   }
 }

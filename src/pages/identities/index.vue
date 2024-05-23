@@ -97,34 +97,7 @@ if (error.value) {
   })
 }
 
-const { columns } = useColumnsIdentites()
-const visibleColumns = ref<QTableProps['visibleColumns']>([
-  'inetOrgPerson.uid',
-  'inetOrgPerson.employeeNumber',
-  'additionalFields.attributes.supannPerson.supannTypeEntiteAffectation',
-  'envelope.observers.name',
-  'envelope.assigned.name',
-  'inetOrgPerson.cn',
-  'inetOrgPerson.givenName',
-  'metadata.lastUpdatedAt',
-  'metadata.createdAt',
-  'actions',
-  'states',
-])
-const columnsType = ref([
-  { name: 'inetOrgPerson.uid', type: 'text' },
-  { name: 'inetOrgPerson.employeeNumber', type: 'text' },
-  { name: 'additionalFields.attributes.supannPerson.supannTypeEntiteAffectation', type: 'text' },
-  { name: 'envelope.observers.name', type: 'text' },
-  { name: 'envelope.assigned.name', type: 'text' },
-  { name: 'inetOrgPerson.cn', type: 'text' },
-  { name: 'inetOrgPerson.givenName', type: 'text' },
-  { name: 'metadata.lastUpdatedAt', type: 'date' },
-  { name: 'metadata.createdAt', type: 'date' },
-  { name: 'actions', type: 'text' },
-  { name: 'actions', type: 'text' },
-  { name: 'actions', type: 'text' },
-])
+const { columns, visibleColumns, columnsType } = useColumnsIdentites()
 
 const selected = ref([])
 
