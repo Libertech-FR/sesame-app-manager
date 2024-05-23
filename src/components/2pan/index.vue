@@ -30,12 +30,11 @@ q-splitter(
         :selected-rows-label="(numberOfRows) => `${numberOfRows} entrée(s) sélectionnée(s)`"
         flat
       )
-        slot(name="top-left")
         template(v-for="(_, name) in $slots" v-slot:[name]="slotData")
           slot(:name="name" v-bind="slotData")
         template(v-slot:top-left)
           q-btn-group(rounded flat)
-            slot(name="top-left-btn-grp" :selected="selected")
+            slot(name="top-left-btn-grp" :selectedValues="selected")
               slot(name="top-left-btn-grp-content-before")
               slot(name="top-left-btn-grp-content-after")
         template(v-slot:top-right)

@@ -2,26 +2,6 @@
 div
   .q-px-md
     sesame-searchfilters(:fields="fieldsList")
-  //- .q-px-md
-  //-   q-table.sesamesticky-last-column-table(
-  //-     :rows="identities?.data"
-  //-     :rows-per-page-options="[5, 10, 15]" :loading="pending" :columns="columns" row-key="_id" :visible-columns="visibleColumns"
-  //-     v-model:pagination="pagination" title="Identitiées" @request="onRequest($event, identities.total)"
-  //-     rows-per-page-label="Lignes par page" no-data-label="Aucune donnée" loading-label="Chargement..." no-results-label="Aucun résultat"
-  //-     :pagination-label="(firstRowIndex, endRowIndex, totalRowsNumber) => `${firstRowIndex}-${endRowIndex} sur ${totalRowsNumber} lignes`"
-  //-     selection="multiple" v-model:selected="selected" :selected-rows-label="(numberOfRows) => `${numberOfRows} identitées sélectionnées`"
-  //-   )
-  //- template(#top-left)
-  //-   sesame-table-top-left(:selected="selected" @updateLifestep="updateLifestep($event)" @clear="selected = []")
-  //- template(#top-right)
-  //-   sesame-table-top-right(:columns="columns" v-model="visibleColumns" @refresh="refresh")
-  //- template(#body-cell-actions="props")
-  //-   sesame-table-actions(:identity="props.row" @updateLifestep="updateLifestep($event)")
-  //- template(#body-cell-states="props")
-  //-       sesame-table-state-col(:identity="props.row")
-  //-     template(#body-cell-inetOrgPerson.cn="props")
-  //-       td
-  //-         span {{ props.row.inetOrgPerson.cn }} {{ props.row.inetOrgPerson.givenName }}
 
   sesame-2pan(
     ref="twopan"
@@ -43,8 +23,8 @@ div
     template(#right-panel-title-before="props")
       q-icon(name="mdi-circle" :color="getStateColor(props.target.state)" :class="`q-mr-xs`")
         q-tooltip.text-body2(slot="trigger") {{ getStateName(props.target.state) }}
-    template(#top-left)
-      sesame-table-top-left(:selected="selected" @updateLifestep="updateLifestep($event)" @clear="selected = []")
+    template(#top-left-btn-grp="{selectedValues}")
+      sesame-table-top-left(:selected="selectedValues" @refresh="refresh" @clear="selected = []")
     template(#body-cell-states="props")
       sesame-table-state-col(:identity="props.row")
     template(#right-panel-actions-content-after="{target}")

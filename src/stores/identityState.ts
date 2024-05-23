@@ -12,6 +12,7 @@ export const useIdentityStateStore = defineStore('identityStates', {
     [IdentityState.SYNCED]: 0,
   }),
   getters: {
+    getStateValue: (state) => (key: IdentityState) => state[key],
     getTotalCount: state => state.total,
     getToCompleteCount: state => state[IdentityState.TO_COMPLETE],
     getToValidateCount: state => state[IdentityState.TO_VALIDATE],
