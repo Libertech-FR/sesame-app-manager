@@ -79,6 +79,7 @@ async function onmessage(event) {
         eventSeamlessCurrentJobs.value[data.payload.jobId] = data.payload
         break
 
+      case 'job:failed':
       case 'job:completed':
         delete eventSeamlessCurrentJobs.value[data.payload.jobId]
         eventSeamlessCurrent.value++

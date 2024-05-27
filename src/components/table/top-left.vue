@@ -6,7 +6,7 @@ q-btn-group(rounded flat)
   //-   q-tooltip.text-body2(transition-show="scale" transition-hide="scale") Fusionner les identités sélectionnées
   //- q-btn(flat icon="mdi-check" color="primary" rounded @click="openUpdateModale(IdentityState.TO_VALIDATE)" size="md" :disable="selected.length === 0")
   //-   q-tooltip.text-body2(transition-show="scale" transition-hide="scale") Valider les identités sélectionnées
-  q-btn(flat icon="mdi-sync" color="primary" rounded @click="openUpdateModale(IdentityState.TO_VALIDATE)" size="md" :disable="selected.length === 0")
+  q-btn(flat icon="mdi-sync" color="primary" rounded @click="openUpdateModale" size="md" :disable="selected.length === 0")
     q-tooltip.text-body2(transition-show="scale" transition-hide="scale") Mettre à synchroniser les identités sélectionnées
   q-btn(flat icon="mdi-close" color="primary" rounded @click="clearSelection" size="md")
     q-tooltip.text-body2(transition-show="scale" transition-hide="scale") Nettoyer la selection
@@ -39,8 +39,17 @@ const { getStateValue } = useIdentityStateStore()
 //   emit('updateLifestep', { identity: props.selected, lifestep })
 // }
 
-function openUpdateModale(identityState: IdentityState) {
-  console.log('openUpdateModale')
+const route = useRoute()
+
+function openUpdateModale() {
+  const query = route.query || {}
+  console.log('filters', route.query)
+  const identityState: IdentityState = parseInt(`${query['filters[@state][]']}`, 10)
+  if (typeof identityState !== 'number') {
+    console.error('Invalid state', identityState)
+    return
+  }
+  console.log('openUpdateModale', identityState)
 
   const name = getStateName(identityState)
   const count = getStateValue(identityState)
@@ -65,6 +74,9 @@ function openUpdateModale(identityState: IdentityState) {
 function getTargetState(state: IdentityState) {
   switch (state) {
     case IdentityState.TO_VALIDATE:
+      return IdentityState.TO_SYNC
+
+    case IdentityState.ON_ERROR:
       return IdentityState.TO_SYNC
     default:
       return state
