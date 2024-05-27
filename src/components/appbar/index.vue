@@ -11,7 +11,7 @@ q-header
     //q-separator(vertical dark inset).q-mx-md
     //sesame-AppbarMenu
     q-space
-    sesame-AppbarRightButtons
+    sesame-AppbarRightButtons(@syncing="emits('syncing', $event)")
 </template>
 
 <script lang="ts" setup>
@@ -25,7 +25,7 @@ defineOptions({
 const $q = useQuasar()
 const router = useRouter()
 
-const emits = defineEmits(['closeDrawer'])
+const emits = defineEmits(['closeDrawer', 'syncing'])
 
 function backToIndex() {
   router.push({ name: 'index' })

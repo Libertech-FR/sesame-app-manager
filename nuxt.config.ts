@@ -38,6 +38,9 @@ export default defineNuxtConfig({
     global: true,
     dirs: [{ path: '~/components', prefix: 'sesame' }],
   },
+  appConfig: {
+    baseUrl: SESAME_APP_API_URL,
+  },
   modules: [
     '@nuxt-alt/auth',
     '@nuxt-alt/http',

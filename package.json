@@ -28,6 +28,7 @@
     "pinia": "^2.1.7",
     "quasar": "^2.15.4",
     "radash": "^12.1.0",
+    "reconnecting-eventsource": "^1.6.2",
     "sass": "^1.70.0",
     "vue-eslint-parser": "^9.4.2",
     "yaml": "^2.4.2"

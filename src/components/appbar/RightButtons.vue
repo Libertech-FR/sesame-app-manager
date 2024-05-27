@@ -56,7 +56,10 @@ const buttons = [
   },
 ]
 
+const emits = defineEmits(['syncing'])
+
 async function syncAll() {
+  emits('syncing', { count: badgesValues.value.TO_SYNC })
   await useHttp('/core/backends/syncall', {
     method: 'POST',
     params: {

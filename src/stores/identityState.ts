@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import {IdentityState} from '@/composables/useIdentityStates';
+import { IdentityState } from '@/composables/useIdentityStates';
 
 export const useIdentityStateStore = defineStore('identityStates', {
   state: () => ({
