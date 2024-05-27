@@ -41,7 +41,7 @@ function useMenu(identityStateStore, identityAffectationStore) {
     {
       icon: 'mdi-account-check',
       label: 'A valider',
-      path: `/identities?sort[metadata.lastUpdatedAt]=desc&skip=0&limit=10&filters[@state][]=${IdentityState.TO_VALIDATE}`,
+      path: `/identities?sort[metadata.lastUpdatedAt]=desc&skip=0&filters[@state][]=${IdentityState.TO_VALIDATE}`,
       color: 'primary',
       part: 'Etats',
       badgeValue: 'TO_VALIDATE',
@@ -49,7 +49,7 @@ function useMenu(identityStateStore, identityAffectationStore) {
     {
       icon: 'mdi-account-alert',
       label: 'A compléter',
-      path: `/identities?sort[metadata.lastUpdatedAt]=desc&skip=0&limit=10&filters[@state][]=${IdentityState.TO_COMPLETE}`,
+      path: `/identities?sort[metadata.lastUpdatedAt]=desc&skip=0&filters[@state][]=${IdentityState.TO_COMPLETE}`,
       color: 'primary',
       part: 'Etats',
       badgeValue: 'TO_COMPLETE',
@@ -57,7 +57,7 @@ function useMenu(identityStateStore, identityAffectationStore) {
     {
       icon: 'mdi-sync',
       label: 'A synchroniser',
-      path: `/identities?sort[metadata.lastUpdatedAt]=desc&skip=0&limit=10&filters[@state][]=${IdentityState.TO_SYNC}`,
+      path: `/identities?sort[metadata.lastUpdatedAt]=desc&skip=0&filters[@state][]=${IdentityState.TO_SYNC}`,
       color: 'primary',
       part: 'Etats',
       badgeValue: 'TO_SYNC',
@@ -65,7 +65,7 @@ function useMenu(identityStateStore, identityAffectationStore) {
     {
       icon: 'mdi-loading',
       label: 'En cours de synchronisation',
-      path: `/identities?sort[metadata.lastUpdatedAt]=desc&skip=0&limit=10&filters[@state][]=${IdentityState.PROCESSING}`,
+      path: `/identities?sort[metadata.lastUpdatedAt]=desc&skip=0&filters[@state][]=${IdentityState.PROCESSING}`,
       color: 'primary',
       part: 'Etats',
       badgeValue: 'PROCESSING',
@@ -73,7 +73,7 @@ function useMenu(identityStateStore, identityAffectationStore) {
     {
       icon: 'mdi-check',
       label: 'Synchronisées',
-      path: `/identities?sort[metadata.lastUpdatedAt]=desc&skip=0&limit=10&filters[@state][]=${IdentityState.SYNCED}`,
+      path: `/identities?sort[metadata.lastUpdatedAt]=desc&skip=0&filters[@state][]=${IdentityState.SYNCED}`,
       color: 'primary',
       part: 'Etats',
       badgeValue: 'SYNCED',
@@ -82,7 +82,7 @@ function useMenu(identityStateStore, identityAffectationStore) {
     // {
     //   icon: 'mdi-account-off',
     //   label: 'Etudiants',
-    //   path: '/identities?sort[metadata.lastUpdatedAt]=desc&skip=0&limit=10&filters[^additionalFields.attributes.supannPerson.supannTypeEntiteAffectation]=/etd/i',
+    //   path: '/identities?sort[metadata.lastUpdatedAt]=desc&skip=0&filters[^additionalFields.attributes.supannPerson.supannTypeEntiteAffectation]=/etd/i',
     //   color: 'primary',
     //   part: 'Affectations',
     //   badgeValue: 'ETD',
@@ -90,7 +90,7 @@ function useMenu(identityStateStore, identityAffectationStore) {
     // {
     //   icon: 'mdi-account-tie',
     //   label: 'Administratifs',
-    //   path: '/identities?sort[metadata.lastUpdatedAt]=desc&skip=0&limit=10&filters[^additionalFields.attributes.supannPerson.supannTypeEntiteAffectation]=/adm/i',
+    //   path: '/identities?sort[metadata.lastUpdatedAt]=desc&skip=0&filters[^additionalFields.attributes.supannPerson.supannTypeEntiteAffectation]=/adm/i',
     //   color: 'primary',
     //   part: 'Affectations',
     //   badgeValue: 'ADM',
@@ -98,7 +98,7 @@ function useMenu(identityStateStore, identityAffectationStore) {
     // {
     //   icon: 'mdi-account-group',
     //   label: 'Enseignants',
-    //   path: '/identities?sort[metadata.lastUpdatedAt]=desc&skip=0&limit=10&filters[^additionalFields.attributes.supannPerson.supannTypeEntiteAffectation]=/esn/i',
+    //   path: '/identities?sort[metadata.lastUpdatedAt]=desc&skip=0&filters[^additionalFields.attributes.supannPerson.supannTypeEntiteAffectation]=/esn/i',
     //   color: 'primary',
     //   part: 'Affectations',
     //   badgeValue: 'ESN',
@@ -106,7 +106,7 @@ function useMenu(identityStateStore, identityAffectationStore) {
     {
       icon: 'mdi-account-remove',
       label: 'En erreur',
-      path: `/identities?sort[metadata.lastUpdatedAt]=desc&skip=0&limit=10&filters[@state][]=${IdentityState.ON_ERROR}`,
+      path: `/identities?sort[metadata.lastUpdatedAt]=desc&skip=0&filters[@state][]=${IdentityState.ON_ERROR}`,
       color: 'primary',
       part: 'Etats',
       badgeValue: 'ON_ERROR',

@@ -10,7 +10,7 @@ export default function usePagination() {
   const pagination = ref<QTableProps['pagination']>({
     rowsNumber: 0,
     page: 1,
-    rowsPerPage: 10,
+    rowsPerPage: 16,
     sortBy: 'metadata.lastUpdatedAt',
     descending: true,
   })
@@ -18,7 +18,7 @@ export default function usePagination() {
   async function initializePagination(total: number = 0) {
     if (!pagination.value) return
     const query = { ...route.query }
-    const limit = query.limit ?? 10
+    const limit = query.limit ?? 16
     const skip = query.skip ?? 0
     pagination.value.rowsPerPage = parseInt(limit as string)
     pagination.value.page = parseInt(skip as string) / parseInt(limit as string) + 1

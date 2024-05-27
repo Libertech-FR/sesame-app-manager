@@ -81,7 +81,10 @@ const { pagination, onRequest, initializePagination } = usePagination()
 
 const queryWithoutRead = computed(() => {
   const { read, ...rest } = route.query
-  return rest
+  return {
+    limit: pagination.value?.rowsPerPage,
+    ...rest,
+  }
 })
 
 const {

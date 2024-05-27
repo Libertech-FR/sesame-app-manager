@@ -4,7 +4,7 @@ q-splitter(
   separator-style="width: 8px"
   background-color="primary"
   class="full-height"
-  :limits="!isSimple ? [20,80] : [0,100]"
+  :limits="!isSimple ? [30,70] : [0,100]"
   :horizontal='isSimple'
   :style='{ "padding": isSimple ? "6px 0" : "0" }'
 )
@@ -19,7 +19,7 @@ q-splitter(
         :visible-columns="visibleColumnsInternal"
         :row-key="rowKey"
         @request="onRequest($event, props.total)"
-        :rows-per-page-options="[6, 12, 18]"
+        :rows-per-page-options="[12, 16, 20]"
         :columns="cols"
         :loading="pending"
         rows-per-page-label="Lignes par page"
@@ -28,7 +28,7 @@ q-splitter(
         no-results-label="Aucun résultat"
         :pagination-label="(firstRowIndex, endRowIndex, totalRowsNumber) => `${firstRowIndex}-${endRowIndex} sur ${totalRowsNumber} lignes`"
         :selected-rows-label="(numberOfRows) => `${numberOfRows} entrée(s) sélectionnée(s)`"
-        flat
+        flat dense
       )
         template(v-for="(_, name) in $slots" v-slot:[name]="slotData")
           slot(:name="name" v-bind="slotData")
@@ -151,11 +151,11 @@ const props = defineProps({
   },
   refresh: {
     type: Function,
-    default: () => {},
+    default: () => { },
   },
   total: {
     type: Number,
-    default: 10,
+    default: 16,
   },
   defaultRightPanel: {
     type: Boolean,
@@ -206,8 +206,8 @@ const props = defineProps({
         return row
       },
 
-      cancel: async () => {},
-      onMounted: async () => {},
+      cancel: async () => { },
+      onMounted: async () => { },
     },
   },
 })
@@ -218,7 +218,7 @@ const isSimple = computed(() => {
   return simple.value
 })
 watch(simple, (v) => {
-  splitterModel.value = v ? 100 : 50
+  splitterModel.value = v ? 100 : 75
 })
 const splitterModel = ref(isSimple.value ? 100 : 50)
 
