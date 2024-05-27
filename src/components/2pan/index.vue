@@ -311,6 +311,10 @@ const getTitle = computed(() => {
   return Object.values(valuesList).join(' ')
 })
 
+function clearSelected() {
+  selected.value = []
+}
+
 defineExpose({
   cancel,
   create,
@@ -318,6 +322,8 @@ defineExpose({
   update,
   remove,
   refresh,
+  selected,
+  clearSelected,
 })
 
 onMounted(async () => {

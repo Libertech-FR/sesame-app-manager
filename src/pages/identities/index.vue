@@ -24,7 +24,7 @@ div
       q-icon(name="mdi-circle" :color="getStateColor(props.target.state)" :class="`q-mr-xs`")
         q-tooltip.text-body2(slot="trigger") {{ getStateName(props.target.state) }}
     template(#top-left-btn-grp="{selectedValues}")
-      sesame-table-top-left(:selected="selectedValues" @refresh="refresh" @clear="selected = []")
+      sesame-table-top-left(:selected="selectedValues" @refresh="refresh" @clear="clearSelected")
     template(#body-cell-states="props")
       sesame-table-state-col(:identity="props.row")
     template(#right-panel-actions-content-after="{target}")
@@ -49,8 +49,11 @@ import type { components, operations } from '#build/types/service-api'
 import { useErrorHandling } from '#imports'
 import { useIdentityStates } from '~/composables'
 import { identity } from '@vueuse/core'
+import { useIdentityStateStore } from "~/stores/identityState"
 type Identity = components['schemas']['IdentitiesDto']
 type Response = operations['IdentitiesController_search']['responses']['200']['content']['application/json']
+
+const identityStateStore = useIdentityStateStore()
 
 defineOptions({
   name: 'Identities',
@@ -68,8 +71,9 @@ onMounted(() => {
   initializePagination(identities.value?.total)
 })
 
-function refreshTarget(target: Identity) {
+async function refreshTarget(target: Identity) {
   twopan.value.read(target)
+  await identityStateStore.fetchToSyncCount()
   refreshEvent()
 }
 
@@ -100,6 +104,10 @@ if (error.value) {
 const { columns, visibleColumns, columnsType } = useColumnsIdentites()
 
 const selected = ref([])
+
+function clearSelected() {
+  (twopan as any).value.clearSelected()
+}
 
 function refreshEvent() {
   refresh()

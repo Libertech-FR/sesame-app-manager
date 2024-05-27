@@ -2,7 +2,8 @@
 div
   //q-btn(v-for="button in buttons" :key="button.icon" round flat :icon="button.icon" size="md").q-mx-sm
     q-tooltip.text-body2(transition-show="scale" transition-hide="scale") {{ button.name }}
-  q-btn-dropdown(icon="mdi-account-circle-outline" round flat size="md")
+  q-btn(icon="mdi-sync" square color="amber-9" size="md" :label="badgesValues.TO_SYNC +' items à Synchroniser'" @click="syncAll")
+  q-btn-dropdown(icon="mdi-account-circle-outline" :label="auth?.user?.displayName" round flat size="md")
     q-list
       q-item.q-pa-none(v-for="button in buttons" :key="button.name")
         q-btn.full-width.items-baseline.q-pa-sm(
@@ -17,7 +18,17 @@ div
 </template>
 
 <script lang="ts" setup>
+import { useIdentityStateStore } from "~/stores/identityState"
+
+
+const identityStateStore = useIdentityStateStore()
+
+const badgesValues = ref({
+  TO_SYNC: computed(() => (identityStateStore.getToSyncCount > 9999 ? '9999+' : identityStateStore.getToSyncCount)),
+})
+
 const auth = useAuth()
+console.log(auth)
 const buttons = [
   // {
   //   icon: 'mdi-cog',
@@ -44,4 +55,15 @@ const buttons = [
     },
   },
 ]
+
+async function syncAll() {
+  await useHttp('/core/backends/syncall', {
+    method: 'POST',
+    params: {
+      async: true,
+    },
+  })
+  await identityStateStore.fetchToSyncCount()
+  await identityStateStore.fetchSyncedCount()
+}
 </script>

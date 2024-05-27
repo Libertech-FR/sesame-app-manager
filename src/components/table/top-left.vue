@@ -31,6 +31,7 @@ const props = defineProps({
 })
 
 const emit = defineEmits(['updateLifestep', 'clear', 'refresh'])
+const { getToSyncCount, fetchAllStateCount } = useIdentityStateStore()
 
 const { getStateName } = useIdentityStates()
 const { getStateValue } = useIdentityStateStore()
@@ -111,6 +112,7 @@ async function updateIdentity(identities, state: IdentityState) {
     message: `Les identités ont été mises à jour avec succès`,
     color: 'positive',
   })
+  await fetchAllStateCount()
   emit('refresh')
   emit('clear')
 }
