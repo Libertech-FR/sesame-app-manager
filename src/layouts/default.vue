@@ -89,6 +89,7 @@ async function onmessage(event) {
           setTimeout(() => {
             eventSeamless.value = false
           }, 2000)
+          await identityStateStore.fetchAllStateCount()
         }
         break
     }
