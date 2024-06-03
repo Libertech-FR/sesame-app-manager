@@ -110,7 +110,7 @@ export default defineNuxtConfig({
     plugins: ['timezone', 'relativeTime'],
   },
   quasar: {
-    iconSet: 'mdi-v5',
+    iconSet: 'mdi-v7',
     plugins: ['Notify', 'Dialog'],
     config: {
       dark: SESAME_APP_DARK_MODE,
