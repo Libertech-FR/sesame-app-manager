@@ -83,7 +83,7 @@ const getAllPrefixAndSuffixPattern = computed(() => {
 const optionsRegrouped = (): { name: string; label: { label: string; value: string }[]; type: string }[] => {
   // Initialize an empty object to store the results
   const result: { [key: string]: { label: string; value: string }[] } = {}
-  const options = mainData.value?.rightSelect.options ?? []
+  const options = mainData.value?.rightSelect?.options ?? []
   for (const item of options) {
     if (!item.header && item.group) {
       if (!result[item.group]) {
@@ -166,7 +166,7 @@ const extractComparator = (
   comparator: string
   field: string
 } | null => {
-  const match = key.match(/^(\=|\?|\#|\!|\>|\<|\^|\@)+/)
+  const match = key.match(/^(\:|\?|\#|\!|\>|\<|\^|\@)+/)
   if (!match) return null
   const comparator = match[0]
   const field = key.replace(comparator, '')

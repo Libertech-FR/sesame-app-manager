@@ -76,7 +76,7 @@ async function submit() {
   });
   if (error.value) {
     console.log('error', error.value.data.validations)
-    validations.value = error.value.data.validations
+    validations.value = { ...error.value.data.validations }
     // error.value = error.value.cause.response._data
     handleError({
       error: error.value,
@@ -90,7 +90,7 @@ async function submit() {
       position: 'top-right',
       icon: 'mdi-check-circle-outline',
     })
-    emits('refreshTarget', result.value.data)
+    emits('refreshTarget', { ...result.value.data })
   }
 }
 
