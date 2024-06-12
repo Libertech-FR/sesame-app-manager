@@ -21,7 +21,7 @@ div
     :defaultRightPanelButton="false"
   )
     template(#right-panel-title-before="props")
-      q-icon(name="mdi-circle" :color="getStateColor(props.target.state)" :class="`q-mr-xs`")
+      q-icon(name="mdi-circle" :color="getStateColor(props?.target?.state)" :class="`q-mr-xs`")
         q-tooltip.text-body2(slot="trigger") {{ getStateName(props.target.state) }}
     template(#top-left-btn-grp="{selectedValues}")
       sesame-table-top-left(:selected="selectedValues" @refresh="refresh" @clear="clearSelected")
@@ -31,7 +31,7 @@ div
       sesame-identity-form-actions(:identity="target" @submit="submit($event)" @sync="sync" @logs="logs")
     template(#right-panel-content="{payload}")
       sesame-identity-form(
-        :identity="payload.target"
+        :identity="{...payload.target}"
         ref="form" @refresh="refresh"
         @submit="submit($event)"
         @sync="sync" @logs="logs"
@@ -135,7 +135,7 @@ async function sync(identity: Identity) {
 }
 
 function logs(identity: Identity & { _id: string }) {
-  router.push(`/logs?filters[:concernedTo.id]=${identity._id}`)
+  router.push(`/logs?filters[:concernedTo.id]=${identity?._id}`)
 }
 
 const actions = {
@@ -147,15 +147,19 @@ const actions = {
     const { data } = await useHttp<Identity>(`/management/identities/${row._id}`, {
       method: 'get',
     })
-    return data.value?.data
+    return { ...data.value?.data }
   },
   onMounted: async () => {
     if (route.query.read) {
       const id = route.query.read as string
-      const row = identities.value?.data.find((row) => row._id === id)
-      if (row) {
-        return row
-      }
+      // const row = identities.value?.data.find((row) => row._id === id)
+      // if (row) {
+      //   return row
+      // }
+      const { data } = await useHttp<Identity>(`/management/identities/${id}`, {
+        method: 'get',
+      })
+      return { ...data.value?.data }
     }
     return null
   },

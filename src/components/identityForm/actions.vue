@@ -1,11 +1,11 @@
 <template lang="pug">
 div
-  q-btn.q-mx-xs(@click="submit" color="primary" icon="mdi-check")
+  q-btn.q-mx-xs(@click="submit" color="positive" icon="mdi-check")
     q-tooltip.text-body2(slot="trigger") Enregistrer les modifications
-  q-btn.q-mx-xs(@click="sync" color="primary" v-if="identity" :disabled="props.identity.state != IdentityState.TO_VALIDATE" icon="mdi-sync")
+  q-btn.q-mx-xs(@click="sync" color="orange-8" v-if="identity" :disabled="props.identity.state != IdentityState.TO_VALIDATE" icon="mdi-sync")
     q-tooltip.text-body2(slot="trigger" v-if="props.identity.state == IdentityState.TO_VALIDATE") Synchroniser l'identité
     q-tooltip.text-body2(slot="trigger" v-else) L'état de l'identité ne permet pas de la synchroniser
-  q-btn.q-mx-xs(@click="logs" color="primary" icon="mdi-file-document" :href="'/jobs?filters[:concernedTo.id]=' + props.identity._id")
+  q-btn.q-mx-xs(@click="logs" color="grey-8" icon="mdi-file-document" :href="'/jobs?filters[:concernedTo.id]=' + props.identity?._id")
     q-tooltip.text-body2(slot="trigger") Voir les logs de l'identité
 </template>
 

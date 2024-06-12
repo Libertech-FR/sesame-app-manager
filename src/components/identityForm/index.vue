@@ -5,7 +5,7 @@ div
     q-tab(v-for="tab in tabs" :key="tab" :name="tab" :label="tab" :alert="getTabValidations(tab)" alert-icon="mdi-alert" :class="`q-mr-xs`")
 
   q-tab-panels(v-model="tab")
-    q-tab-panel(name="inetOrgPerson")
+    q-tab-panel(name="inetOrgPerson" v-if='identity && identity.inetOrgPerson')
       sesame-json-form-renderer-api(
         schemaName="inetorgperson"
         v-model:data="identity.inetOrgPerson"
@@ -53,14 +53,15 @@ const { getStateColor, getStateName } = useIdentityStates()
 const { handleError } = useErrorHandling()
 
 const identity = ref<Identity>(props.identity)
-const validations = ref<Record<string, unknown> | null>(props.identity.additionalFields?.validations ?? {})
+const tabs = ref(props.identity?.additionalFields?.objectClasses ?? [])
+const validations = ref<Record<string, unknown> | null>(props.identity?.additionalFields?.validations ?? {})
 
 watch(() => props.identity, () => {
   identity.value = props.identity
-  validations.value = props.identity.additionalFields?.validations ?? null
+  tabs.value = props.identity?.additionalFields?.objectClasses ?? []
+  validations.value = props.identity?.additionalFields?.validations ?? null
 })
 
-const tabs = ref(props.identity?.additionalFields?.objectClasses ?? [])
 const tab = ref('inetOrgPerson')
 const error = ref(null)
 
@@ -68,7 +69,7 @@ async function submit() {
   console.log('submit from form')
   const sanitizedIdentity = { ...props.identity }
   delete sanitizedIdentity.metadata
-  if (sanitizedIdentity.additionalFields?.validations) delete sanitizedIdentity.additionalFields.validations
+  if (sanitizedIdentity?.additionalFields?.validations) delete sanitizedIdentity.additionalFields.validations
 
   const { data: result, pending, error, refresh } = await useHttp<any>(`/management/identities/${props.identity._id}`, {
     method: 'PATCH',

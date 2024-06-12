@@ -17,7 +17,7 @@ export enum IdentityState {
 
 export const IdentityStateList = [
   { value: IdentityState.SYNCED, text: 'Synchronisée', color: 'positive', icon: 'mdi-circle', display: true },
-  { value: IdentityState.TO_SYNC, text: 'A Synchroniser', color: 'ambre', icon: 'mdi-circle', display: true },
+  { value: IdentityState.TO_SYNC, text: 'A Synchroniser', color: 'orange-8', icon: 'mdi-circle', display: true },
   { value: IdentityState.TO_VALIDATE, text: 'A valider', color: 'info', icon: 'mdi-circle', display: true },
   { value: IdentityState.UNKNOWN, text: 'Inconnu', color: 'grey', icon: 'mdi-circle', display: true },
   { value: IdentityState.TO_CREATE, text: 'A créer', color: 'grey', icon: 'mdi-circle', display: false },

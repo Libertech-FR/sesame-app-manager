@@ -76,7 +76,7 @@ const QStringControlRenderer = defineComponent({
         return false;
       }
       return typeof obj[Symbol.iterator] === 'function';
-    }
+    },
   },
   computed: {
     suggestions() {

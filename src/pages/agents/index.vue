@@ -44,6 +44,7 @@ div
 
 <script lang="ts" setup>
 import usePagination from '~/composables/usePagination'
+import useAgentsSchema from '~/composables/useAgentsSchema'
 import { ref, provide, watch, computed } from 'vue'
 import { useFetch, useRoute, useRouter } from 'nuxt/app'
 import { useQuasar } from 'quasar'
@@ -57,36 +58,9 @@ defineOptions({
   name: 'Agents',
 })
 
-const schema = ref({
-  "$schema": "http://json-schema.org/draft-07/schema#",
-  "type": "object",
-  "properties": {
-    "displayName": {
-      "type": "string",
-      "description": "Common name of the inetOrgPerson."
-    },
-  },
-  "required": ["displayName"]
-})
-const uischema = ref({
-  "type": "Group",
-  "label": "inetOrgPerson",
-  "elements": [
-    {
-      "type": "HorizontalLayout",
-      "elements": [
-        {
-          "type": "Control",
-          "label": "Display Name",
-          "scope": "#/properties/displayName",
-          "options": {
-            "required": true
-          }
-        },
-      ]
-    },
-  ]
-})
+const agentsSchema = useAgentsSchema()
+const schema = agentsSchema.schema
+const uischema = agentsSchema.uischema
 const validations = ref([])
 
 const daysjs = useDayjs()
@@ -192,6 +166,28 @@ const actions = {
     console.log('cancel')
   },
   create: async (row: Agent) => {
+
+    const sanitizedAgent = { ...row }
+    delete sanitizedAgent.metadata
+
+    const { data: result, pending, error, refresh } = await useHttp(`/core/agents`, {
+      method: 'POST',
+      body: { ...sanitizedAgent },
+    });
+    if (error.value) {
+      handleError({
+        error: error.value,
+        message: 'Erreur lors de la création'
+      })
+      validations.value = error.value.data.validations
+    } else {
+      $q.notify({
+        message: 'Création effectuée',
+        color: 'positive',
+        position: 'top-right',
+        icon: 'mdi-check-circle-outline',
+      })
+    }
     return row
   },
   update: async (row: Agent) => {
@@ -219,6 +215,42 @@ const actions = {
     return row
   },
   delete: async (row: Agent) => {
+    $q.dialog({
+      dark: true,
+      title: 'Suppresion d\'un l\'agent',
+      message: `Vous êtes sur le point de supprimer l\'agent <b>${row.username}</b>. Êtes-vous sûr ?`,
+      persistent: true,
+      html: true,
+      ok: {
+        push: true,
+        color: 'negative',
+        label: 'Supprimer',
+      },
+      cancel: {
+        push: true,
+        color: 'grey-8',
+        label: 'Annuler',
+      },
+    }).onOk(async () => {
+      const { data: result, pending, error, refresh } = await useHttp(`/core/agents/${row._id}`, {
+        method: 'DELETE',
+      });
+      if (error.value) {
+        handleError({
+          error: error.value,
+          message: 'Erreur lors de la suppression',
+        })
+        validations.value = error.value.data.validations
+      } else {
+        $q.notify({
+          message: 'Suppression effectuée',
+          color: 'positive',
+          position: 'top-right',
+          icon: 'mdi-check-circle-outline',
+        })
+      }
+
+    })
     return row
   },
   read: async (row, onMounted = false) => {
@@ -231,10 +263,15 @@ const actions = {
   onMounted: async () => {
     if (route.query.read) {
       const id = route.query.read as string
-      const row = agents.value?.data.find((row) => row._id === id)
-      if (row) {
-        return row
-      }
+
+      const { data } = await useHttp<Agent>(`/core/agents/${id}`, {
+        method: 'get',
+      })
+      return data.value?.data
+      // const row = agents.value?.data.find((row) => row._id === id)
+      // if (row) {
+      //   return row
+      // }
     }
     return null
   }
