@@ -73,11 +73,11 @@ function onChange(event: JsonFormsChangeEvent) {
 }
 
 const getSchemaValidations = computed(() => {
-  if (!props.validations || !props.validations[props.schemaName]) {
+  if (!props.validations || !props.validations) {
     return [];
   }
   const errorObject: ErrorObject[] = [];
-  let validationList = props.validations[props.schemaName]
+  let validationList = props.validations
   for (const key in validationList) {
     errorObject.push({
       message: validationList[key],

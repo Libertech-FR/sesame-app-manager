@@ -3,7 +3,7 @@ div
   //- pre(v-html="JSON.stringify(payload, null, 2)")
   sesame-json-form-renderer(
     v-model:data="payload.target"
-    v-model:validations="validations"
+    v-model:validations="validationsInternal"
     :schema="schema"
     :uischema="uischema"
   )
@@ -33,6 +33,10 @@ const props = defineProps(
       type: Object,
       required: true,
     },
+    validations: {
+      type: Object || null,
+      default: {},
+    },
   }
 )
 
@@ -42,7 +46,12 @@ const { getStateColor, getStateName } = useIdentityStates()
 const { handleError } = useErrorHandling()
 
 
-const validations = ref([])
+const validationsInternal = ref(props.validations)
+
+watch(() => props.validations, () => {
+  validationsInternal.value = props.validations
+})
+
 const error = ref(null)
 
 // defineExpose({

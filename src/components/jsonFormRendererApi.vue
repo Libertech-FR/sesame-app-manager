@@ -1,5 +1,6 @@
 <template lang="pug">
 json-forms(
+  v-if="data"
   :data="data"
   :schema="schema"
   :uischema="uischema"

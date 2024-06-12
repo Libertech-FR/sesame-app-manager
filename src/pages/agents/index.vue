@@ -33,6 +33,7 @@ div
         :payload="payload" ref="form"
         :schema="schema"
         :uischema="uischema"
+        v-model:validations="validations"
       )
       //- sesame-json-form-renderer(
       //-   v-model:data="payload.target"
