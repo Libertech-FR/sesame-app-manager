@@ -113,6 +113,13 @@ export const useQuasarControl = <
     return props && isPlainObject(props) ? props : {};
   };
 
+  console.log('input', input.control.value.path, input.control.value.data)
+  if (typeof input.control.value.data === 'undefined' || input.control.value.data === null && input.control.value.errors) {
+    console.log('input.data', input.control.value.data)
+    input.handleChange(input.control.value.path, '')
+  }
+  console.log('input.data', input.control.value)
+
   return {
     ...input,
     styles,

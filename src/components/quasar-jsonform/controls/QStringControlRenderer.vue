@@ -66,7 +66,7 @@ const QStringControlRenderer = defineComponent({
   setup(props: RendererProps<ControlElement>) {
     return useQuasarControl(
       useJsonFormsControl(props),
-      (value) => isObject(value) ? value.value : value || undefined
+      (value) => isObject(value) ? value.value : value || undefined,
     )
   },
   methods: {
