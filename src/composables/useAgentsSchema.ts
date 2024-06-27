@@ -21,6 +21,7 @@ export default function useAgentsSchema() {
       },
       "state.current": {
         "type": "number",
+        "default": 1,
         "description": "État actuel"
       },
       "baseURL": {
@@ -96,24 +97,24 @@ export default function useAgentsSchema() {
           }
         ]
       },
-      // {
-      //   "type": "HorizontalLayout",
-      //   "elements": [
-      //     {
-      //       "type": "Control",
-      //       "label": "Base URL",
-      //       "scope": "#/properties/baseURL"
-      //     },
-      //     {
-      //       "type": "Control",
-      //       "label": "Allowed Networks",
-      //       "scope": "#/properties/allowedNetworks",
-      //       "options": {
-      //         "detail": "List of networks allowed to access the agent"
-      //       }
-      //     }
-      //   ]
-      // },
+      {
+        "type": "HorizontalLayout",
+        "elements": [
+          {
+            "type": "Control",
+            "label": "Base URL",
+            "scope": "#/properties/baseURL"
+          },
+          {
+            "type": "Control",
+            "label": "Allowed Networks",
+            "scope": "#/properties/allowedNetworks",
+            "options": {
+              "detail": "List of networks allowed to access the agent"
+            }
+          }
+        ]
+      },
     ]
   })
 

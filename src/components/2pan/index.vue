@@ -285,7 +285,7 @@ async function cancel() {
   targetId.value = null
   target.value = null
   selected.value = []
-  router.push({ query: { ...route.query, read: undefined } })
+  await router.push({ query: { ...route.query, read: null } })
 }
 async function read(row) {
   targetId.value = row?._id
@@ -357,6 +357,7 @@ onMounted(async () => {
     return
   }
   const newTarget = await props.actions.onMounted()
+  console.log('newTarget', newTarget)
   if (newTarget) {
     target.value = { ...newTarget }
     targetId.value = (newTarget as any)?._id

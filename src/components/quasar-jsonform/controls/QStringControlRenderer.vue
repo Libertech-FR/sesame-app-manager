@@ -70,6 +70,9 @@ const QStringControlRenderer = defineComponent({
     )
   },
   methods: {
+    onChange(val) {
+      console.log('val', val)
+    },
     isIterable(obj) {
       // checks for null and undefined
       if (obj == null) {

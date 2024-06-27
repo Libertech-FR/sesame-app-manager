@@ -165,8 +165,11 @@ function logs(agent: Agent) {
 const actions = {
   cancel: async (row: Agent) => {
     console.log('cancel')
+    validations.value = {}
   },
   create: async (row: Agent) => {
+
+    // console.log('row', row)
 
     const sanitizedAgent = { ...row }
     delete sanitizedAgent.metadata
@@ -259,6 +262,7 @@ const actions = {
     const { data } = await useHttp<Agent>(`/core/agents/${row._id}`, {
       method: 'get',
     })
+    validations.value = {}
     return data.value?.data
   },
   onMounted: async () => {
