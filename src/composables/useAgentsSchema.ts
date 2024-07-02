@@ -11,6 +11,10 @@ export default function useAgentsSchema() {
         "type": "string",
         "description": "Nom affiché"
       },
+      // "password": {
+      //   "type": "string",
+      //   "description": "Mot de passe"
+      // },
       "email": {
         "type": "string",
         "description": "Adresse e-mail"
@@ -61,6 +65,19 @@ export default function useAgentsSchema() {
               "required": true
             }
           },
+        ]
+      },
+      {
+        "type": "HorizontalLayout",
+        "elements": [
+          // {
+          //   "type": "Control",
+          //   "label": "Password",
+          //   "scope": "#/properties/password",
+          //   "options": {
+          //     "format": "password"
+          //   }
+          // },
           {
             "type": "Control",
             "label": "Email",

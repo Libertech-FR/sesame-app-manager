@@ -1,14 +1,16 @@
 <template lang="pug">
-json-forms(
-  v-if="data"
-  :data="data"
-  :schema="schema"
-  :uischema="uischema"
-  :renderers="renderers"
-  validationMode="ValidateAndShow"
-  :additionalErrors="getSchemaValidations"
-  @change="onChange"
-)
+div
+  json-forms(
+    v-if="data"
+    :data="data"
+    :schema="schema"
+    :uischema="uischema"
+    :renderers="renderers"
+    validationMode="ValidateAndShow"
+    :additionalErrors="getSchemaValidations"
+    @change="onChange"
+  )
+  //- pre(v-html="JSON.stringify(data, null, 2)")
 </template>
 
 <script setup lang="ts">

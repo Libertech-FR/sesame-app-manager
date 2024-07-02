@@ -3,7 +3,7 @@ import QArrayControlRenderer from "./QArrayControlRenderer.vue";
 import QDateControlRenderer from "./QDateControlRenderer.vue";
 import QNumberControlRenderer from "./QNumberControlRenderer.vue";
 import QPasswordControlRenderer from "./QPasswordControlRenderer.vue";
-import { isControl, isDateControl, isNumberControl, isPrimitiveArrayControl, rankWith, type JsonFormsRendererRegistryEntry } from "@jsonforms/core";
+import { and, formatIs, isControl, isDateControl, isNumberControl, isPrimitiveArrayControl, or, rankWith, scopeEndsWith, type JsonFormsRendererRegistryEntry } from "@jsonforms/core";
 
 const QDateControlRendererEntry: JsonFormsRendererRegistryEntry = {
   renderer: QDateControlRenderer,
@@ -27,7 +27,7 @@ export const QArrayControlRendererEntry: JsonFormsRendererRegistryEntry = {
 
 export const QPasswordControlRendererEntry: JsonFormsRendererRegistryEntry = {
   renderer: QPasswordControlRenderer,
-  tester: rankWith(2, isControl),
+  tester: rankWith(2, or(and(isControl, formatIs('password')), scopeEndsWith('password'))),
 };
 
 export const ControlsRenderer = [
@@ -35,4 +35,5 @@ export const ControlsRenderer = [
   QNumberControlRendererEntry,
   QStringControlRendererEntry,
   QArrayControlRendererEntry,
+  QPasswordControlRendererEntry,
 ];

@@ -7,6 +7,7 @@ div
     :schema="schema"
     :uischema="uischema"
   )
+  //- pre(v-html="JSON.stringify(payload.target, null, 2)")
 </template>
 
 <script lang="ts" setup>

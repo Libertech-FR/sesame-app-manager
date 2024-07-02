@@ -1,64 +1,103 @@
 <template lang="pug">
-  div password
-  //- <!-- <control-wrapper v-bind="controlWrapper" :styles="styles" :isFocused="isFocused" :appliedOptions="appliedOptions">
-  //-   <v-text-field :type="passwordVisible ? 'text' : 'password'"
-  //-     :append-icon="passwordVisible ? 'mdi-eye' : 'mdi-eye-off'"
-  //-     @click:append="() => (passwordVisible = !passwordVisible)" :id="control.id + '-input'"
-  //-     :class="styles.control.input" :disabled="!control.enabled" :autofocus="appliedOptions.focus"
-  //-     :placeholder="appliedOptions.placeholder" :label="computedLabel" :hint="control.description"
-  //-     :persistent-hint="persistentHint()" :required="control.required" :error-messages="control.errors"
-  //-     :model-value="control.data" :maxlength="appliedOptions.restrict ? control.schema.maxLength : undefined
-  //-   " :size="appliedOptions.trim && control.schema.maxLength !== undefined
-  //-   ? control.schema.maxLength
-  //-   : undefined
-  //-   " v-bind="vuetifyProps('v-text-field')" @update:model-value="onChange" @focus="handleFocus" @blur="handleBlur" />
-  //- </control-wrapper> -->
+//control-wrapper(v-bind="controlWrapper" :styles="styles" :isFocused="isFocused" :appliedOptions="appliedOptions")
+div.flex.q-col-gutter-sm
+  q-input.col(
+    :id="control.id + '-input'"
+    :disable="!control.enabled"
+    :placeholder="appliedOptions.placeholder"
+    :label="computedLabel"
+    type="password"
+    :hint="control.description"
+    :error="control.errors !== ''"
+    :error-message="control.errors"
+    :maxlength="appliedOptions.restrict ? control.schema.maxLength : undefined"
+    :clearable="true"
+    v-model="password"
+    @update:model-value="onChangeControl"
+    @focus="isFocused = true"
+    @blur="isFocused = false"
+    filled
+  )
+  //- :model-value="control.data"
+  q-input.col(
+    :id="control.id + '-input'"
+    :disable="!control.enabled"
+    label="Confirmation"
+    type="password"
+    :hint="control.description"
+    :error="control.errors !== ''"
+    :error-message="control.errors"
+    v-model="confirm"
+    :maxlength="appliedOptions.restrict ? control.schema.maxLength : undefined"
+    :clearable="true"
+    @update:model-value="onChangeControl"
+    @focus="isFocused = true"
+    @blur="isFocused = false"
+    filled
+  )
 </template>
 
 <script lang="ts">
+import { defineComponent } from 'vue';
+import { rendererProps, useJsonFormsControl } from '@jsonforms/vue';
 import {
-  // ControlElement,
-  // JsonFormsRendererRegistryEntry,
-  rankWith,
+  isControl,
   isStringControl,
-  and,
-  formatIs,
+  rankWith,
 } from '@jsonforms/core';
-import { defineComponent, ref } from 'vue';
-import {
-  rendererProps,
-  useJsonFormsControl,
-  // RendererProps,
-} from '@jsonforms/vue';
-import { default as ControlWrapper } from './ControlWrapper.vue';
+import type { JsonFormsRendererRegistryEntry } from '@jsonforms/core';
+import { isArray, isObject, isString, iterate } from 'radash';
+import type { RendererProps } from '@jsonforms/vue';
+import type { ControlElement } from '@jsonforms/core';
+import { useQuasarControl } from '../util';
+import { ControlWrapper } from '@jsonforms/vue-vanilla';
 
-const controlRenderer = defineComponent({
-  name: 'password-control-renderer',
+const QPasswordControlRenderer = defineComponent({
+  name: 'q-password-control-renderer',
   components: {
     ControlWrapper,
-    // VTextField,
   },
   props: {
     ...rendererProps<ControlElement>(),
   },
   setup(props: RendererProps<ControlElement>) {
-    const passwordVisible = ref(false);
-
-    return {
-      // ...useVuetifyControl(
-      //   useJsonFormsControl(props),
-      //   (value) => value || undefined,
-      //   300
-      // ),
-      passwordVisible,
-    };
+    return useQuasarControl(
+      useJsonFormsControl(props),
+      (value) => isObject(value) ? value.value : value || undefined,
+    )
+  },
+  data: () => ({
+    password: ref(''),
+    confirm: ref(''),
+  }),
+  watch: {
+    'control.data': {
+      deep: true,
+      handler(val) {
+        this.password = val
+      },
+    },
+  },
+  methods: {
+    onChangeControl() {
+      if (this.password === this.confirm) {
+        this.onChange(this.password)
+      }
+    },
+    isIterable(obj) {
+      // checks for null and undefined
+      if (obj == null) {
+        return false;
+      }
+      return typeof obj[Symbol.iterator] === 'function';
+    },
+  },
+  computed: {
+    computedLabel() {
+      return this.control.label === undefined ? this.control.schema.title : this.control.label;
+    },
   },
 });
+export default QPasswordControlRenderer;
 
-export default controlRenderer;
-
-export const entry: JsonFormsRendererRegistryEntry = {
-  renderer: controlRenderer,
-  tester: rankWith(2, and(isStringControl, formatIs('password'))),
-};
 </script>
