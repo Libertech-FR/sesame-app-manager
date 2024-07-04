@@ -51,6 +51,7 @@ import type { RendererProps } from '@jsonforms/vue';
 import type { ControlElement } from '@jsonforms/core';
 import { useQuasarControl } from '../util';
 import { ControlWrapper } from '@jsonforms/vue-vanilla';
+import { debounce } from 'quasar';
 
 const QPasswordControlRenderer = defineComponent({
   name: 'q-password-control-renderer',
@@ -70,18 +71,20 @@ const QPasswordControlRenderer = defineComponent({
     password: ref(''),
     confirm: ref(''),
   }),
-  watch: {
-    'control.data': {
-      deep: true,
-      handler(val) {
-        this.password = val
-      },
-    },
-  },
+  // watch: {
+  // 'control.data': {
+  //   deep: true,
+  //   handler(val) {
+  //     this.password = val
+  //   },
+  // },
+  // },
   methods: {
-    onChangeControl() {
+    onChangeControl(val) {
       if (this.password === this.confirm) {
-        this.onChange(this.password)
+        this.onChange(val)
+      } else {
+        this.control.errors = 'Mot de passes non identiques'
       }
     },
     isIterable(obj) {

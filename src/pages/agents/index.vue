@@ -29,18 +29,18 @@ div
     //- template(#right-panel-actions-content-after="{target}")
     //-   sesame-identity-form-actions(:identity="target" @submit="submit($event)" @sync="sync" @logs="logs")
     template(#right-panel-content="{ payload }")
-      sesame-generic-form(
-        :payload="payload" ref="form"
-        :schema="schema"
-        :uischema="uischema"
-        v-model:validations="validations"
-      )
-      //- sesame-json-form-renderer(
-      //-   v-model:data="payload.target"
-      //-   v-model:validations="validations"
+      //- sesame-generic-form(
+      //-   :payload="payload" ref="form"
       //-   :schema="schema"
       //-   :uischema="uischema"
-      //-   )
+      //-   v-model:validations="validations"
+      //- )
+      sesame-json-form-renderer(
+        v-model:data="payload.target"
+        v-model:validations="validations"
+        :schema="schema"
+        :uischema="uischema"
+      )
 </template>
 
 <script lang="ts" setup>
@@ -191,8 +191,8 @@ const actions = {
         position: 'top-right',
         icon: 'mdi-check-circle-outline',
       })
+      return row
     }
-    return row
   },
   update: async (row: Agent) => {
     const sanitizedAgent = { ...row }

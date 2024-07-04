@@ -11,16 +11,17 @@ export default function useAgentsSchema() {
         "type": "string",
         "description": "Nom affiché"
       },
-      // "password": {
-      //   "type": "string",
-      //   "description": "Mot de passe"
-      // },
+      "password": {
+        "type": "string",
+        "description": "Mot de passe"
+      },
       "email": {
         "type": "string",
         "description": "Adresse e-mail"
       },
       "thirdPartyAuth": {
         "type": "string",
+        "default": "local",
         "description": "Authentification via un tiers"
       },
       "state.current": {
@@ -70,14 +71,14 @@ export default function useAgentsSchema() {
       {
         "type": "HorizontalLayout",
         "elements": [
-          // {
-          //   "type": "Control",
-          //   "label": "Password",
-          //   "scope": "#/properties/password",
-          //   "options": {
-          //     "format": "password"
-          //   }
-          // },
+          {
+            "type": "Control",
+            "label": "Password",
+            "scope": "#/properties/password",
+            "options": {
+              "format": "password"
+            }
+          },
           {
             "type": "Control",
             "label": "Email",

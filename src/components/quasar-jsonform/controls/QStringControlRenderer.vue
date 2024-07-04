@@ -1,7 +1,7 @@
 <template lang="pug">
 //control-wrapper(v-bind="controlWrapper" :styles="styles" :isFocused="isFocused" :appliedOptions="appliedOptions")
 div
-  pre(v-html="JSON.stringify(control.data, null, 2)")
+  //- pre(v-html="JSON.stringify(control.data, null, 2)")
   q-select(
     v-if="suggestions !== undefined"
     :model-value="control.data"
@@ -82,10 +82,10 @@ const QStringControlRenderer = defineComponent({
       return typeof obj[Symbol.iterator] === 'function';
     },
   },
-  mounted() {
-    console.log('this.control', this.control)
-    console.log('this.control.dataa', this.control.data)
-  },
+  // mounted() {
+  //   console.log('this.control', this.control)
+  //   console.log('this.control.dataa', this.control.data)
+  // },
   computed: {
     suggestions() {
       const suggestions = this.control.uischema.options?.suggestion;

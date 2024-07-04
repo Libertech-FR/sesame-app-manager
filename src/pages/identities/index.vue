@@ -27,8 +27,8 @@ div
       sesame-table-top-left(:selected="selectedValues" @refresh="refresh" @clear="clearSelected")
     template(#body-cell-states="props")
       sesame-table-state-col(:identity="props.row")
-    template(#right-panel-actions-content-after="{target}")
-      sesame-identity-form-actions(:identity="target" @submit="submit($event)" @sync="sync" @logs="logs")
+    template(#right-panel-actions-content-after="{target, crud, isNew}")
+      sesame-identity-form-actions(:identity="target" @submit="submit($event)" @create="create($event)" @sync="sync" @logs="logs" :crud="crud" :isNew="isNew")
     template(#right-panel-content="{payload}")
       sesame-identity-form(
         :identity="{...payload.target}"
@@ -129,6 +129,11 @@ async function submit(identity: Identity) {
   form.value.submit()
 }
 
+async function create(identity: Identity) {
+  console.log('create from index')
+  form.value.create()
+}
+
 async function sync(identity: Identity) {
   console.log('sync')
   form.value.sync()
@@ -148,6 +153,15 @@ const actions = {
       method: 'get',
     })
     return { ...data.value?.data }
+  },
+  add: async () => {
+    return {
+      state: IdentityState.TO_CREATE,
+      additionalFields: {
+        attributes: {},
+        objectClasses: [],
+      },
+    }
   },
   onMounted: async () => {
     if (route.query.read) {

@@ -86,7 +86,7 @@ const updateFilters = () => {
 };
 
 const options = computed(() => {
-  return IdentityStateList.map((state) => {
+  return IdentityStateList.filter(state => getStateName(state.value) !== 'Inconnu').map((state) => {
     return {
       label: getStateName(state.value),
       value: state.value,

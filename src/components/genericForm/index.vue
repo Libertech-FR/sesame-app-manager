@@ -1,6 +1,6 @@
 <template lang="pug">
 div
-  //- pre(v-html="JSON.stringify(payload, null, 2)")
+  pre(v-html="JSON.stringify(payload, null, 2)")
   sesame-json-form-renderer(
     v-model:data="payload.target"
     v-model:validations="validationsInternal"
@@ -33,6 +33,9 @@ const props = defineProps(
     payload: {
       type: Object,
       required: true,
+      // default: {
+      //   target: {},
+      // }
     },
     validations: {
       type: Object || null,

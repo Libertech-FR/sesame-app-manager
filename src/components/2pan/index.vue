@@ -84,14 +84,14 @@ q-splitter(
             q-btn(color="primary", icon="mdi-chevron-left" @click="cancel" tooltip="Retour")
               q-tooltip.text-body2 Retour
             q-separator.q-mx-sm(vertical)
-            slot(name="right-panel-actions-content" v-if="defaultRightPanelButton" :target="target")
+            slot(name="right-panel-actions-content" v-if="defaultRightPanelButton" :target="target" :isNew="isNew" :crud="crud")
               q-btn(color="positive" icon='mdi-content-save-plus' @click="create(target)" v-show="isNew" v-if="crud.create")
                 q-tooltip.text-body2 Créer
               q-btn(color="positive" icon='mdi-content-save' @click="update(target)" v-show="!isNew" v-if="crud.update")
                 q-tooltip.text-body2 Enregistrer
               q-btn(color="negative" icon='mdi-delete' @click="remove(target)" v-show="!isNew" v-if="crud.delete")
                 q-tooltip.text-body2 Supprimer
-            slot(name="right-panel-actions-content-after" :target="target")
+            slot(name="right-panel-actions-content-after" :target="target" :isNew="isNew" :crud="crud")
         q-card-section.q-pa-none.fit.flex(style='flex-flow: column; overflow: hidden;')
           slot(name="right-panel-content" :payload="{ target }")
             slot(name="right-panel-content-before")
@@ -192,6 +192,7 @@ const props = defineProps({
       update: <T>(r: T) => Promise<T>
       delete: <T>(r: T) => Promise<T>
       cancel: () => Promise<void>
+      add: <T>() => Promise<T>
       onMounted: <T = object>() => Promise<T | null>
     }>,
     default: {
@@ -209,6 +210,7 @@ const props = defineProps({
       },
 
       cancel: async () => { },
+      add: async () => { return {} },
       onMounted: async () => { },
     },
   },
@@ -257,7 +259,7 @@ const { debug } = useDebug()
 const selected = ref([])
 const tab = ref('')
 const targetId = ref<null | string>(route.query?.read ? `${route.query?.read}` : null)
-const target = ref<null | object>(null)
+const target = ref<object>({})
 const daysjs = useDayjs()
 
 watch(target, (t) => {
@@ -283,36 +285,38 @@ async function refresh() {
 async function cancel() {
   await props.actions.cancel()
   targetId.value = null
-  target.value = null
+  target.value = {}
   selected.value = []
   await router.push({ query: { ...route.query, read: null } })
 }
 async function read(row) {
   targetId.value = row?._id
   const response = await props.actions.read(row)
-  target.value = response
+  target.value = { ...response }
   emit('read', response)
 }
 
 async function add() {
   const read = NEW_ID
   targetId.value = read
-  target.value = {}
-  router.push({ query: { ...route.query, read } })
+  target.value = await props.actions.add() || {}
+  await router.push({ query: { ...route.query, read } })
 }
 
 async function create(row) {
   console.log('create', row)
   const response = await props.actions.create(row)
+  console.log('response', response)
   // target.value = response
   // targetId.value = response?._id
   emit('create', response)
+  if (response) cancel()
 }
 
 async function update(row) {
   targetId.value = row?._id
   const response = await props.actions.update(row)
-  target.value = response
+  target.value = { ...response }
   emit('update', response)
 }
 
@@ -357,7 +361,7 @@ onMounted(async () => {
     return
   }
   const newTarget = await props.actions.onMounted()
-  console.log('newTarget', newTarget)
+  // console.log('newTarget', newTarget)
   if (newTarget) {
     target.value = { ...newTarget }
     targetId.value = (newTarget as any)?._id

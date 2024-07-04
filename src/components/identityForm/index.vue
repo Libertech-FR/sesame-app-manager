@@ -1,11 +1,17 @@
 <template lang="pug">
 div
+  //- pre(v-html="JSON.stringify(identity, null, 2)")
   q-tabs(v-model="tab" align="justify")
     q-tab(name="inetOrgPerson" label="inetOrgPerson" :alert="getTabValidations('inetOrgPerson')" alert-icon="mdi-alert" :class="`q-mr-xs`")
     q-tab(v-for="tab in tabs" :key="tab" :name="tab" :label="tab" :alert="getTabValidations(tab)" alert-icon="mdi-alert" :class="`q-mr-xs`")
-
+    q-btn-dropdown.full-height(icon="mdi-newspaper-plus" flat)
+      q-tooltip.text-body2(anchor="top middle" self="center middle") Ajouter un schéma
+      q-list
+        q-item(clickable v-close-popup v-for="schema in schemas" @click="addSchema(schema)")
+          q-item-section
+            q-item-label(v-text="schema.name")
   q-tab-panels(v-model="tab")
-    q-tab-panel(name="inetOrgPerson" v-if='identity && identity.inetOrgPerson')
+    q-tab-panel(name="inetOrgPerson")
       sesame-json-form-renderer-api(
         schemaName="inetorgperson"
         v-model:data="identity.inetOrgPerson"
@@ -41,6 +47,12 @@ const props = defineProps(
     identity: {
       type: Object as PropType<Identity>,
       required: true,
+      default: {
+        additionalFields: {
+          objectClasses: [],
+          attributes: {},
+        },
+      },
     }
   }
 )
@@ -64,6 +76,23 @@ watch(() => props.identity, () => {
 
 const tab = ref('inetOrgPerson')
 const error = ref(null)
+
+const { data: schemasResult, pending, refresh } = await useHttp<any>(`/management/identities/validation`, {
+  method: 'GET',
+});
+
+const schemas = computed(() => {
+  return schemasResult.value.data.filter((schema: any) => {
+    return !tabs.value.includes(schema.name) && `${schema.name}`.toLocaleLowerCase() !== 'inetOrgPerson'.toLocaleLowerCase()
+  })
+})
+
+async function addSchema(schema) {
+  console.log('identity.value', identity.value)
+  if (!identity.value.additionalFields) identity.value.additionalFields = { objectClasses: [], attributes: {} }
+  identity.value.additionalFields.attributes[schema.name] = {}
+  identity.value.additionalFields.objectClasses.push(schema.name)
+}
 
 async function submit() {
   console.log('submit from form')
@@ -95,6 +124,33 @@ async function submit() {
   }
 }
 
+async function create() {
+  console.log('create from form')
+  const sanitizedIdentity = { ...props.identity }
+  delete sanitizedIdentity.metadata
+
+  const { data: result, pending, error, refresh } = await useHttp(`/management/identities`, {
+    method: 'POST',
+    body: { ...sanitizedIdentity },
+  });
+  if (error.value) {
+    handleError({
+      error: error.value,
+      message: 'Erreur lors de la création'
+    })
+    console.log('error', error.value.data.validations)
+    validations.value = { ...error.value.data.validations }
+  } else {
+    $q.notify({
+      message: 'Création effectuée',
+      color: 'positive',
+      position: 'top-right',
+      icon: 'mdi-check-circle-outline',
+    })
+    emits('refreshTarget', {})
+  }
+}
+
 const stateName = computed(() => {
   const state = props.identity?.state
   return getStateName(state)
@@ -113,7 +169,7 @@ async function sync() {
   const { data: result, pending, error, refresh } = await useHttp<any>(`/management/identities/${props.identity._id}/state`, {
     method: 'PATCH',
     body: {
-      state: IdentityState.TO_SYNC,
+      state: IdentityState.TO_VALIDATE,
     },
   });
 
@@ -141,6 +197,7 @@ function back() {
 
 defineExpose({
   submit,
+  create,
   sync,
   logs,
   back,

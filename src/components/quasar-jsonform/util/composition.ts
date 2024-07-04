@@ -15,6 +15,7 @@ import { computed, inject, ref, provide } from 'vue';
 import type { ComputedRef } from 'vue';
 import type { JsonFormsSubStates } from '@jsonforms/core';
 import Ajv from 'ajv';
+import { isEmpty } from 'radash';
 
 export const useControlAppliedOptions = <I extends { control: any }>(
   input: I
@@ -82,8 +83,6 @@ export const useQuasarControl = <
       : input.handleChange;
 
   const onChange = (value: any) => {
-    // console.log('onChange', value);
-    // debugger
     changeEmitter(input.control.value.path, adaptValue(value));
   };
 
@@ -114,14 +113,15 @@ export const useQuasarControl = <
     return props && isPlainObject(props) ? props : {};
   };
 
-  console.log('input', input.control.value.path, input.control.value.data)
-  if (typeof input.control.value.data === 'undefined' || input.control.value.data === null && input.control.value.errors) {
-    input.handleChange(input.control.value.path, input.control.value.schema.default || null)
-    // console.log('input.data', input.control.value.data)
-  }
-  // console.log('input.data', input.control.value)
   // console.log('input.control.value.data', input.control.value.data)
-  // input.handleChange(input.control.value.path, input.control.value.data)
+  if (isEmpty(input.control.value.data)) {
+    input.handleChange(input.control.value.path, input.control.value.schema.default || null)
+    // console.log('trigger default', input.control.value.schema.default || null)
+  }
+
+  // if (typeof input.control.value.data === 'undefined' || input.control.value.data === null && input.control.value.errors) {
+  //   input.handleChange(input.control.value.path, input.control.value.schema.default || null)
+  // }
 
   return {
     ...input,
