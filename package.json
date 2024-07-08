@@ -1,6 +1,6 @@
 {
   "name": "@libertech-fr/sesame-app-manager",
-  "version": "0.0.20",
+  "version": "0.0.21",
   "type": "module",
   "scripts": {
     "build": "nuxt build",
