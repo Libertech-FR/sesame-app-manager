@@ -62,15 +62,15 @@ const editFilter = (filter: Filter) => {
   mainData.value?.editFilter(filter)
 }
 
-const removeFilter = (filter: Filter) => {
+const removeFilter = async (filter: Filter) => {
   let key = `filters[${filter.querySign}${filter.field.replace('[]', '')}]`
   if (filter.field.endsWith('[]')) key += '[]'
   const query = {
     ...route.query,
   }
   delete query[key]
-  router.replace({
-    query,
+  await router.replace({
+    query: { ...query },
   })
 }
 

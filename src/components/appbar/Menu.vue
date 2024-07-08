@@ -8,7 +8,6 @@ q-btn(flat icon="mdi-dots-grid" size="20px" square)
           q-icon(:name="app.icon.name" :color="app.icon.color" size="xl")
           q-badge(v-if="app.badge" :color="app.badge.color" floating) {{ app.badge.value }}
           div.text-center(:class="`text-${app.title.color}`") {{ app.title.name }}
-
 </template>
 
 <script lang="ts" setup>

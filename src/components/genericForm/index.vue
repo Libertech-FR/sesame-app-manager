@@ -1,12 +1,13 @@
 <template lang="pug">
 div
-  //- pre(v-html="JSON.stringify(payload, null, 2)")
+  pre(v-html="JSON.stringify(payload, null, 2)")
   sesame-json-form-renderer(
     v-model:data="payload.target"
-    v-model:validations="validations"
+    v-model:validations="validationsInternal"
     :schema="schema"
     :uischema="uischema"
   )
+  //- pre(v-html="JSON.stringify(payload.target, null, 2)")
 </template>
 
 <script lang="ts" setup>
@@ -32,6 +33,13 @@ const props = defineProps(
     payload: {
       type: Object,
       required: true,
+      // default: {
+      //   target: {},
+      // }
+    },
+    validations: {
+      type: Object || null,
+      default: {},
     },
   }
 )
@@ -42,7 +50,12 @@ const { getStateColor, getStateName } = useIdentityStates()
 const { handleError } = useErrorHandling()
 
 
-const validations = ref([])
+const validationsInternal = ref(props.validations)
+
+watch(() => props.validations, () => {
+  validationsInternal.value = props.validations
+})
+
 const error = ref(null)
 
 // defineExpose({

@@ -1,6 +1,7 @@
 <template lang="pug">
 //control-wrapper(v-bind="controlWrapper" :styles="styles" :isFocused="isFocused" :appliedOptions="appliedOptions")
 div
+  //- pre(v-html="JSON.stringify(control.data, null, 2)")
   q-select(
     v-if="suggestions !== undefined"
     :model-value="control.data"
@@ -66,18 +67,25 @@ const QStringControlRenderer = defineComponent({
   setup(props: RendererProps<ControlElement>) {
     return useQuasarControl(
       useJsonFormsControl(props),
-      (value) => isObject(value) ? value.value : value || undefined
+      (value) => isObject(value) ? value.value : value || undefined,
     )
   },
   methods: {
+    onChange(val) {
+      console.log('val', val)
+    },
     isIterable(obj) {
       // checks for null and undefined
       if (obj == null) {
         return false;
       }
       return typeof obj[Symbol.iterator] === 'function';
-    }
+    },
   },
+  // mounted() {
+  //   console.log('this.control', this.control)
+  //   console.log('this.control.dataa', this.control.data)
+  // },
   computed: {
     suggestions() {
       const suggestions = this.control.uischema.options?.suggestion;

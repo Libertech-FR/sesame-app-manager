@@ -1,13 +1,15 @@
 <template lang="pug">
-json-forms(
-  :data="data"
-  :schema="schema"
-  :uischema="uischema"
-  :renderers="renderers"
-  validationMode="ValidateAndShow"
-  :additionalErrors="getSchemaValidations"
-  @change="onChange"
-)
+div
+  json-forms(
+    :data="data"
+    :schema="schema"
+    :uischema="uischema"
+    :renderers="renderers"
+    validationMode="ValidateAndShow"
+    :additionalErrors="getSchemaValidations"
+    @change="onChange"
+  )
+  //- pre(v-html="JSON.stringify(data, null, 2)")
 </template>
 
 <script setup lang="ts">
@@ -23,6 +25,7 @@ import { QuasarJsonformRenderer } from './quasar-jsonform';
 import { computed, provide, ref } from 'vue';
 import { useFetch } from 'nuxt/app';
 import type { ErrorObject } from 'ajv';
+import { isObject } from 'radash';
 
 const customStyle = mergeStyles(defaultStyles, {
   control: {
@@ -52,6 +55,10 @@ const props = defineProps({
     type: Object || null,
     default: {},
   },
+  // data: {
+  //   type: Object,
+  //   default: {},
+  // },
 });
 
 const validations = defineModel('validations', {
@@ -65,18 +72,26 @@ const data = defineModel('data', {
 });
 
 function onChange(event: JsonFormsChangeEvent) {
+  // console.log('onchanbge', event)
+  // data.value = event.data;
+  // console.log('event.data', event.data)
+  // if (isObject(event.data)) {
+  // if (!isObject(data.value)) data.value = {}
   for (const key in event.data) {
     const evdata = event.data[key];
+    // console.log('data.value', data.value)
     data.value[key] = evdata;
+    // console.log('data.value[key]', data.value[key])
   }
+  // }
 }
 
 const getSchemaValidations = computed(() => {
-  if (!props.validations || !props.validations[props.schemaName]) {
+  if (!props.validations || !props.validations) {
     return [];
   }
   const errorObject: ErrorObject[] = [];
-  let validationList = props.validations[props.schemaName]
+  let validationList = props.validations
   for (const key in validationList) {
     errorObject.push({
       message: validationList[key],

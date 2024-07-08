@@ -1,6 +1,7 @@
 <template lang="pug">
 //control-wrapper(v-bind="controlWrapper" :styles="styles" :isFocused="isFocused" :appliedOptions="appliedOptions")
 div
+  //- pre(v-html="JSON.stringify(control.data)")
   q-select(
     :model-value="control.data"
     :options="suggestions"
@@ -68,11 +69,20 @@ const QStringControlRenderer = defineComponent({
   setup(props: RendererProps<ControlElement>) {
     return useQuasarControl(
       useJsonFormsControl(props),
-      (value) => isObject(value) ? value.value : value || undefined
+      (value) => {
+        return isObject(value) ? value.value || [] : value || []
+      }
     )
   },
   methods: {
+    onChange(val) {
+      console.log('val', val)
+    },
     createValue(val, done) {
+      if (!this.control.data) {
+        this.control.data = []
+        this.handleChange('', null)
+      }
       done(val, 'add-unique')
     },
     isIterable(obj) {
@@ -112,6 +122,12 @@ const QStringControlRenderer = defineComponent({
       return this.control.label === undefined ? this.control.schema.title : this.control.label;
     },
   },
+  mounted() {
+    if (!this.control.data) {
+      this.control.data = []
+      this.handleChange('', null)
+    }
+  }
 });
 export default QStringControlRenderer;
 
