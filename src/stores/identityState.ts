@@ -39,7 +39,7 @@ export const useIdentityStateStore = defineStore('identityStates', {
     },
     async fetchTotalCount() {
       try {
-        const { data } = await useHttp('/management/identities/count?limit=1000');
+        const { data } = await useHttp('/management/identities/count?limit=99999999');
         this.total = data.value.data;
       } catch (error) {
         console.error(error);
@@ -48,7 +48,7 @@ export const useIdentityStateStore = defineStore('identityStates', {
 
     async fetchToCompleteCount() {
       try {
-        const { data } = await useHttp(`/management/identities/count?filters[@state][]=${IdentityState.TO_COMPLETE}&limit=1000`);
+        const { data } = await useHttp(`/management/identities/count?filters[@state][]=${IdentityState.TO_COMPLETE}&limit=99999999`);
         this[IdentityState.TO_COMPLETE] = data.value.data;
       } catch (error) {
         console.error(error);
@@ -56,7 +56,7 @@ export const useIdentityStateStore = defineStore('identityStates', {
     },
     async fetchToValidateCount() {
       try {
-        const { data } = await useHttp(`/management/identities/count?filters[@state][]=${IdentityState.TO_VALIDATE}&limit=1000`);
+        const { data } = await useHttp(`/management/identities/count?filters[@state][]=${IdentityState.TO_VALIDATE}&limit=99999999`);
         this[IdentityState.TO_VALIDATE] = data.value.data;
       } catch (error) {
         console.error(error);
@@ -64,7 +64,7 @@ export const useIdentityStateStore = defineStore('identityStates', {
     },
     async fetchOnErrorCount() {
       try {
-        const { data } = await useHttp(`/management/identities/count?filters[@state][]=${IdentityState.ON_ERROR}&limit=1000`);
+        const { data } = await useHttp(`/management/identities/count?filters[@state][]=${IdentityState.ON_ERROR}&limit=99999999`);
         this[IdentityState.ON_ERROR] = data.value.data;
       } catch (error) {
         console.error(error);
@@ -72,7 +72,7 @@ export const useIdentityStateStore = defineStore('identityStates', {
     },
     async fetchToSyncCount() {
       try {
-        const { data } = await useHttp(`/management/identities/count?filters[@state][]=${IdentityState.TO_SYNC}&limit=1000`);
+        const { data } = await useHttp(`/management/identities/count?filters[@state][]=${IdentityState.TO_SYNC}&limit=99999999`);
         this[IdentityState.TO_SYNC] = data.value.data;
       } catch (error) {
         console.error(error);
@@ -80,7 +80,7 @@ export const useIdentityStateStore = defineStore('identityStates', {
     },
     async fetchProcessingCount() {
       try {
-        const { data } = await useHttp(`/management/identities/count?filters[@state][]=${IdentityState.PROCESSING}&limit=1000`);
+        const { data } = await useHttp(`/management/identities/count?filters[@state][]=${IdentityState.PROCESSING}&limit=99999999`);
         this[IdentityState.PROCESSING] = data.value.data;
       } catch (error) {
         console.error(error);
@@ -88,7 +88,7 @@ export const useIdentityStateStore = defineStore('identityStates', {
     },
     async fetchSyncedCount() {
       try {
-        const { data } = await useHttp(`/management/identities/count?filters[@state][]=${IdentityState.SYNCED}&limit=1000`);
+        const { data } = await useHttp(`/management/identities/count?filters[@state][]=${IdentityState.SYNCED}&limit=99999999`);
         this[IdentityState.SYNCED] = data.value.data;
       } catch (error) {
         console.error(error);
