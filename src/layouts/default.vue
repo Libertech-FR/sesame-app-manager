@@ -41,7 +41,7 @@ q-layout(view="hHh LpR lff" style="margin-top: -1px;")
         small Orchestrator&nbsp;
         small(v-text="'v' + appManagerVersion.currentVersion")
       q-btn.q-px-xs(
-        v-show="!appManagerVersion.updateAvailable"
+        v-show="appManagerVersion.updateAvailable"
         flat stretch icon="mdi-alert-box" color="amber-9"
         href="https://github.com/Libertech-FR/sesame-app-manager/releases" target="_blank"
       ) App Manager
@@ -50,7 +50,7 @@ q-layout(view="hHh LpR lff" style="margin-top: -1px;")
           span(v-text="appManagerVersion.lastVersion")
           | )
       q-btn.q-px-xs(
-        v-show="!orchestratorVersion.updateAvailable"
+        v-show="orchestratorVersion.updateAvailable"
         flat stretch icon="mdi-alert-box" color="amber-9"
         href="https://github.com/Libertech-FR/sesame-orchestrator/releases" target="_blank"
       ) Orchestrator
