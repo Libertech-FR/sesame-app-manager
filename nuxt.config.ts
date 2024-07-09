@@ -40,6 +40,7 @@ export default defineNuxtConfig({
   },
   appConfig: {
     baseUrl: SESAME_APP_API_URL,
+    appManagerVersion: process.env.npm_package_version,
   },
   modules: [
     '@nuxt-alt/auth',

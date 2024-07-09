@@ -1,5 +1,5 @@
 <template lang="pug">
-q-layout
+q-layout(view="hHh LpR lff" style="margin-top: -1px;")
   sesame-appbar(@closeDrawer="drawer = !drawer" @syncing="syncing")
   q-drawer.flex(v-model="drawer" side="left" :mini="true" bordered persistent)
     template(#mini)
@@ -20,19 +20,46 @@ q-layout
           q-separator
   q-page-container
     nuxt-page
-    q-dialog(seamless v-model="eventSeamless" position="bottom")
+    //- q-dialog(seamless v-model="eventSeamless" position="bottom")
       q-card(style="width: 350px")
         q-linear-progress(:value="eventSeamlessProgress" color="amber-9")
         q-card-section.row.items-center.no-wrap
           q-circular-progress.q-mr-md(indeterminate size="42px" color="amber-9")
-          //- pre(v-html="JSON.stringify(eventSeamlessCurrentJobs, null, 2)")
           div
             .text-weight-bold.q-px-md.text-center
               | Synchronisation en cours&nbsp;&nbsp;
               q-badge(color="amber-10") {{ eventSeamlessCurrent }}/{{ eventSeamlessTotal }}
-            //- .text-grey Fitz & The Tantrums
           q-space
           q-btn(flat round icon="mdi-close" v-close-popup)
+  q-footer(:class="$q.dark.isActive ? 'bg-dark' : 'bg-white'" bordered)
+    q-bar(:class="$q.dark.isActive ? 'bg-dark' : 'bg-white text-black'")
+      span
+        small AppManager&nbsp;
+        small(v-text="'v' + orchestratorVersion.currentVersion")
+      small.bold &nbsp;/&nbsp;
+      span.q-mr-sm
+        small Orchestrator&nbsp;
+        small(v-text="'v' + appManagerVersion.currentVersion")
+      q-btn.q-px-xs(
+        v-show="!appManagerVersion.updateAvailable"
+        flat stretch icon="mdi-alert-box" color="amber-9"
+        href="https://github.com/Libertech-FR/sesame-app-manager/releases" target="_blank"
+      ) App Manager
+        q-tooltip.text-body2.bg-amber-9
+          | MAJ disponible (
+          span(v-text="appManagerVersion.lastVersion")
+          | )
+      q-btn.q-px-xs(
+        v-show="!orchestratorVersion.updateAvailable"
+        flat stretch icon="mdi-alert-box" color="amber-9"
+        href="https://github.com/Libertech-FR/sesame-orchestrator/releases" target="_blank"
+      ) Orchestrator
+        q-tooltip.text-body2.bg-amber-9
+          | MAJ disponible (
+          span(v-text="orchestratorVersion.lastVersion")
+          | )
+      q-space
+      q-btn.q-px-sm(flat stretch icon="mdi-help" href="https://libertech-fr.github.io/sesame-doc/" target="_blank")
 </template>
 
 <script lang="ts" setup>
@@ -47,6 +74,17 @@ const identityStateStore = useIdentityStateStore()
 
 const auth = useAuth()
 const config = useAppConfig()
+
+const { data: orchestratorVersionRes } = await useHttp<any>('/get-update/sesame-orchestrator')
+const { data: appManagerVersionRes } = await useHttp<any>('/get-update/sesame-app-manager', {
+  query: {
+    current: config.appManagerVersion || '0.0.0',
+  },
+})
+
+const orchestratorVersion = orchestratorVersionRes.value?.data
+const appManagerVersion = appManagerVersionRes.value?.data
+
 const esUrl = new URL(config.baseUrl + "/core/backends/sse")
 esUrl.searchParams.append("key", '' + auth.user?.sseToken)
 var es = new ReconnectingEventSource(esUrl)
@@ -133,7 +171,7 @@ function logout() {
 
 <style>
 .q-page-container {
-  height: 100vh !important;
+  /* height: 100vh !important; */
   width: 100% !important;
 }
 </style>

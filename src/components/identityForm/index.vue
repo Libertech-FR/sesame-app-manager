@@ -169,7 +169,7 @@ async function sync() {
   const { data: result, pending, error, refresh } = await useHttp<any>(`/management/identities/${props.identity._id}/state`, {
     method: 'PATCH',
     body: {
-      state: IdentityState.TO_VALIDATE,
+      state: IdentityState.TO_SYNC,
     },
   });
 

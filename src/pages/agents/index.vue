@@ -1,5 +1,5 @@
 <template lang="pug">
-div
+q-page.container
   .q-px-md
     sesame-searchfilters(:fields="fieldsList")
       template(#rightSelect)
