@@ -37,9 +37,14 @@ q-layout(view="hHh LpR lff" style="margin-top: -1px;")
         small AppManager&nbsp;
         small(v-text="'v' + (appManagerVersion?.currentVersion || '0.0.0')")
       small.bold &nbsp;/&nbsp;
-      span.q-mr-sm
+      span
         small Orchestrator&nbsp;
         small(v-text="'v' + (orchestratorVersion?.currentVersion || '0.0.0')")
+      small.bold &nbsp;/&nbsp;
+      span
+        small Daemon&nbsp;
+        small(v-text="'v' + (daemonVersion?.currentVersion || '0.0.0')")
+      div.q-pr-xs
       q-btn.q-px-xs(
         v-show="appManagerVersion?.updateAvailable"
         flat stretch icon="mdi-alert-box" color="amber-9"
@@ -57,6 +62,15 @@ q-layout(view="hHh LpR lff" style="margin-top: -1px;")
         q-tooltip.text-body2.bg-amber-9
           | MAJ disponible (
           span(v-text="orchestratorVersion?.lastVersion || '0.0.0'")
+          | )
+      q-btn.q-px-xs(
+        v-show="daemonVersion?.updateAvailable"
+        flat stretch icon="mdi-alert-box" color="amber-9"
+        href="https://github.com/Libertech-FR/sesame-daemon/releases" target="_blank"
+      ) Daemon
+        q-tooltip.text-body2.bg-amber-9
+          | MAJ disponible (
+          span(v-text="daemonVersion?.lastVersion || '0.0.0'")
           | )
       q-space
       q-btn.q-px-sm(flat stretch icon="mdi-help" href="https://libertech-fr.github.io/sesame-doc/" target="_blank")
@@ -81,9 +95,25 @@ const { data: appManagerVersionRes } = await useHttp<any>('/get-update/sesame-ap
     current: config.appManagerVersion || '0.0.0',
   },
 })
+const { data: daemonVersionDump } = await useHttp<any>('/core/backends/execute', {
+  method: 'POST',
+  query: {
+    timeoutDiscard: true,
+    syncTimeout: 1000,
+  },
+  body: {
+    action: 'DUMP_PACKAGE_CONFIG'
+  }
+})
+const { data: daemonVersionRes } = await useHttp<any>('/get-update/sesame-daemon', {
+  query: {
+    current: daemonVersionDump?.value?.job?.result?.data[0]?.version || '0.0.0',
+  },
+})
 
 const orchestratorVersion = orchestratorVersionRes.value?.data
 const appManagerVersion = appManagerVersionRes.value?.data
+const daemonVersion = daemonVersionRes.value?.data
 
 const esUrl = new URL(config.baseUrl + "/core/backends/sse")
 esUrl.searchParams.append("key", '' + auth.user?.sseToken)
