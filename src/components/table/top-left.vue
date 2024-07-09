@@ -43,8 +43,10 @@ const route = useRoute()
 
 function openUpdateModale() {
   const query = route.query || {}
-  console.log('filters', route.query)
-  const identityState: IdentityState = parseInt(`${query['filters[@state][]']}`, 10)
+  // console.log('filters', route.query)
+  // console.log('props.selected', props.selected)
+  // const identityState: IdentityState = parseInt(`${query['filters[@state][]']}`, 10)
+  const identityState: IdentityState = props.selected[0].state
   if (typeof identityState !== 'number') {
     console.error('Invalid state', identityState)
     return
