@@ -20,7 +20,7 @@ q-layout(view="hHh LpR lff" style="margin-top: -1px;")
           q-separator
   q-page-container
     nuxt-page
-    //- q-dialog(seamless v-model="eventSeamless" position="bottom")
+    q-dialog(seamless v-model="eventSeamless" position="bottom")
       q-card(style="width: 350px")
         q-linear-progress(:value="eventSeamlessProgress" color="amber-9")
         q-card-section.row.items-center.no-wrap
