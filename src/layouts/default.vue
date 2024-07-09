@@ -35,11 +35,11 @@ q-layout(view="hHh LpR lff" style="margin-top: -1px;")
     q-bar(:class="$q.dark.isActive ? 'bg-dark' : 'bg-white text-black'")
       span
         small AppManager&nbsp;
-        small(v-text="'v' + (orchestratorVersion?.currentVersion || '0.0.0')")
+        small(v-text="'v' + (appManagerVersion?.currentVersion || '0.0.0')")
       small.bold &nbsp;/&nbsp;
       span.q-mr-sm
         small Orchestrator&nbsp;
-        small(v-text="'v' + (appManagerVersion?.currentVersion || '0.0.0')")
+        small(v-text="'v' + (orchestratorVersion?.currentVersion || '0.0.0')")
       q-btn.q-px-xs(
         v-show="appManagerVersion?.updateAvailable"
         flat stretch icon="mdi-alert-box" color="amber-9"
