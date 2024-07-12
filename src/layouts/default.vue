@@ -140,7 +140,6 @@ async function onmessage(event) {
     const data = JSON.parse(event.data)
 
     if (/^job:/.test(data.channel)) {
-      eventSeamless.value = true
       if (eventSeamlessTotal.value === 0) {
         await identityStateStore.fetchProcessingCount()
         eventSeamlessTotal.value = identityStateStore.getProcessingCount
@@ -149,6 +148,7 @@ async function onmessage(event) {
 
     switch (data.channel) {
       case 'job:added':
+        eventSeamless.value = true
         eventSeamlessCurrentJobs.value[data.payload.jobId] = data.payload
         break
 
