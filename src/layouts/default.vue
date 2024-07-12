@@ -89,37 +89,42 @@ const identityStateStore = useIdentityStateStore()
 const auth = useAuth()
 const config = useAppConfig()
 
-const { data: orchestratorVersionRes } = await useHttp<any>('/get-update/sesame-orchestrator')
-const { data: appManagerVersionRes } = await useHttp<any>('/get-update/sesame-app-manager', {
-  query: {
-    current: config.appManagerVersion || '0.0.0',
-  },
-})
-const { data: daemonVersionDump } = await useHttp<any>('/core/backends/execute', {
-  method: 'POST',
-  query: {
-    timeoutDiscard: true,
-    syncTimeout: 1000,
-  },
-  body: {
-    action: 'DUMP_PACKAGE_CONFIG'
-  }
-})
-const { data: daemonVersionRes } = await useHttp<any>('/get-update/sesame-daemon', {
-  query: {
-    current: daemonVersionDump?.value?.job?.result?.data[0]?.version || '0.0.0',
-  },
-})
+let orchestratorVersion = ref(null)
+let appManagerVersion = ref(null)
+let daemonVersion = ref(null)
 
-const orchestratorVersion = orchestratorVersionRes.value?.data
-const appManagerVersion = appManagerVersionRes.value?.data
-const daemonVersion = daemonVersionRes.value?.data
+onMounted(async () => {
+  const { data: orchestratorVersionRes } = await useHttp<any>('/get-update/sesame-orchestrator')
+  const { data: appManagerVersionRes } = await useHttp<any>('/get-update/sesame-app-manager', {
+    query: {
+      current: config.appManagerVersion || '0.0.0',
+    },
+  })
+  const { data: daemonVersionDump } = await useHttp<any>('/core/backends/execute', {
+    method: 'POST',
+    query: {
+      timeoutDiscard: true,
+      syncTimeout: 1000,
+    },
+    body: {
+      action: 'DUMP_PACKAGE_CONFIG'
+    }
+  })
+  const { data: daemonVersionRes } = await useHttp<any>('/get-update/sesame-daemon', {
+    query: {
+      current: daemonVersionDump?.value?.job?.result?.data[0]?.version || '0.0.0',
+    },
+  })
+  orchestratorVersion.value = orchestratorVersionRes.value?.data
+  appManagerVersion.value = appManagerVersionRes.value?.data
+  daemonVersion.value = daemonVersionRes.value?.data
+})
 
 const esUrl = new URL(config.baseUrl + "/core/backends/sse")
 esUrl.searchParams.append("key", '' + auth.user?.sseToken)
 var es = new ReconnectingEventSource(esUrl)
 
-console.log('identityStateStore.getProcessingCount', identityStateStore.getProcessingCount)
+// console.log('identityStateStore.getProcessingCount', identityStateStore.getProcessingCount)
 
 const eventSeamless = ref(false)
 const eventSeamlessTotal = ref(identityStateStore.getProcessingCount)
