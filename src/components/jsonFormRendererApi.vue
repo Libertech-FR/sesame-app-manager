@@ -1,14 +1,15 @@
 <template lang="pug">
-json-forms(
-  v-if="data"
-  :data="data"
-  :schema="schema"
-  :uischema="uischema"
-  :renderers="renderers"
-  validationMode="ValidateAndShow"
-  :additionalErrors="getSchemaValidations"
-  @change="onChange"
-)
+div
+  //- pre(v-html="JSON.stringify({ isNew }, null, 2)")
+  json-forms(
+    :data="data"
+    :schema="schema"
+    :uischema="uischema"
+    :renderers="renderers"
+    validationMode="ValidateAndShow"
+    :additionalErrors="getSchemaValidations"
+    @change="onChange"
+  )
 </template>
 
 <script setup lang="ts">
@@ -49,6 +50,10 @@ const props = defineProps({
     type: Object || null,
     default: {},
   },
+  isNew: {
+    type: Boolean,
+    default: false,
+  },
 });
 
 const validations = defineModel('validations', {
@@ -62,7 +67,7 @@ const data = defineModel('data', {
 });
 
 function onChange(event: JsonFormsChangeEvent) {
-  data.value = event.data;
+  data.value = event.data || {};
 }
 
 const getSchemaValidations = computed(() => {
@@ -82,17 +87,25 @@ const getSchemaValidations = computed(() => {
   return errorObject;
 })
 
+const mode = computed(() => {
+  return props.isNew ? 'create' : 'update';
+});
 
-const { data: result, pending, error, refresh } = await useHttp(`/management/identities/validation/${props.schemaName}`, {
+const { data: result, pending, error, refresh } = await useHttp<any>(`/management/identities/validation/${props.schemaName}`, {
   method: 'GET',
 });
 
-const { data: resultUi, pending: pendingUi, error: errorUi, refresh: refreshUi } = await useHttp(`/management/identities/jsonforms/${props.schemaName}`, {
+const { data: resultUi, pending: pendingUi, error: errorUi, refresh: refreshUi } = await useHttp<any>(`/management/identities/jsonforms/${props.schemaName}`, {
   method: 'GET',
+  params: {
+    mode,
+  },
 });
 
-const schema = ref(result.value.data);
-const uischema = ref(resultUi.value.data);
+// const schema = ref({ ...result.value.data });
+// const uischema = ref({ ...resultUi.value.data });
+const schema = computed(() => result.value?.data);
+const uischema = computed(() => resultUi.value?.data);
 </script>
 
 <style>

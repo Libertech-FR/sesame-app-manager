@@ -16,12 +16,14 @@ div
         schemaName="inetorgperson"
         v-model:data="identity.inetOrgPerson"
         v-model:validations="validations"
+        :isNew="isNew"
       )
     q-tab-panel(v-for="tab in tabs" :key="tab" :name="tab")
       sesame-json-form-renderer-api(
         :schemaName="tab"
         v-model:data="identity.additionalFields.attributes[tab]"
         v-model:validations="validations"
+        :isNew="isNew"
       )
 </template>
 
@@ -53,7 +55,11 @@ const props = defineProps(
           attributes: {},
         },
       },
-    }
+    },
+    isNew: {
+      type: Boolean,
+      default: false,
+    },
   }
 )
 

@@ -93,7 +93,7 @@ q-splitter(
                 q-tooltip.text-body2 Supprimer
             slot(name="right-panel-actions-content-after" :target="target" :isNew="isNew" :crud="crud")
         q-card-section.q-pa-none.fit.flex(style='flex-flow: column; overflow: hidden;')
-          slot(name="right-panel-content" :payload="{ target }")
+          slot(name="right-panel-content" :payload="{ target }" :isNew="isNew")
             slot(name="right-panel-content-before")
             slot(name="right-panel-content-after")
         q-expansion-item.bg-blue-grey-10(v-if='debug' label='Debug' icon='mdi-bug' dark dense)

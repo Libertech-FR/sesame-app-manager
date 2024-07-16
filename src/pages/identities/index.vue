@@ -29,10 +29,12 @@ q-page.container
       sesame-table-state-col(:identity="props.row")
     template(#right-panel-actions-content-after="{target, crud, isNew}")
       sesame-identity-form-actions(:identity="target" @submit="submit($event)" @create="create($event)" @sync="sync" @logs="logs" :crud="crud" :isNew="isNew")
-    template(#right-panel-content="{payload}")
+    template(#right-panel-content="{payload, isNew}")
       sesame-identity-form(
         :identity="{...payload.target}"
-        ref="form" @refresh="refresh"
+        ref="form"
+        :isNew="isNew"
+        @refresh="refresh"
         @submit="submit($event)"
         @sync="sync" @logs="logs"
         @refreshTarget="refreshTarget"
