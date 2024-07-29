@@ -8,6 +8,8 @@ q-btn-group(rounded flat)
   //-   q-tooltip.text-body2(transition-show="scale" transition-hide="scale") Valider les identités sélectionnées
   q-btn(flat icon="mdi-sync" color="orange-8" rounded @click="openUpdateModale" size="md" :disable="selected.length === 0")
     q-tooltip.text-body2(transition-show="scale" transition-hide="scale") Mettre à synchroniser les identités sélectionnées
+  q-btn(flat icon="mdi-mail" color="orange-8" rounded @click="openUpdateModale" size="md" :disable="selected.length === 0")
+    q-tooltip.text-body2(transition-show="scale" transition-hide="scale") Envoyer le mail d'initialisation
   q-btn(flat icon="mdi-close" color="negative" rounded @click="clearSelection" size="md" :disable="selected.length === 0")
     q-tooltip.text-body2(transition-show="scale" transition-hide="scale") Nettoyer la selection
 </template>
