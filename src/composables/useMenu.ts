@@ -22,19 +22,19 @@ type Menu = {
 }
 
 function useMenu(identityStateStore, identityAffectationStore) {
-  const menuParts = ref(['Listes', 'Affectations', 'Etats'])
+  const menuParts = ref(['Listes', 'Affectations', 'Etats','Activation'])
   const menus = ref([
-    {
-      icon: 'mdi-account',
-      label: 'Liste des identités',
-      path: '/identities',
-      color: 'primary',
-      part: 'Listes',
-    },
     {
       icon: 'mdi-card-account-details',
       label: 'Liste des agents',
       path: '/agents',
+      color: 'primary',
+      part: 'Listes',
+    },
+    {
+      icon: 'mdi-account',
+      label: 'Liste des identités',
+      path: '/identities',
       color: 'primary',
       part: 'Listes',
     },
@@ -79,30 +79,6 @@ function useMenu(identityStateStore, identityAffectationStore) {
       badgeValue: 'SYNCED',
     },
     ...config?.menus?.entries || [],
-    // {
-    //   icon: 'mdi-account-off',
-    //   label: 'Etudiants',
-    //   path: '/identities?sort[metadata.lastUpdatedAt]=desc&skip=0&filters[^additionalFields.attributes.supannPerson.supannTypeEntiteAffectation]=/etd/i',
-    //   color: 'primary',
-    //   part: 'Affectations',
-    //   badgeValue: 'ETD',
-    // },
-    // {
-    //   icon: 'mdi-account-tie',
-    //   label: 'Administratifs',
-    //   path: '/identities?sort[metadata.lastUpdatedAt]=desc&skip=0&filters[^additionalFields.attributes.supannPerson.supannTypeEntiteAffectation]=/adm/i',
-    //   color: 'primary',
-    //   part: 'Affectations',
-    //   badgeValue: 'ADM',
-    // },
-    // {
-    //   icon: 'mdi-account-group',
-    //   label: 'Enseignants',
-    //   path: '/identities?sort[metadata.lastUpdatedAt]=desc&skip=0&filters[^additionalFields.attributes.supannPerson.supannTypeEntiteAffectation]=/esn/i',
-    //   color: 'primary',
-    //   part: 'Affectations',
-    //   badgeValue: 'ESN',
-    // },
     {
       icon: 'mdi-account-remove',
       label: 'En erreur',
@@ -111,13 +87,27 @@ function useMenu(identityStateStore, identityAffectationStore) {
       part: 'Etats',
       badgeValue: 'ON_ERROR',
     },
-    // {
-    //   icon: 'mdi-cog',
-    //   label: 'Paramètres',
-    //   path: '/settings',
-    //   color: 'primary',
-    //   part: 'Paramètres'
-    // }
+    {
+      icon: 'mdi-email-alert',
+      label: 'Emails non envoyés',
+      path: '/identities?limit=10&skip=0&filters[&filters[%23initState]=0&sort[metadata.lastUpdatedAt]=desc',
+      color: 'negative',
+      part: 'Activation'
+    },
+    {
+      icon: 'mdi-email-fast',
+      label: 'Emails envoyés',
+      path: '/identities?limit=10&skip=0&filters[&filters[%23initState]=1&sort[metadata.lastUpdatedAt]=desc',
+      color: 'warning',
+      part: 'Activation'
+    },
+    {
+      icon: 'mdi-email-open',
+      label: 'Comptes activés',
+      path: '/identities?limit=10&skip=0&filters[&filters[%23initState]=2&sort[metadata.lastUpdatedAt]=desc',
+      color: 'secondary',
+      part: 'Activation'
+    }
   ])
 
   const badgesValues = ref({

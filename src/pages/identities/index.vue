@@ -68,7 +68,6 @@ const $q = useQuasar()
 const { handleError } = useErrorHandling()
 const form = ref<any>(null)
 const { getStateColor, getStateName } = useIdentityStates()
-
 onMounted(() => {
   initializePagination(identities.value?.total)
 })

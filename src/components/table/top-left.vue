@@ -8,7 +8,7 @@ q-btn-group(rounded flat)
   //-   q-tooltip.text-body2(transition-show="scale" transition-hide="scale") Valider les identités sélectionnées
   q-btn(flat icon="mdi-sync" color="orange-8" rounded @click="openUpdateModale" size="md" :disable="selected.length === 0")
     q-tooltip.text-body2(transition-show="scale" transition-hide="scale") Mettre à synchroniser les identités sélectionnées
-  q-btn(flat icon="mdi-mail" color="orange-8" rounded @click="openUpdateModale" size="md" :disable="selected.length === 0")
+  q-btn(flat icon="mdi-mail" color="orange-8" rounded @click="openInitModale" size="md" :disable="selected.length === 0")
     q-tooltip.text-body2(transition-show="scale" transition-hide="scale") Envoyer le mail d'initialisation
   q-btn(flat icon="mdi-close" color="negative" rounded @click="clearSelection" size="md" :disable="selected.length === 0")
     q-tooltip.text-body2(transition-show="scale" transition-hide="scale") Nettoyer la selection
@@ -19,6 +19,7 @@ import type { components } from '#build/types/service-api'
 import type { PropType } from 'vue'
 import { useRouter } from 'nuxt/app'
 import updateIdentityModale from '../updateIdentityModale.vue'
+import updateInitModale from '../updateInitModale.vue'
 import { useIdentityStates } from '#imports'
 import { IdentityState } from '~/composables'
 import { useIdentityStateStore } from '~/stores/identityState'
@@ -74,7 +75,37 @@ function openUpdateModale() {
       console.log('cancelSync')
     })
 }
+function openInitModale() {
+  const query = route.query || {}
+  // console.log('filters', route.query)
+  // console.log('props.selected', props.selected)
+  // const identityState: IdentityState = parseInt(`${query['filters[@state][]']}`, 10)
+  const identityState: IdentityState = props.selected[0].state
+  if (typeof identityState !== 'number') {
+    console.error('Invalid state', identityState)
+    return
+  }
+  console.log('openInitModale', identityState)
 
+  const name = getStateName(identityState)
+  const count = getStateValue(identityState)
+
+  $q.dialog({
+    component: updateInitModale,
+    componentProps: {
+      selectedIdentities: props.selected,
+      identityTypesName: name,
+      allIdentitiesCount: count,
+    },
+  })
+    .onOk(async (data) => {
+      console.log('initIdentities', data)
+      data.syncAllIdentities ? await sendInitToAllIdentities(identityState) : await sendInitToIdentity(props.selected, identityState)
+    })
+    .onCancel(() => {
+      console.log('cancelinit')
+    })
+}
 function getTargetState(state: IdentityState) {
   switch (state) {
     case IdentityState.TO_VALIDATE:
@@ -132,6 +163,52 @@ async function updateIdentity(identities, state: IdentityState) {
   emit('refresh')
   emit('clear')
 }
+
+async function sendInitToIdentity(identities, state: IdentityState) {
+  const targetState = getTargetState(state)
+
+  console.log('updateIdentity', identities)
+  const ids = identities.map((identity) => identity._id)
+  const { data, error } = await useHttp(`/management/passwd/initmany`, {
+    method: 'post',
+    body: {
+      ids
+    },
+  })
+
+  if (error.value) {
+    $q.notify({
+      message: error.value.data.message,
+      color: 'negative',
+    })
+    return
+  }
+
+  $q.notify({
+    message: `Les identités ont été mises à jour avec succès`,
+    color: 'positive',
+  })
+  await fetchAllStateCount()
+  emit('refresh')
+  emit('clear')
+}
+
+async function sendInitToAllIdentities(state: IdentityState) {
+  const { data: identities } = await useHttp(`/management/identities?limit=999999&&filters[@state][]=${state}`, {
+    method: 'get',
+  })
+
+  if (!identities) {
+    $q.notify({
+      message: 'Aucune identité trouvée',
+      color: 'negative',
+    })
+    return
+  }
+  sendInitToIdentity(identities.value.data, state)
+}
+
+
 
 function clearSelection() {
   emit('clear')

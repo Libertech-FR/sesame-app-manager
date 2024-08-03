@@ -1,10 +1,10 @@
 <template lang="pug">
-q-card.shadow-24.row(style="max-width: 800px;")
+q-card.col-4.shadow-24.row(style="max-width: 1200px;")
   q-toolbar.bg-primary.text-white
     q-toolbar-title Connexion
-  q-card-section.col-6.flex.items-center
+  q-card-section.col-4.flex.items-center
     q-img(src="/config/login-side.png" error-src="/default.png" alt="Ecole logo" style="max-width: 100%;")
-  q-card-section.col-6.column
+  q-card-section.col-8.column
     form(@submit.prevent='submit')
       q-card.no-shadow
         q-card-section.q-pt-sm.q-px-lg.q-pb-lg
@@ -15,13 +15,6 @@ q-card.shadow-24.row(style="max-width: 800px;")
       q-card-actions.column.justify-between
         .col.q-my-sm.flex.items-center
           q-btn(@click.prevent='submit' type='submit' color='primary') Se connecter
-        .col.row
-          q-separator
-        .col.row.q-my-sm.justify-between
-          .col-4
-            q-btn(@click="" color="primary" style="height:100%" disabled) Se connecter avec CAS
-          .col-4
-            q-btn(@click="" color="primary" style="height:100%" disabled) Se connecter avec microsoft
 
 </template>
 

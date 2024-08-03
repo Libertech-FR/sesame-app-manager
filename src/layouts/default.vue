@@ -15,7 +15,7 @@ q-layout(view="hHh LpR lff" style="margin-top: -1px;")
             :href="menu.path" :active="menu.path === $route.fullPath"
           )
             q-item-section(avatar)
-              q-icon(:name="menu.icon")
+              q-icon(:name="menu.icon" :color="menu.color")
             q-badge(v-if="menu.badgeValue" :color="menu.badge.color" floating) {{ menu.badge.value }}
           q-separator
   q-page-container
@@ -88,7 +88,6 @@ const identityStateStore = useIdentityStateStore()
 
 const auth = useAuth()
 const config = useAppConfig()
-
 let orchestratorVersion = ref(null)
 let appManagerVersion = ref(null)
 let daemonVersion = ref(null)
