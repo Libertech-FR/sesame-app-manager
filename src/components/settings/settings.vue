@@ -38,13 +38,35 @@
               </q-item-section>
             </q-item>
           </q-list>
+          <q-list>
+            <q-item clickable @click="onSmtp">
+              <q-item-section avatar>
+                <q-icon name="mdi-mail"/>
+              </q-item-section>
+              <q-item-section>
+                Serveur SMTP
+              </q-item-section>
+            </q-item>
+          </q-list>
+          <q-list>
+            <q-item clickable @click="onSms">
+              <q-item-section avatar>
+                <q-icon name="mdi-message-processing"/>
+              </q-item-section>
+              <q-item-section>
+                Serveur SMS
+              </q-item-section>
+            </q-item>
+          </q-list>
         </q-scroll-area>
       </q-drawer>
 
       <q-page-container>
         <q-page padding :class="$q.dark.isActive ? 'bg-black' : 'bg-white'">
-          <sesame-agents v-if="agent === true"></sesame-agents>
-          <sesame-password-policy v-if="passPolicy === true"></sesame-password-policy>
+          <sesame-settings-agents v-if="agent === true"></sesame-settings-agents>
+          <sesame-settings-password-policy v-if="passPolicy === true"></sesame-settings-password-policy>
+          <sesame-settings-smtp v-if="smtp === true"></sesame-settings-smtp>
+          <sesame-settings-sms v-if="sms === true"></sesame-settings-sms>
         </q-page>
       </q-page-container>
     </q-layout>
@@ -55,15 +77,23 @@
 
 <script setup>
 import {ref} from "vue";
-
 const drawer = ref(false)
 const agent=ref(false)
 const passPolicy=ref(false)
+const smtp=ref(false)
+const sms=ref(false)
 function onAgents() {
   resetMenu()
   agent.value=true
 }
-
+function onSmtp(){
+  resetMenu()
+  smtp.value=true
+}
+function onSms(){
+  resetMenu()
+  sms.value=true
+}
 function onPassPolicy() {
   resetMenu()
   passPolicy.value=true
@@ -71,6 +101,8 @@ function onPassPolicy() {
 function resetMenu(){
   agent.value=false
   passPolicy.value=false
+  smtp.value=false
+  sms.value=false
 }
 </script>
 
