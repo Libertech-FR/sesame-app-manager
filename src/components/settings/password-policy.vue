@@ -19,43 +19,42 @@
 
       </div>
       <div row="row">
-        <q-toggle
+        <q-toggle dense
           v-model="hasUpper"
           color="green"
           label="Doit contenir au moins une Majuscule"
         />
         </div>
         <div row="row">
-          <q-toggle
+          <q-toggle dense
             v-model="hasLower"
             color="blue"
             label="Doit contenir au moins une Minuscule"
           />
         </div>
       <div row="row">
-        <q-toggle
+        <q-toggle dense
           v-model="hasNumber"
           color="orange"
           label="Doit contenir au moins un chiffre"
         />
       </div>
       <div row="row">
-        <q-toggle
+        <q-toggle dense
           v-model="hasSpecialChars"
           color="blue"
           label="Doit contenir au moins un caractère special"
         />
       </div>
       <div row="row">
-      <q-toggle
+      <q-toggle dense
         v-model="checkPwned"
         color="black"
         label="Vérifier si le mot de pass est connu avec pwned "
       />
-
     </div>
       <div row="row">
-        <q-toggle
+        <q-toggle dense
           v-model="smsEnabled"
           color="red"
           label="Reinitialisation par SMS active"
@@ -69,6 +68,12 @@
       </div>
       <div class="row">
         <q-input style="width:50%" type="url" outlined v-model="redirectUrl"   label="Url de redirection après un changement de mot de passe " dense/>
+      </div>
+      <div class="row">
+        <q-input style="width:30%" type="number" outlined v-model="resetCodeTTL"   label="Temps de vie du code de reninitialisation du code (en secondes)" dense/>
+      </div>
+      <div class="row">
+        <q-input style="width:30%" type="number" outlined v-model="initTokenTTL"   label="Temps de vie du mail d'initialisation  (en secondes)" dense/>
       </div>
       <div class="q-pa-md q-gutter-sm fixed-bottom">
         <q-btn color="primary" style="width: 100%" @click="saveParams">
@@ -97,6 +102,8 @@ const mobileAttribute=ref('')
 const redirectUrl=ref('')
 const goodComplexity=ref(0)
 const minComplexity=ref(0)
+const resetCodeTTL=ref(0)
+const initTokenTTL=ref(0)
 onMounted(() => {
   readParams()
 })
@@ -124,6 +131,8 @@ async function readParams(){
     goodComplexity.value=result.value.data.goodComplexity
     mobileAttribute.value=result.value.data.mobileAttribute
     mailAttribute.value=result.value.data.emailAttribute
+    resetCodeTTL.value=result.value.data.resetCodeTTL
+    initTokenTTL.value=result.value.data.initTokenTTL
   }
 }
 async function saveParams(){
@@ -139,7 +148,9 @@ async function saveParams(){
       resetBySms: smsEnabled.value,
       redirectUrl: redirectUrl.value,
       emailAttribute: mailAttribute.value,
-      mobileAttribute: mobileAttribute.value
+      mobileAttribute: mobileAttribute.value,
+      resetCodeTTL: resetCodeTTL.value,
+      initTokenTTL: initTokenTTL.value
     }
   const { data: result, pending, error, refresh } = await useHttp(`/settings/passwdadm/setpolicies`, {
     method: 'POST',
