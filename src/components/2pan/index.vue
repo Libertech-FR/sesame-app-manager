@@ -19,7 +19,7 @@ q-splitter(
         :visible-columns="visibleColumnsInternal"
         :row-key="rowKey"
         @request="onRequest($event, props.total)"
-        :rows-per-page-options="[12, 16, 20]"
+        :rows-per-page-options="[12, 16, 20,50,0]"
         :columns="cols"
         :loading="pending"
         rows-per-page-label="Lignes par page"
