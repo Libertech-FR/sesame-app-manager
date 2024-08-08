@@ -22,7 +22,7 @@ type Menu = {
 }
 
 function useMenu(identityStateStore, identityAffectationStore) {
-  const menuParts = ref(['Listes', 'Affectations', 'Etats','Activation'])
+  const menuParts = ref(['Listes', 'Affectations', 'Etats','Activation','Données'])
   const menus = ref([
     {
       icon: 'mdi-card-account-details',
@@ -107,6 +107,13 @@ function useMenu(identityStateStore, identityAffectationStore) {
       path: '/identities?limit=10&skip=0&filters[&filters[%23initState]=2&sort[metadata.lastUpdatedAt]=desc',
       color: 'secondary',
       part: 'Activation'
+    },
+    {
+      icon: 'mdi-download-outline',
+      label: 'Exporter',
+      path: '/identities/export',
+      color: 'primary',
+      part: 'Données'
     }
   ])
 
