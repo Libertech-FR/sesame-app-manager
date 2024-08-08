@@ -89,11 +89,18 @@ const identityStateStore = useIdentityStateStore()
 const auth = useAuth()
 const config = useAppConfig()
 
-let orchestratorVersion = ref(null)
-let appManagerVersion = ref(null)
-let daemonVersion = ref(null)
+let orchestratorVersion = ref<object | null>(null)
+let appManagerVersion = ref<object | null>(null)
+let daemonVersion = ref<object | null>(null)
 
 onMounted(async () => {
+  if (process.env.NODE_ENV === 'development') {
+    orchestratorVersion.value = { currentVersion: '0.0.0-dev', lastVersion: '0.0.0-dev', updateAvailable: false }
+    appManagerVersion.value = { currentVersion: '0.0.0-dev', lastVersion: '0.0.0-dev', updateAvailable: false }
+    daemonVersion.value = { currentVersion: '0.0.0-dev', lastVersion: '0.0.0-dev', updateAvailable: false }
+    return
+  }
+
   const { data: orchestratorVersionRes } = await useHttp<any>('/get-update/sesame-orchestrator')
   const { data: appManagerVersionRes } = await useHttp<any>('/get-update/sesame-app-manager', {
     query: {
