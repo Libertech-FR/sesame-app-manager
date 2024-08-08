@@ -33,7 +33,7 @@ export default defineNuxtConfig({
     },
   },
   css: ['~/assets/sass/global.sass'],
-  plugins: [{ src: '~/plugins/ofetch' }],
+  plugins: [/* { src: '~/plugins/ofetch' } */],
   components: {
     global: true,
     dirs: [{ path: '~/components', prefix: 'sesame' }],
@@ -100,7 +100,7 @@ export default defineNuxtConfig({
     },
   },
   http: {
-    debug: process.env.NODE_ENV === 'development',
+    debug: /true|on|yes|1/i.test(`${process.env.DEBUG}`),
     browserBaseURL: SESAME_APP_API_URL,
     baseURL: SESAME_APP_API_URL,
   },
