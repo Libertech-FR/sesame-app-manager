@@ -114,8 +114,8 @@ export const useQuasarControl = <
   };
 
   // console.log('input.control.value.data', input.control.value.data)
-  if (isEmpty(input.control.value.data)) {
-    input.handleChange(input.control.value.path, input.control.value.schema.default || undefined)
+  if (isEmpty(input.control.value?.data)) {
+    input.handleChange(input.control.value?.path, input.control.value?.schema?.default || undefined)
     // console.log('trigger default', input.control.value.schema.default || null)
   }
 
