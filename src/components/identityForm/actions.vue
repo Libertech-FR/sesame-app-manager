@@ -2,8 +2,8 @@
 div
   q-btn(color="positive" icon='mdi-content-save-plus' @click="create" v-show="isNew" v-if="crud.create")
     q-tooltip.text-body2 Créer
-  q-btn.q-mx-xs(@click="sendInit" color="primary" icon="mdi-mail"  :disabled="props.identity.state != IdentityState.SYNCED")
-    q-tooltip.text-body2(slot="trigger") Envoyer le mail d'initialisation
+  q-btn.q-mx-xs(@click="sendInit" color="primary" icon="mdi-email-arrow-right"  :disabled="props.identity.state != IdentityState.SYNCED")
+    q-tooltip.text-body2(slot="trigger") Envoyer le mail d'invitation
   q-btn.q-mx-xs(@click="submit" color="positive" icon="mdi-check"  v-show="!isNew" v-if="crud.update")
     q-tooltip.text-body2(slot="trigger") Enregistrer les modifications
   q-btn.q-mx-xs(v-if="props.identity?._id" @click="sync" color="orange-8" :disabled="props.identity.state != IdentityState.TO_VALIDATE" icon="mdi-sync")

@@ -64,7 +64,7 @@ function useMenu(identityStateStore, identityAffectationStore) {
     },
     {
       icon: 'mdi-loading',
-      label: 'En cours de synchronisation',
+      label: 'En cours de synchro.',
       path: `/identities?sort[metadata.lastUpdatedAt]=desc&skip=0&filters[@state][]=${IdentityState.PROCESSING}`,
       color: 'primary',
       part: 'Etats',
@@ -89,14 +89,14 @@ function useMenu(identityStateStore, identityAffectationStore) {
     },
     {
       icon: 'mdi-email-alert',
-      label: 'Emails non envoyés',
+      label: 'Invitations non envoyés',
       path: '/identities?limit=10&skip=0&filters[&filters[%23initState]=0&sort[metadata.lastUpdatedAt]=desc',
       color: 'negative',
       part: 'Activation'
     },
     {
       icon: 'mdi-email-fast',
-      label: 'Emails envoyés',
+      label: 'Invitations envoyées',
       path: '/identities?limit=10&skip=0&filters[&filters[%23initState]=1&sort[metadata.lastUpdatedAt]=desc',
       color: 'warning',
       part: 'Activation'
@@ -105,7 +105,14 @@ function useMenu(identityStateStore, identityAffectationStore) {
       icon: 'mdi-email-open',
       label: 'Comptes activés',
       path: '/identities?limit=10&skip=0&filters[&filters[%23initState]=2&sort[metadata.lastUpdatedAt]=desc',
-      color: 'secondary',
+      color: 'positive',
+      part: 'Activation'
+    },
+    {
+      icon: 'mdi-email-remove',
+      label: 'Invitations périmées',
+      path: '/identities/outdated',
+      color: 'accent',
       part: 'Activation'
     },
     {

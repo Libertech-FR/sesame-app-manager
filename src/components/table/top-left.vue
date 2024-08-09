@@ -1,15 +1,13 @@
 <template lang="pug">
 q-btn-group(rounded flat)
-  q-btn(flat icon="mdi-eye" color="primary" rounded @click="goToIdentity(selected[0])" size="md" :disable="selected.length === 0 || selected.length !== 1")
-    q-tooltip.text-body2(transition-show="scale" transition-hide="scale") Afficher les identités sélectionnées
   //- q-btn(flat icon="mdi-merge" color="primary" rounded @click="merge" size="md" :disable="true ||selected.length === 0 || selected.length === 1")
   //-   q-tooltip.text-body2(transition-show="scale" transition-hide="scale") Fusionner les identités sélectionnées
   //- q-btn(flat icon="mdi-check" color="primary" rounded @click="openUpdateModale(IdentityState.TO_VALIDATE)" size="md" :disable="selected.length === 0")
   //-   q-tooltip.text-body2(transition-show="scale" transition-hide="scale") Valider les identités sélectionnées
   q-btn(flat icon="mdi-sync" color="orange-8" rounded @click="openUpdateModale" size="md" :disable="selected.length === 0")
     q-tooltip.text-body2(transition-show="scale" transition-hide="scale") Mettre à synchroniser les identités sélectionnées
-  q-btn(flat icon="mdi-mail" color="orange-8" rounded @click="openInitModale" size="md" :disable="selected.length === 0")
-    q-tooltip.text-body2(transition-show="scale" transition-hide="scale") Envoyer le mail d'initialisation
+  q-btn(flat icon="mdi-email-arrow-right" color="primary" rounded @click="openInitModale" size="md" :disable="selected.length === 0")
+    q-tooltip.text-body2(transition-show="scale" transition-hide="scale") Envoyer le mail d'invitation
   q-btn(flat icon="mdi-close" color="negative" rounded @click="clearSelection" size="md" :disable="selected.length === 0")
     q-tooltip.text-body2(transition-show="scale" transition-hide="scale") Nettoyer la selection
 </template>

@@ -33,7 +33,7 @@ q-splitter(
         template(v-for="(_, name) in $slots" v-slot:[name]="slotData")
           slot(:name="name" v-bind="slotData")
         template(v-slot:top-left)
-          q-btn-group(v-if="leftBtnHidden" rounded flat)
+          q-btn-group( rounded flat)
             slot(name="top-left-btn-grp" :selectedValues="selected")
               slot(name="top-left-btn-grp-content-before")
               slot(name="top-left-btn-grp-content-after")

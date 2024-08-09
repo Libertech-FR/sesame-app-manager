@@ -7,11 +7,11 @@ q-page.container
     div.row.q-gutter-md
       q-btn(v-for="item in getMenuByPart(part)" :key="item.label"
         tile :color="item.color"
-        class="col-xs-12 col-sm-6 col-md-4 col-lg-3"
+        class="col-xs-12 col-sm-6 col-md-6 col-lg-4"
         :label="item.label"
         @click="push(item.path)"
         :icon="item.icon"
-        style="height: 60px; font-size: 18px;")
+        style="height: 60px; font-size: 18px; width:20%;" )
           q-badge(v-if="item.badgeValue" :color="item.badge.color" floating) {{ item.badge.value }}
       //- span(v-for="item in getMenuByPart(part)" :key="item.label") {{ item }}
 </template>
