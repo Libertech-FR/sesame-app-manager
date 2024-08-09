@@ -94,8 +94,10 @@ const schemas = computed(() => {
 })
 
 async function addSchema(schema) {
-  console.log('identity.value', identity.value)
+  // console.log('identity.value', identity.value)
   if (!identity.value.additionalFields) identity.value.additionalFields = { objectClasses: [], attributes: {} }
+  if (!identity.value.additionalFields.objectClasses) identity.value.additionalFields.objectClasses = []
+  if (!identity.value.additionalFields.attributes) identity.value.additionalFields.attributes = {}
   identity.value.additionalFields.attributes[schema.name] = {}
   identity.value.additionalFields.objectClasses.push(schema.name)
 }
