@@ -21,6 +21,7 @@ import updateInitModale from '../updateInitModale.vue'
 import { useIdentityStates } from '#imports'
 import { IdentityState } from '~/composables'
 import { useIdentityStateStore } from '~/stores/identityState'
+import {computed} from "vue";
 
 const $q = useQuasar()
 
@@ -29,6 +30,10 @@ const props = defineProps({
     type: Array as PropType<any[]>,
     default: () => [],
   },
+  total: {
+    type: Number,
+    default:0
+  }
 })
 
 const emit = defineEmits(['updateLifestep', 'clear', 'refresh'])
@@ -73,8 +78,18 @@ function openUpdateModale() {
       console.log('cancelSync')
     })
 }
+function returnFilter(){
+
+  const rest  = route.query
+  let filters={}
+  for (const [key, value] of Object.entries(rest)){
+    if (key === 'limit' || key === 'skip' || key === 'sort' || key === 'read'){
+      delete rest[key]
+    }
+  }
+  return rest
+}
 function openInitModale() {
-  const query = route.query || {}
   // console.log('filters', route.query)
   // console.log('props.selected', props.selected)
   // const identityState: IdentityState = parseInt(`${query['filters[@state][]']}`, 10)
@@ -86,22 +101,24 @@ function openInitModale() {
   console.log('openInitModale', identityState)
 
   const name = getStateName(identityState)
-  const count = getStateValue(identityState)
+
 
   $q.dialog({
     component: updateInitModale,
     componentProps: {
       selectedIdentities: props.selected,
       identityTypesName: name,
-      allIdentitiesCount: count,
+      allIdentitiesCount: 0,
     },
   })
     .onOk(async (data) => {
-      console.log('initIdentities', data)
-      data.syncAllIdentities ? await sendInitToAllIdentities(identityState) : await sendInitToIdentity(props.selected, identityState)
+      if (data.initAllIdentities === true){
+        await sendInitToAllIdentities()
+      }else{
+        await sendInitToIdentity(props.selected)
+      }
     })
     .onCancel(() => {
-      console.log('cancelinit')
     })
 }
 function getTargetState(state: IdentityState) {
@@ -162,9 +179,7 @@ async function updateIdentity(identities, state: IdentityState) {
   emit('clear')
 }
 
-async function sendInitToIdentity(identities, state: IdentityState) {
-  const targetState = getTargetState(state)
-
+async function sendInitToIdentity(identities) {
   console.log('updateIdentity', identities)
   const ids = identities.map((identity) => identity._id)
   const { data, error } = await useHttp(`/management/passwd/initmany`, {
@@ -191,11 +206,11 @@ async function sendInitToIdentity(identities, state: IdentityState) {
   emit('clear')
 }
 
-async function sendInitToAllIdentities(state: IdentityState) {
-  const { data: identities } = await useHttp(`/management/identities?limit=999999&&filters[@state][]=${state}`, {
+async function sendInitToAllIdentities() {
+  const { data: identities } = await useHttp('/management/identities?limit=99999', {
     method: 'get',
+    query:returnFilter()
   })
-
   if (!identities) {
     $q.notify({
       message: 'Aucune identité trouvée',
@@ -203,7 +218,7 @@ async function sendInitToAllIdentities(state: IdentityState) {
     })
     return
   }
-  sendInitToIdentity(identities.value.data, state)
+  sendInitToIdentity(identities.value.data)
 }
 
 

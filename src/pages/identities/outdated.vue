@@ -29,7 +29,7 @@
 import {ref} from "vue";
 import updateInitModale from "../../components/updateInitModale.vue";
 import {useQuasar} from "quasar";
-
+let rowsCount=0
 const selected=ref([])
 const $q=useQuasar()
 const { data: fieldsName, pending1, error1} = await useHttp('/management/identities/validation', {
@@ -48,12 +48,13 @@ const { data: fieldsName, pending1, error1} = await useHttp('/management/identit
 const { data: rows1, pending, error, refresh } = await useHttp('/management/passwd/ioutdated', {
   method: 'GET',
   transform: (result)=>{
+    rowsCount=result.data.length
     const allFields=result.data.map((enr)=>{
       let addF={}
       for (const [key, value] of Object.entries(enr?.additionalFields?.attributes||{})) {
         addF = {...addF, ...value}
       }
-      const step1={...enr.inetOrgPerson,...addF}
+      const step1={_id:enr._id,...enr.inetOrgPerson,...addF}
       return step1
     })
     return allFields
@@ -61,24 +62,66 @@ const { data: rows1, pending, error, refresh } = await useHttp('/management/pass
 });
 
 function openInitModale() {
-
-
   $q.dialog({
     component: updateInitModale,
     componentProps: {
       selectedIdentities: selected.value,
       identityTypesName: name,
-      allIdentitiesCount: rows1.length,
+      allIdentitiesCount: rows1.value.length
     },
   })
     .onOk(async (data) => {
       console.log('initIdentities', data)
-      data.syncAllIdentities ? await sendInitToAllIdentities(identityState) : await sendInitToIdentity(props.selected, identityState)
+      data.initAllIdentities ? await sendInitToAllIdentities() : await sendInitToIdentity(selected.value)
     })
     .onCancel(() => {
       console.log('cancelinit')
     })
 }
+async function sendInitToIdentity(identities) {
+
+  console.log('updateIdentity', identities)
+  const ids = identities.map((identity) => identity._id)
+  const { data, error } = await useHttp(`/management/passwd/initmany`, {
+    method: 'post',
+    body: {
+      ids
+    },
+  })
+
+  if (error.value) {
+    $q.notify({
+      message: error.value.data.message,
+      color: 'negative',
+    })
+    return
+  }
+
+  $q.notify({
+    message: `Les identités ont été mises à jour avec succès`,
+    color: 'positive',
+  })
+  emit('refresh')
+  emit('clear')
+}
+
+async function sendInitToAllIdentities() {
+  const { data: identities } = await useHttp('/management/passwd/ioutdated', {
+    method: 'get',
+  })
+
+  if (!identities) {
+    $q.notify({
+      message: 'Aucune identité trouvée',
+      color: 'negative',
+    })
+    return
+  }
+  sendInitToIdentity(identities.value.data, state)
+}
+
+
+
 </script>
 
 <style scoped>

@@ -8,13 +8,13 @@
       <q-input style="width:50%" type="text" outlined v-model="host"   label="Serveur SMTP (URL smtp://...) " dense/>
     </div>
     <div class="row">
-      <q-input style="width:30%" type="text" outlined v-model="emetteur"   label="Adresse emetteur" dense/>
+      <q-input style="width:50%" type="text" outlined v-model="emetteur"   label="Adresse emetteur" dense/>
     </div>
     <div class="row">
-      <q-input style="width:30%" type="text" outlined v-model="username"   label="Compte SMTP" dense/>
+      <q-input style="width:50%" type="text" outlined v-model="username"   label="Compte SMTP" dense/>
     </div>
     <div class="row">
-      <q-input style="width:30%" :type="typePasswordProp" outlined v-model="password"   label="Mot de passe" dense>
+      <q-input style="width:50%" :type="typePasswordProp" outlined v-model="password"   label="Mot de passe" dense>
         <template v-slot:append>
           <q-icon name="mdi-eye" @click="togglePassword" style="cursor: pointer;"/>
         </template>

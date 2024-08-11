@@ -48,7 +48,7 @@ const props = defineProps({
     type: Number,
     required: true,
     default: 0,
-  },
+  }
 })
 
 defineEmits([...useDialogPluginComponent.emits])
@@ -56,7 +56,7 @@ defineEmits([...useDialogPluginComponent.emits])
 const mainText = computed(() => `Vous êtes sur le point d envoyer une invitation à ${props.selectedIdentities.length} identités "${props.identityTypesName}". Voulez-vous continuer ?`)
 
 const checkboxLabel = computed(() => {
-  return `Envoyer l\'invitation à toutes les identités "${props.identityTypesName}" (${props.allIdentitiesCount})`
+  return `Envoyer l\'invitation à toutes les identités  (${props.allIdentitiesCount})`
 })
 
 const initAllIdentities = ref(false)

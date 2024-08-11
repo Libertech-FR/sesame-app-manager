@@ -8,17 +8,17 @@
       <q-input style="width:50%" type="text" outlined v-model="host"   label="Serveur SMPP (URL smpp://...) " dense/>
     </div>
     <div class="row">
-      <q-input style="width:30%" type="text" outlined v-model="systemId"   label="System ID" dense/>
+      <q-input style="width:50%" type="text" outlined v-model="systemId"   label="System ID" dense/>
     </div>
     <div class="row">
-      <q-input style="width:30%" :type="typePasswordProp" outlined v-model="password"   label="Mot de passe" dense>
+      <q-input style="width:50%" :type="typePasswordProp" outlined v-model="password"   label="Mot de passe" dense>
         <template v-slot:append>
           <q-icon name="mdi-eye" @click="togglePassword" style="cursor: pointer;"/>
         </template>
       </q-input>
     </div>
     <div class="row">
-      <q-input style="width:30%" type="text" outlined v-model="sourceAddr"   label="Nom ou numéro de l'emetteur" dense/>
+      <q-input style="width:50%" type="text" outlined v-model="sourceAddr"   label="Nom ou numéro de l'emetteur" dense/>
     </div>
     <div class="q-pa-md q-gutter-sm fixed-bottom">
       <q-btn color="primary" style="width: 100%" @click="saveParams">
