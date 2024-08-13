@@ -1,7 +1,7 @@
 <template lang="pug">
 q-layout(view="hHh LpR lff" style="margin-top: -1px;")
   sesame-appbar(@closeDrawer="drawer = !drawer" @syncing="syncing")
-  q-drawer.flex(v-model="drawer" side="left" :mini="true" bordered persistent)
+  q-drawer.flex(v-model="drawer" side="left" :mini="true" :breakpoint="0" bordered persistent)
     template(#mini)
       q-scroll-area.fit.mini-slot.cursor-pointer
         q-list
