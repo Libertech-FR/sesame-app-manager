@@ -19,7 +19,7 @@ q-splitter(
         :visible-columns="visibleColumnsInternal"
         :row-key="rowKey"
         @request="onRequest($event, props.total)"
-        :rows-per-page-options="[12, 16, 20]"
+        :rows-per-page-options="[12, 16, 20,50,0]"
         :columns="cols"
         :loading="pending"
         rows-per-page-label="Lignes par page"
@@ -33,7 +33,7 @@ q-splitter(
         template(v-for="(_, name) in $slots" v-slot:[name]="slotData")
           slot(:name="name" v-bind="slotData")
         template(v-slot:top-left)
-          q-btn-group(v-if="leftBtnHidden" rounded flat)
+          q-btn-group( rounded flat)
             slot(name="top-left-btn-grp" :selectedValues="selected")
               slot(name="top-left-btn-grp-content-before")
               slot(name="top-left-btn-grp-content-after")

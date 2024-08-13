@@ -2,8 +2,10 @@
 div
   //q-btn(v-for="button in buttons" :key="button.icon" round flat :icon="button.icon" size="md").q-mx-sm
     q-tooltip.text-body2(transition-show="scale" transition-hide="scale") {{ button.name }}
+
   q-btn(v-if="badgesValues.TO_SYNC > 0" icon="mdi-sync" square color="amber-9" size="md" :label="badgesValues.TO_SYNC +' items à Synchroniser'" @click="syncAll")
-  q-btn(v-if="debug" @click="$q.dark.toggle()" flat size="md" icon="mdi-theme-light-dark")
+  q-btn( icon="mdi-cog" size="md" flat @click="displaySettings")
+  q-btn( @click="$q.dark.toggle()" flat size="md" icon="mdi-theme-light-dark")
   q-btn-dropdown(icon="mdi-account-circle-outline" :label="auth?.user?.displayName" round flat size="md")
     q-list
       q-item.q-pa-none(v-for="button in buttons" :key="button.name")
@@ -16,11 +18,14 @@ div
           flat
           dense
         )
+  q-dialog( v-model="settings" full-width persistent)
+     sesame-settings
 </template>
 
 <script lang="ts" setup>
 import { useIdentityStateStore } from "~/stores/identityState"
-
+import {ref} from "vue";
+let settings=ref(false)
 
 const identityStateStore = useIdentityStateStore()
 
@@ -32,21 +37,7 @@ const auth = useAuth()
 const { debug } = useDebug()
 // console.log(auth)
 const buttons = [
-  // {
-  //   icon: 'mdi-cog',
-  //   name: 'Paramètres',
-  //   to: '/settings',
-  // },
-  // {
-  //   icon: 'mdi-bell',
-  //   name: 'Notifications',
-  //   to: '#',
-  // },
-  // {
-  //   icon: 'mdi-help',
-  //   name: 'Aide',
-  //   to: '#',
-  // },
+
   {
     icon: 'mdi-logout',
     name: 'Déconnexion',
@@ -59,7 +50,9 @@ const buttons = [
 ]
 
 const emits = defineEmits(['syncing'])
-
+function displaySettings(){
+  settings.value=true
+}
 async function syncAll() {
   emits('syncing', { count: badgesValues.value.TO_SYNC })
   await useHttp('/core/backends/syncall', {
@@ -71,4 +64,5 @@ async function syncAll() {
   await identityStateStore.fetchToSyncCount()
   await identityStateStore.fetchSyncedCount()
 }
+
 </script>

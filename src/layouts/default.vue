@@ -15,7 +15,7 @@ q-layout(view="hHh LpR lff" style="margin-top: -1px;")
             :href="menu.path" :active="menu.path === $route.fullPath"
           )
             q-item-section(avatar)
-              q-icon(:name="menu.icon")
+              q-icon(:name="menu.icon" :color="menu.color")
             q-badge(v-if="menu.badgeValue" :color="menu.badge.color" floating) {{ menu.badge.value }}
           q-separator
   q-page-container
@@ -92,6 +92,7 @@ const config = useAppConfig()
 let orchestratorVersion = ref<object | null>(null)
 let appManagerVersion = ref<object | null>(null)
 let daemonVersion = ref<object | null>(null)
+
 
 onMounted(async () => {
   if (process.env.NODE_ENV === 'development') {

@@ -2,6 +2,8 @@
 div
   q-btn(color="positive" icon='mdi-content-save-plus' @click="create" v-show="isNew" v-if="crud.create")
     q-tooltip.text-body2 Créer
+  q-btn.q-mx-xs(@click="sendInit" color="primary" icon="mdi-email-arrow-right"  :disabled="props.identity.state != IdentityState.SYNCED")
+    q-tooltip.text-body2(slot="trigger") Envoyer le mail d'invitation
   q-btn.q-mx-xs(@click="submit" color="positive" icon="mdi-check"  v-show="!isNew" v-if="crud.update")
     q-tooltip.text-body2(slot="trigger") Enregistrer les modifications
   q-btn.q-mx-xs(v-if="props.identity?._id" @click="sync" color="orange-8" :disabled="props.identity.state != IdentityState.TO_VALIDATE" icon="mdi-sync")
@@ -21,9 +23,9 @@ import { useFetch } from 'nuxt/app'
 import { useIdentityStates } from '~/composables'
 import { useErrorHandling } from '#imports'
 
+
 type IdentityResponse = operations['IdentitiesController_search']['responses']['200']['content']['application/json']
 type Identity = components['schemas']['IdentitiesDto']
-
 const props = defineProps({
   identity: {
     type: Object as PropType<Identity>,
@@ -67,6 +69,28 @@ const stateColor = computed(() => {
 
 async function sync() {
   emits('sync')
+}
+
+async function sendInit(){
+  //envoi le mail
+
+  const { data: result, pending, error, refresh } = await useHttp(`/management/passwd/init`, {
+    method: 'POST',
+    body: { uid: props.identity.inetOrgPerson.uid  },
+  });
+  if (error.value) {
+    handleError({
+      error: error.value,
+      message: 'Erreur lors de l\'envoi du mail'
+    })
+  } else {
+    $q.notify({
+      message: 'Le mail a été envoyé',
+      color: 'positive',
+      position: 'top-right',
+      icon: 'mdi-check-circle-outline',
+    })
+  }
 }
 
 function logs() {

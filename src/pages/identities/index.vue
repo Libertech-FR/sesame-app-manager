@@ -21,8 +21,10 @@ q-page.container
     :defaultRightPanelButton="false"
   )
     template(#right-panel-title-before="props")
-      q-icon(name="mdi-circle" :color="getStateColor(props?.target?.state)" :class="`q-mr-xs`")
+      q-icon(name="mdi-circle" :color="getStateColor(props?.target?.state)" class="q-mr-xs")
         q-tooltip.text-body2(slot="trigger") {{ getStateName(props.target.state) }}
+      q-icon(:name="getInitStateIcon(props?.target?.initState)" :color="getInitStateColor(props?.target?.initState)" class="q-mr-xs")
+        q-tooltip.text-body2(slot="trigger") {{ getInitStateName(props.target.initState) }}
     template(#top-left-btn-grp="{selectedValues}")
       sesame-table-top-left(:selected="selectedValues" @refresh="refresh" @clear="clearSelected")
     template(#body-cell-states="props")
@@ -49,7 +51,7 @@ import { useQuasar } from 'quasar'
 import type { QTableProps } from 'quasar'
 import type { components, operations } from '#build/types/service-api'
 import { useErrorHandling } from '#imports'
-import { useIdentityStates } from '~/composables'
+import { useIdentityStates,useIdentityInitStates } from '~/composables'
 import { identity } from '@vueuse/core'
 import { useIdentityStateStore } from "~/stores/identityState"
 type Identity = components['schemas']['IdentitiesDto']
@@ -68,6 +70,7 @@ const $q = useQuasar()
 const { handleError } = useErrorHandling()
 const form = ref<any>(null)
 const { getStateColor, getStateName } = useIdentityStates()
+const { getInitStateColor, getInitStateName,getInitStateIcon } = useIdentityInitStates()
 
 onMounted(() => {
   initializePagination(identities.value?.total)
