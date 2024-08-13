@@ -3,7 +3,8 @@ import QArrayControlRenderer from "./QArrayControlRenderer.vue";
 import QDateControlRenderer from "./QDateControlRenderer.vue";
 import QNumberControlRenderer from "./QNumberControlRenderer.vue";
 import QPasswordControlRenderer from "./QPasswordControlRenderer.vue";
-import { and, formatIs, isControl, isDateControl, isNumberControl, isPrimitiveArrayControl, or, rankWith, scopeEndsWith, type JsonFormsRendererRegistryEntry } from "@jsonforms/core";
+import QFileControlRenderer from "./QFileControlRenderer.vue";
+import { and, formatIs, isControl, isDateControl, isNumberControl, isPrimitiveArrayControl, optionIs, or, rankWith, scopeEndsWith, uiTypeIs, type JsonFormsRendererRegistryEntry } from "@jsonforms/core";
 
 const QDateControlRendererEntry: JsonFormsRendererRegistryEntry = {
   renderer: QDateControlRenderer,
@@ -30,10 +31,20 @@ export const QPasswordControlRendererEntry: JsonFormsRendererRegistryEntry = {
   tester: rankWith(2, or(and(isControl, formatIs('password')), scopeEndsWith('password'))),
 };
 
+
+export const QFileControlRendererEntry: JsonFormsRendererRegistryEntry = {
+  renderer: QFileControlRenderer,
+  tester: rankWith(2, or(
+    and(isControl, optionIs('format', 'file')),
+    and(scopeEndsWith('file')),
+  )),
+};
+
 export const ControlsRenderer = [
   QDateControlRendererEntry,
   QNumberControlRendererEntry,
   QStringControlRendererEntry,
   QArrayControlRendererEntry,
   QPasswordControlRendererEntry,
+  QFileControlRendererEntry,
 ];
