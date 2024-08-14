@@ -10,6 +10,7 @@ import debounce from 'lodash/debounce';
 import merge from 'lodash/merge';
 import get from 'lodash/get';
 import isPlainObject from 'lodash/isPlainObject';
+import isNull from 'lodash/isNull';
 import { useStyles } from '../styles';
 import { computed, inject, ref, provide } from 'vue';
 import type { ComputedRef } from 'vue';
@@ -114,7 +115,7 @@ export const useQuasarControl = <
   };
 
   // console.log('input.control.value.data', input.control.value.data)
-  if (isEmpty(input.control.value?.data)) {
+  if (isEmpty(input.control.value?.data) || isNull(input.control.value?.data)) {
     input.handleChange(input.control.value?.path, input.control.value?.schema?.default || undefined)
     // console.log('trigger default', input.control.value.schema.default || null)
   }

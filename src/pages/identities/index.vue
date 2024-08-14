@@ -51,7 +51,7 @@ import { useQuasar } from 'quasar'
 import type { QTableProps } from 'quasar'
 import type { components, operations } from '#build/types/service-api'
 import { useErrorHandling } from '#imports'
-import { useIdentityStates,useIdentityInitStates } from '~/composables'
+import { useIdentityStates, useIdentityInitStates } from '~/composables'
 import { identity } from '@vueuse/core'
 import { useIdentityStateStore } from "~/stores/identityState"
 type Identity = components['schemas']['IdentitiesDto']
@@ -70,7 +70,7 @@ const $q = useQuasar()
 const { handleError } = useErrorHandling()
 const form = ref<any>(null)
 const { getStateColor, getStateName } = useIdentityStates()
-const { getInitStateColor, getInitStateName,getInitStateIcon } = useIdentityInitStates()
+const { getInitStateColor, getInitStateName, getInitStateIcon } = useIdentityInitStates()
 
 onMounted(() => {
   initializePagination(identities.value?.total)
