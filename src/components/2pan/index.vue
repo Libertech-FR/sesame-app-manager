@@ -15,6 +15,7 @@ q-splitter(
         selection="multiple"
         v-model:selected="selected"
         v-model:pagination="pagination"
+        :hide-pagination="hidePagination"
         :rows="data"
         :visible-columns="visibleColumnsInternal"
         :row-key="rowKey"
@@ -42,7 +43,7 @@ q-splitter(
             slot(name="top-right-btn-grp")
               slot(name="top-right-btn-grp-content-before")
               sesame-2pan-btns-add(@add="add" v-if="crud.create")
-              q-btn.desktop-only(flat :icon="isSimple ? 'mdi-table-border' : 'mdi-table-merge-cells'" color="info" @click="simple = !simple")
+              q-btn.desktop-only(v-if="!hidePanModeSwitch" flat :icon="isSimple ? 'mdi-table-border' : 'mdi-table-merge-cells'" color="info" @click="simple = !simple")
                 q-tooltip.text-body2(transition-show="scale" transition-hide="scale") Mode simple/double panneaux
               q-btn(flat icon="mdi-table-headers-eye" color="info")
                 q-tooltip.text-body2(transition-show="scale" transition-hide="scale") Afficher/cacher des colonnes
@@ -124,6 +125,14 @@ const router = useRouter()
 
 const props = defineProps({
   simple: {
+    type: Boolean,
+    default: false,
+  },
+  hidePagination: {
+    type: Boolean,
+    default: false,
+  },
+  hidePanModeSwitch: {
     type: Boolean,
     default: false,
   },

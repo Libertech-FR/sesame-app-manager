@@ -1,9 +1,9 @@
 <template lang="pug">
 q-page.container
-  .q-px-md
-    sesame-searchfilters(:fields="fieldsList")
-      template(#rightSelect)
-        div
+  //- .q-px-md
+  //-   sesame-searchfilters(:fields="fieldsList")
+  //-     template(#rightSelect)
+  //-       div
 
   sesame-2pan(
     :simple="true"
@@ -13,7 +13,6 @@ q-page.container
     :visibleColumns="visibleColumns"
     :fieldsList="fieldsList"
     :selected="selected"
-    :pagination="pagination"
     :pending="pending"
     :refresh="refreshEvent"
     :error="error"
@@ -21,6 +20,8 @@ q-page.container
     :crud="crud"
     :actions="actions"
     :defaultRightPanelButton="true"
+    hide-pagination
+    hidePanModeSwitch
   )
     //- template(#top-left)
     //- sesame-table-top-left(:selected="selected" @updateLifestep="updateLifestep($event)" @clear="selected = []")
@@ -44,7 +45,7 @@ q-page.container
 </template>
 
 <script lang="ts" setup>
-import usePagination from '~/composables/usePagination'
+// import usePagination from '~/composables/usePagination'
 import useAgentsSchema from '~/composables/useAgentsSchema'
 import { ref, provide, watch, computed } from 'vue'
 import { useFetch, useRoute, useRouter } from 'nuxt/app'
@@ -71,16 +72,16 @@ const $q = useQuasar()
 const { handleError } = useErrorHandling()
 const form = ref<any>(null)
 
-onMounted(() => {
-  initializePagination(agents.value?.total)
-})
+// onMounted(() => {
+//   // initializePagination(agents.value?.total)
+// })
 
-const { pagination, onRequest, initializePagination } = usePagination()
+// const { pagination, onRequest, initializePagination } = usePagination()
 
-const queryWithoutRead = computed(() => {
-  const { read, ...rest } = route.query
-  return rest
-})
+// const queryWithoutRead = computed(() => {
+//   const { read, ...rest } = route.query
+//   return rest
+// })
 
 const {
   data: agents,
@@ -89,7 +90,9 @@ const {
   error,
 } = await useHttp<Response>('/core/agents', {
   method: 'get',
-  query: queryWithoutRead
+  query: {
+    limit: 99999,
+  },
 })
 
 if (error.value) {

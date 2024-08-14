@@ -2,26 +2,20 @@
 
   <div class="q-pa-md">
     <q-layout view="hHh Lpr lff" container style="height: 800px" class="shadow-2 rounded-borders">
-      <q-header elevated :class="bg-primary">
+      <q-header elevated class="bg-primary">
         <q-toolbar>
-          <q-btn flat @click="drawer = !drawer" round dense icon="mdi-menu"/>
+          <q-btn flat @click="drawer = !drawer" round dense icon="mdi-menu" />
           <q-toolbar-title>Paramètres</q-toolbar-title>
-          <q-btn icon="mdi-close" flat round dense v-close-popup/>
+          <q-btn icon="mdi-close" flat round dense v-close-popup />
         </q-toolbar>
       </q-header>
-      <q-drawer
-        v-model="drawer"
-        show-if-above
-        :width="200"
-        :breakpoint="500"
-        bordered
-        :class="$q.dark.isActive ? 'bg-grey-9' : 'bg-grey-3'"
-      >
+      <q-drawer v-model="drawer" show-if-above :width="200" :breakpoint="500" bordered
+        :class="$q.dark.isActive ? 'bg-grey-9' : 'bg-grey-3'">
         <q-scroll-area class="fit">
           <q-list>
             <q-item clickable @click="onAgents">
               <q-item-section avatar>
-                <q-icon name="mdi-account"/>
+                <q-icon name="mdi-account" />
               </q-item-section>
               <q-item-section>
                 Utilisateurs
@@ -31,7 +25,7 @@
           <q-list>
             <q-item clickable @click="onPassPolicy">
               <q-item-section avatar>
-                <q-icon name="mdi-form-textbox-password"/>
+                <q-icon name="mdi-form-textbox-password" />
               </q-item-section>
               <q-item-section>
                 Politique de mot de passe
@@ -41,7 +35,7 @@
           <q-list>
             <q-item clickable @click="onSmtp">
               <q-item-section avatar>
-                <q-icon name="mdi-mail"/>
+                <q-icon name="mdi-mail" />
               </q-item-section>
               <q-item-section>
                 Serveur SMTP
@@ -51,7 +45,7 @@
           <q-list>
             <q-item clickable @click="onSms">
               <q-item-section avatar>
-                <q-icon name="mdi-message-processing"/>
+                <q-icon name="mdi-message-processing" />
               </q-item-section>
               <q-item-section>
                 Serveur SMS
@@ -76,36 +70,34 @@
 </template>
 
 <script setup>
-import {ref} from "vue";
+import { ref } from "vue";
 const drawer = ref(false)
-const agent=ref(false)
-const passPolicy=ref(false)
-const smtp=ref(false)
-const sms=ref(false)
+const agent = ref(true)
+const passPolicy = ref(false)
+const smtp = ref(false)
+const sms = ref(false)
 function onAgents() {
   resetMenu()
-  agent.value=true
+  agent.value = true
 }
-function onSmtp(){
+function onSmtp() {
   resetMenu()
-  smtp.value=true
+  smtp.value = true
 }
-function onSms(){
+function onSms() {
   resetMenu()
-  sms.value=true
+  sms.value = true
 }
 function onPassPolicy() {
   resetMenu()
-  passPolicy.value=true
+  passPolicy.value = true
 }
-function resetMenu(){
-  agent.value=false
-  passPolicy.value=false
-  smtp.value=false
-  sms.value=false
+function resetMenu() {
+  agent.value = false
+  passPolicy.value = false
+  smtp.value = false
+  sms.value = false
 }
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>
