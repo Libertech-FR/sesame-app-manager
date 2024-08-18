@@ -128,6 +128,8 @@ function getTargetState(state: IdentityState) {
 
     case IdentityState.ON_ERROR:
       return IdentityState.TO_SYNC
+    case IdentityState.SYNCED:
+      return IdentityState.TO_SYNC
     default:
       return state
   }

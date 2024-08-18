@@ -17,11 +17,13 @@ div
           q-spinner-dots(color="primary" size="40px")
 
       template(v-for="(day, keyCompute) in computedJobsByDays" :key="keyCompute")
-        q-timeline-entry(heading)
+        q-timeline-entry.text-h5(
+
+        )
           time(v-text="keyCompute")
         q-timeline-entry(
           v-for="(job, key) in day" :key="key"
-          icon="mdi-account" color="orange"
+          :icon="getIconState(job.state)" :color="getColorState(job.state)"
         )
           template(#title)
             span(v-text="'[' + job.jobId + ']'")
@@ -117,6 +119,7 @@ const jobsByOptions = [
   { label: 'Année', value: 'YYYY' },
 ]
 
+
 const jobs = ref<any>([]);
 
 const computedJobsByDays = computed(() => {
@@ -140,5 +143,22 @@ const load = async (index, done) => {
 
   jobs.value.push(...data.value.data);
   done(data.value.data.length === 0);
+}
+function getColorState(state){
+  switch(state){
+    case -1:
+      return 'negative'
+    case 9:
+      return 'positive'
+  }
+  return 'primary'
+}
+function getIconState(state){
+  switch(state){
+    case -1:
+      return "mdi-account-remove"
+    case 9:
+      return "mdi-account-check"
+  }
 }
 </script>

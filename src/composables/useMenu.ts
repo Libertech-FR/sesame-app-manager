@@ -121,6 +121,12 @@ function useMenu(identityStateStore, identityAffectationStore) {
       path: '/identities/export',
       color: 'primary',
       part: 'Données'
+    },{
+      icon: 'mdi-book-clock',
+      label: 'Journal des jobs',
+      path: '/jobs/table?filters[:state]=-1',
+      color: 'primary',
+      part: 'Données'
     }
   ])
 
