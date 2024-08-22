@@ -112,6 +112,8 @@ onMounted(async () => {
     method: 'POST',
     query: {
       timeoutDiscard: true,
+      disableLogs: true,
+      updateStatus: false,
       syncTimeout: 1000,
     },
     body: {
