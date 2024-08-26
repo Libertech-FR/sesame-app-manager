@@ -74,6 +74,8 @@ const identity = ref<Identity>(props.identity)
 const tabs = ref(props.identity?.additionalFields?.objectClasses ?? [])
 const validations = ref<Record<string, unknown> | null>(props.identity?.additionalFields?.validations ?? {})
 
+provide('identityForm', identity)
+
 watch(() => props.identity, () => {
   identity.value = props.identity
   tabs.value = props.identity?.additionalFields?.objectClasses ?? []

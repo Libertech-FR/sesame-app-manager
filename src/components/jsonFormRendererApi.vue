@@ -25,6 +25,8 @@ import { QuasarJsonformRenderer } from './quasar-jsonform';
 import { computed, provide, ref } from 'vue';
 import { useFetch } from 'nuxt/app';
 import type { ErrorObject } from 'ajv';
+import type { components, operations } from '#build/types/service-api'
+type Identity = components['schemas']['IdentitiesDto'] & { _id: string }
 
 const customStyle = mergeStyles(defaultStyles, {
   control: {
@@ -95,11 +97,20 @@ const { data: result, pending, error, refresh } = await useHttp<any>(`/managemen
   method: 'GET',
 });
 
+const identityForm = inject('identityForm') as Ref<any>;
+const identityFormDebounced = refDebounced(identityForm, 10000, {
+  rejectOnCancel: true,
+});
+
 const { data: resultUi, pending: pendingUi, error: errorUi, refresh: refreshUi } = await useHttp<any>(`/management/identities/jsonforms/${props.schemaName}`, {
-  method: 'GET',
+  method: 'POST',
   params: {
     mode,
   },
+  query: {
+    mode,
+  },
+  body: identityFormDebounced,
 });
 
 // const schema = ref({ ...result.value.data });
