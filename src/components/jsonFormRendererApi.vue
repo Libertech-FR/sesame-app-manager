@@ -98,7 +98,7 @@ const { data: result, pending, error, refresh } = await useHttp<any>(`/managemen
 });
 
 const identityForm = inject('identityForm') as Ref<any>;
-const identityFormDebounced = refDebounced(identityForm, 10000, {
+const identityFormDebounced = refDebounced(identityForm, 1000, {
   rejectOnCancel: true,
 });
 
