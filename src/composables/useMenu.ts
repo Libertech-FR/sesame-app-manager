@@ -25,18 +25,24 @@ function useMenu(identityStateStore, identityAffectationStore) {
   const menuParts = ref(['Listes', 'Affectations', 'Etats','Activation','Données'])
   const menus = ref([
     {
-      icon: 'mdi-card-account-details',
-      label: 'Liste des agents',
-      path: '/agents',
-      color: 'primary',
-      part: 'Listes',
-    },
-    {
       icon: 'mdi-account',
       label: 'Liste des identités',
       path: '/identities',
       color: 'primary',
-      part: 'Listes',
+      part: 'Données',
+    },
+    {
+      icon: 'mdi-download-outline',
+      label: 'Exporter',
+      path: '/identities/export',
+      color: 'primary',
+      part: 'Données'
+    },{
+      icon: 'mdi-book-clock',
+      label: 'Journal des jobs',
+      path: '/jobs/table?filters[:state]=-1',
+      color: 'primary',
+      part: 'Données'
     },
     {
       icon: 'mdi-account-check',
@@ -115,19 +121,6 @@ function useMenu(identityStateStore, identityAffectationStore) {
       color: 'accent',
       part: 'Activation'
     },
-    {
-      icon: 'mdi-download-outline',
-      label: 'Exporter',
-      path: '/identities/export',
-      color: 'primary',
-      part: 'Données'
-    },{
-      icon: 'mdi-book-clock',
-      label: 'Journal des jobs',
-      path: '/jobs/table?filters[:state]=-1',
-      color: 'primary',
-      part: 'Données'
-    }
   ])
 
   const badgesValues = ref({
