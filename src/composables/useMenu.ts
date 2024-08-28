@@ -22,7 +22,7 @@ type Menu = {
 }
 
 function useMenu(identityStateStore, identityAffectationStore) {
-  const menuParts = ref(['Listes', 'Affectations', 'Etats','Activation','Données'])
+  const menuParts = ref(['Données','Listes', 'Affectations', 'Etats','Activation'])
   const menus = ref([
     {
       icon: 'mdi-account',
