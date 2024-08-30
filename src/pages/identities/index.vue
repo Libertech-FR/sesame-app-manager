@@ -100,13 +100,6 @@ const {
 } = await useHttp<Response>('/management/identities', {
   method: 'get',
   query: queryWithoutRead,
-  onResponse(p) {
-    console.log('p', p.response?._data?.total)
-    pagination.value.rowsNumber = Math.round(Math.random() * 100)
-    console.log('pagination.value', pagination.value.rowsNumber)
-    // pagination.value.rowsNumber = p.response?._data?.total || 0
-
-  }
 })
 
 if (error.value) {
