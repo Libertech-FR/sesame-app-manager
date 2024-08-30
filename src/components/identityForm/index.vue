@@ -105,7 +105,6 @@ async function addSchema(schema) {
 }
 
 async function submit() {
-  console.log('submit from form')
   const sanitizedIdentity = { ...props.identity }
   delete sanitizedIdentity.metadata
   if (sanitizedIdentity?.additionalFields?.validations) delete sanitizedIdentity.additionalFields.validations

@@ -154,10 +154,10 @@ const actions = {
   },
   read: async (row, onMounted = false) => {
     if (!onMounted) pushQuery({ key: 'read', value: row._id })
-    const { data } = await useHttp<Identity>(`/management/identities/${row._id}`, {
+    const data = await $http.get(`/management/identities/${row._id}`, {
       method: 'get',
     })
-    return { ...data.value?.data }
+    return { ...data._data?.data }
   },
   add: async () => {
     return {
