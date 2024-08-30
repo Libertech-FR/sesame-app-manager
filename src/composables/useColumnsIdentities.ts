@@ -40,7 +40,7 @@ function processFormat(value: any, format: any) {
   if (format && format.type === 'function') {
     return eval(format.value);
   }
-  return value;
+  return Array.isArray(value) ? value?.join(', ') : value;
 }
 
 type useColumnsIdentitesReturnType = {
