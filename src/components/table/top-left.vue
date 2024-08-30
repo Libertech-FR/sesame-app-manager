@@ -67,7 +67,7 @@ function openUpdateModale() {
     componentProps: {
       selectedIdentities: props.selected,
       identityTypesName: name,
-      allIdentitiesCount: count,
+      allIdentitiesCount: props.total,
     },
   })
     .onOk(async (data) => {
@@ -79,7 +79,6 @@ function openUpdateModale() {
     })
 }
 function returnFilter(){
-
   const rest  = route.query
   let filters={}
   for (const [key, value] of Object.entries(rest)){
@@ -87,6 +86,7 @@ function returnFilter(){
       delete rest[key]
     }
   }
+
   return rest
 }
 function openInitModale() {
@@ -108,7 +108,7 @@ function openInitModale() {
     componentProps: {
       selectedIdentities: props.selected,
       identityTypesName: name,
-      allIdentitiesCount: 0,
+      allIdentitiesCount: props.total,
     },
   })
     .onOk(async (data) => {
@@ -136,8 +136,11 @@ function getTargetState(state: IdentityState) {
 }
 
 async function updateAllIdentities(state: IdentityState) {
+  debugger
+  const f=returnFilter()
   const { data: identities } = await useHttp(`/management/identities?limit=999999&&filters[@state][]=${state}`, {
     method: 'get',
+    query:f
   })
 
   if (!identities) {

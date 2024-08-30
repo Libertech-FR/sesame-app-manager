@@ -7,7 +7,7 @@
       dense
       :rows="rows1"
       :columns="fieldsName"
-      row-key="uid"
+      row-key="_id"
       :rows-per-page-options="[20,50,0]"
     >
       <template v-slot:top-left>

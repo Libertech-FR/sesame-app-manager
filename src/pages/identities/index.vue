@@ -26,7 +26,7 @@ q-page.container
       q-icon(:name="getInitStateIcon(props?.target?.initState)" :color="getInitStateColor(props?.target?.initState)" class="q-mr-xs")
         q-tooltip.text-body2(slot="trigger") {{ getInitStateName(props.target.initState) }}
     template(#top-left-btn-grp="{selectedValues}")
-      sesame-table-top-left(:selected="selectedValues" @refresh="refresh" @clear="clearSelected")
+      sesame-table-top-left( :selected="selectedValues" @refresh="refresh" @clear="clearSelected" :total="identities?.total")
     template(#body-cell-states="props")
       sesame-table-state-col(:identity="props.row")
     template(#right-panel-actions-content-after="{target, crud, isNew}")
