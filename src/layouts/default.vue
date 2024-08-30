@@ -117,12 +117,12 @@ onMounted(async () => {
       syncTimeout: 1000,
     },
     body: {
-      action: 'DUMP_PACKAGE_CONFIG'
-    }
+      action: 'DUMP_PACKAGE_CONFIG',
+    },
   })
   const { data: daemonVersionRes } = await useHttp<any>('/get-update/sesame-daemon', {
     query: {
-      current: daemonVersionDump?.value?.job?.result?.data[0]?.version || '0.0.0',
+      current: daemonVersionDump?.value?.response?.data[0]?.version || '0.0.0',
     },
   })
   orchestratorVersion.value = orchestratorVersionRes.value?.data
