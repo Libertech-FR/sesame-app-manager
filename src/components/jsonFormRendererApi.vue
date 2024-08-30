@@ -99,7 +99,7 @@ const { data: result, pending, error, refresh } = await useHttp<any>(`/managemen
 
 const identityForm = inject('identityForm') as Ref<any>;
 const identityFormDebounced = refDebounced(identityForm, 1000, {
-  rejectOnCancel: true,
+  // rejectOnCancel: true,
 });
 
 const { data: resultUi, pending: pendingUi, error: errorUi, refresh: refreshUi } = await useHttp<any>(`/management/identities/jsonforms/${props.schemaName}`, {

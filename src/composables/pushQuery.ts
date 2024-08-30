@@ -45,6 +45,7 @@ export async function pushQuery(payload: { value: any; key: string; multiple?: b
       query[key] = filters
     }
   }
+
   await router.replace({
     query,
   })
