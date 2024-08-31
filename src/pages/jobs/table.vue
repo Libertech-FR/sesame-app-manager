@@ -84,9 +84,9 @@ const columns=[
   },{
     name: 'identity',
     title: 'Identité',
-    field: (row)=>row.params?.identity?.identity.inetOrgPerson.uid,
+    field: (row)=>row?.concernedTo?.name,
     align: 'left',
-    label: 'Indentité'
+    label: 'Identité'
   },{
     name: 'action',
     title: 'Action',
