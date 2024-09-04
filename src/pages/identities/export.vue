@@ -47,7 +47,7 @@ const { data: fieldsName, pending1, error1} = await useHttp('/management/identit
     })
 
     return allFields.map((enr)=>{
-      return {name:enr,field:enr,label:enr,align: 'left'}
+      return {name:enr,field:enr,label:enr,align: 'left',format: (value) => {return Array.isArray(value) ? value?.join(', ') : value}}
     })
   }
 });
@@ -111,18 +111,21 @@ function toCsv(fields,rows){
     fString.push('"' +value.name + '"')
   }
   let csv=f.join(';')
+  debugger
   const tabCsv=[]
   for (const [key,value] of Object.entries(rows.value)){
     const ligne=f.map((k)=>{
       if (typeof value[k] === 'string' || typeof value[k] === 'number'){
         return '"' + value[k] +'"'
+      }else if (Array.isArray( value[k])){
+        return   value[k].join(',')
       }else{
-        return '""'
+        return ""
       }
     })
-    tabCsv.push(ligne)
+    tabCsv.push(ligne.join(';'))
   }
-  tabCsv.unshift(fString)
+  tabCsv.unshift(fString.join(';'))
   return tabCsv.join("\r\n")
 }
 
