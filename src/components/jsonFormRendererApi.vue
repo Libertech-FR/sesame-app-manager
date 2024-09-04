@@ -98,8 +98,9 @@ const { data: result, pending, error, refresh } = await useHttp<any>(`/managemen
 });
 
 const identityForm = inject('identityForm') as Ref<any>;
-const identityFormDebounced = refDebounced(identityForm, 1000, {
-  // rejectOnCancel: true,
+const employeeType = computed(() => {
+  console.log('employeeType', identityForm.value?.inetOrgPerson?.employeeType);
+  return identityForm.value?.inetOrgPerson?.employeeType || 'LOCAL';
 });
 
 const { data: resultUi, pending: pendingUi, error: errorUi, refresh: refreshUi } = await useHttp<any>(`/management/identities/jsonforms/${props.schemaName}`, {
@@ -110,7 +111,10 @@ const { data: resultUi, pending: pendingUi, error: errorUi, refresh: refreshUi }
   query: {
     mode,
   },
-  body: identityFormDebounced,
+  watch: [employeeType],
+  body: {
+    employeeType,
+  },
 });
 
 // const schema = ref({ ...result.value.data });
