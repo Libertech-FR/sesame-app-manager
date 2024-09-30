@@ -54,7 +54,7 @@
     <q-card-section class="row items-center q-pb-none">
       <h6 :class="cnColor">{{ cn }}</h6>
       <q-space></q-space>
-      <q-btn class="q-mx-xs"  icon="mdi-check" color="positive">
+      <q-btn class="q-mx-xs"  icon="mdi-check" color="positive" @click="submit">
         <q-tooltip>Enregistrer</q-tooltip>
       </q-btn>
       <q-btn class="q-mx-xs" icon="mdi-close" color="negative" v-close-popup >
@@ -62,7 +62,12 @@
       </q-btn>
     </q-card-section>
     <q-card-section>
-      <sesame-identity-form :identity="identity"></sesame-identity-form>
+      <sesame-identity-form
+        :identity="identity"
+        ref="form"
+        @submit="submit($event)"
+      >
+      </sesame-identity-form>
     </q-card-section>
     </q-card>
   </q-dialog>
@@ -78,6 +83,7 @@ const identity=ref(null)
 const cn=ref("")
 const cnColor=ref("text-positive")
 const rows=[]
+const form=ref(null)
 const fieldsName=[
   {name:'id1',label:'action',field:'id1', align: 'center',classes:"leftidlight"},
   {name:'uid1',label:'identité 1',field:'uid1', align: 'left',classes:"leftid"},
@@ -128,6 +134,11 @@ async function edit(id,colorClass){
   cnColor.value=colorClass
   cn.value=identity.value.inetOrgPerson.cn
   editForm.value=true
+}
+async function submit() {
+  form.value.submit()
+  editForm.value=false
+  window.location.href="/identities/fusion"
 }
 </script>
 <style>
