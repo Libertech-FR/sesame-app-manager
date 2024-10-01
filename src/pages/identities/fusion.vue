@@ -23,7 +23,7 @@
             <q-btn round size="sm" color="green" icon="mdi-account-edit" @click="edit(col.value,'text-positive')">
               <q-tooltip class="text-body2">Editer l'identité</q-tooltip>
             </q-btn>
-              <q-btn round size="sm" color="green" icon="mdi-account-multiple">
+              <q-btn round size="sm" color="green" icon="mdi-account-multiple" @click="fusion1(props.cols[0].value,props.cols[5].value)">
                  <q-tooltip class="text-body2">fusionner les deux identités</q-tooltip>
               </q-btn>
               <q-btn round size="sm" color="green" icon="mdi-account-remove">
@@ -34,7 +34,7 @@
             <q-btn round size="sm" color="red" icon="mdi-account-edit" @click="edit(col.value,'text-negative')">
               <q-tooltip class="text-body2">Editer l'identité</q-tooltip>
             </q-btn>
-              <q-btn round size="sm" color="red" icon="mdi-account-multiple">
+              <q-btn round size="sm" color="red" icon="mdi-account-multiple" @click="fusion1(props.cols[5].value,props.cols[0].value)">
                 <q-tooltip class="text-body2">fusionner les deux identités</q-tooltip>
               </q-btn>
                <q-btn round size="sm" color="red" icon="mdi-account-remove">
@@ -57,7 +57,7 @@
       <q-btn class="q-mx-xs"  icon="mdi-check" color="positive" @click="submit">
         <q-tooltip>Enregistrer</q-tooltip>
       </q-btn>
-      <q-btn class="q-mx-xs" icon="mdi-close" color="negative" v-close-popup >
+      <q-btn class="q-mx-xs" icon="mdi-close" color="negative" @click="closeModal" >
         <q-tooltip>Quitter</q-tooltip>
       </q-btn>
     </q-card-section>
@@ -82,8 +82,10 @@ const editForm=ref(false)
 const identity=ref(null)
 const cn=ref("")
 const cnColor=ref("text-positive")
+const refreshWindows=ref(false)
 const rows=[]
 const form=ref(null)
+//attention si l'ordre des colonnes changent changer le @click des boutons fusion
 const fieldsName=[
   {name:'id1',label:'action',field:'id1', align: 'center',classes:"leftidlight"},
   {name:'uid1',label:'identité 1',field:'uid1', align: 'left',classes:"leftid"},
@@ -111,7 +113,7 @@ const { data: rows1, pending, error, refresh } = await useHttp('/management/iden
 
     const allFields=result.data.map((enr)=>{
         return {
-          k:enr.k +'='+ enr.k1,
+          k:enr.k,
           id1:enr.data.at(0)._id,
           uid1:enr.data.at(0).uid,
           cn1:enr.data.at(0).cn,
@@ -134,11 +136,21 @@ async function edit(id,colorClass){
   cnColor.value=colorClass
   cn.value=identity.value.inetOrgPerson.cn
   editForm.value=true
+
+}
+function fusion1(key,k){
+  alert("key :" + key +" key1 : "+k)
 }
 async function submit() {
   form.value.submit()
+  refreshWindows.value=true
+}
+function closeModal(){
+  if (refreshWindows.value === true){
+    window.location.href="/identities/fusion"
+    refreshWindows.value=false
+  }
   editForm.value=false
-  window.location.href="/identities/fusion"
 }
 </script>
 <style>
