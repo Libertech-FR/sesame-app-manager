@@ -136,21 +136,42 @@ async function edit(id,colorClass){
   cnColor.value=colorClass
   cn.value=identity.value.inetOrgPerson.cn
   editForm.value=true
+}
 
+async function fusion1(id1,id2){
+  $q.dialog({
+    title: 'Fusion des deux identités',
+    message: 'Voulez-vous fusionner ces deux identités ?',
+    persistent: true,
+    html: true,
+    ok: {
+      push: true,
+      color: 'positive',
+      label: 'Fusionner',
+    },
+    cancel: {
+      push: true,
+      color: 'negative',
+      label: 'Annuler',
+    },
+  }).onOk(async () => {
+    const requestOptions={method: 'POST',
+      body:JSON.stringify({id1:id1,id2:id2})}
+    const data=await $http.post('/management/identities/fusion', requestOptions)
+      .catch(error => {
+        console.error('There was an error!', error);
+      })
+    edit(data._data.newId,"dark")
+  })
 }
-function fusion1(key,k){
-  alert("key :" + key +" key1 : "+k)
-}
+
 async function submit() {
   form.value.submit()
   refreshWindows.value=true
 }
 function closeModal(){
-  if (refreshWindows.value === true){
-    window.location.href="/identities/fusion"
-    refreshWindows.value=false
-  }
   editForm.value=false
+  refresh()
 }
 </script>
 <style>
