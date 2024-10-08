@@ -1,6 +1,8 @@
 <template lang="pug">
 //control-wrapper(v-bind="controlWrapper" :styles="styles" :isFocused="isFocused" :appliedOptions="appliedOptions")
 div(style="cursor: pointer")
+  //- @click="open"
+    @update:model-value="onChangeControl"
   q-input(
     :id="control.id + '-input'"
     :disable="!control.enabled"
@@ -9,8 +11,6 @@ div(style="cursor: pointer")
     :model-value="control.data"
     :clearable="true"
     readonly
-    @click="open"
-    @update:model-value="onChangeControl"
     @focus="isFocused = true"
     @blur="isFocused = false"
     :style="{paddingBottom: control.errors !== '' ? 'revert-layer' : 0}"
@@ -19,7 +19,7 @@ div(style="cursor: pointer")
     template(v-slot:prepend)
       q-icon(name="mdi-paperclip")
   q-card(style="border-radius: 0")
-    img(:src="baseUrl + '/management/identities/photo/raw?' + photoUrlQuery.params")
+    q-img(:src="baseUrl + '/management/identities/photo/raw?' + photoUrlQuery.params" placeholder-src='/no-photo.jpg' fit='contain' height='400px')
 </template>
 
 <script lang="ts">

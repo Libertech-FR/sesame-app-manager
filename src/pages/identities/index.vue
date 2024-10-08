@@ -30,7 +30,16 @@ q-page.container
     template(#body-cell-states="props")
       sesame-table-state-col(:identity="props.row")
     template(#right-panel-actions-content-after="{target, crud, isNew}")
-      sesame-identity-form-actions(:identity="target" @submit="submit($event)" @create="create($event)" @sync="sync" @logs="logs" :crud="crud" :isNew="isNew")
+      sesame-identity-form-actions(
+        :identity="target"
+        @submit="submit($event)"
+        @create="create($event)"
+        @sync="sync"
+        @logs="logs"
+        @delete="deleteIdentity"
+        :crud="crud"
+        :isNew="isNew"
+      )
     template(#right-panel-content="{payload, isNew}")
       sesame-identity-form(
         :identity="{...payload.target}"
@@ -142,6 +151,11 @@ async function create(identity: Identity) {
 async function sync(identity: Identity) {
   console.log('sync')
   form.value.sync()
+}
+
+async function deleteIdentity(identity: Identity) {
+  console.log('deleteIdentity')
+  form.value.deleteIdentity()
 }
 
 function logs(identity: Identity & { _id: string }) {

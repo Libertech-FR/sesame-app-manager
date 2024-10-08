@@ -1,16 +1,21 @@
 <template lang="pug">
-div
-  q-btn(color="positive" icon='mdi-content-save-plus' @click="create" v-show="isNew" v-if="crud.create")
-    q-tooltip.text-body2 Créer
-  q-btn.q-mx-xs(@click="sendInit" color="primary" icon="mdi-email-arrow-right"  :disabled="props.identity.state != IdentityState.SYNCED")
-    q-tooltip.text-body2(slot="trigger") Envoyer le mail d'invitation
-  q-btn.q-mx-xs(@click="submit" color="positive" icon="mdi-check"  v-show="!isNew" v-if="crud.update")
-    q-tooltip.text-body2(slot="trigger") Enregistrer les modifications
-  q-btn.q-mx-xs(v-if="props.identity?._id" @click="sync" color="orange-8" :disabled="props.identity.state != IdentityState.TO_VALIDATE" icon="mdi-sync")
-    q-tooltip.text-body2(slot="trigger" v-if="props.identity.state == IdentityState.TO_VALIDATE") Synchroniser l'identité
-    q-tooltip.text-body2(slot="trigger" v-else) L'état de l'identité ne permet pas de la synchroniser
-  q-btn.q-mx-xs(v-if="props.identity?._id" @click="logs" color="grey-8" icon="mdi-file-document" :href="'/jobs?filters[:concernedTo.id]=' + props.identity?._id")
-    q-tooltip.text-body2(slot="trigger") Voir les logs de l'identité
+div.flex
+  div
+    q-btn(color="positive" icon='mdi-content-save-plus' @click="create" v-show="isNew" v-if="crud.create")
+      q-tooltip.text-body2 Créer
+    q-btn.q-mx-xs(@click="sendInit" color="primary" icon="mdi-email-arrow-right"  :disabled="props.identity.state != IdentityState.SYNCED")
+      q-tooltip.text-body2(slot="trigger") Envoyer le mail d'invitation
+    q-btn.q-mx-xs(@click="submit" color="positive" icon="mdi-check"  v-show="!isNew" v-if="crud.update")
+      q-tooltip.text-body2(slot="trigger") Enregistrer les modifications
+    q-btn.q-mx-xs(v-if="props.identity?._id" @click="sync" color="orange-8" :disabled="props.identity.state != IdentityState.TO_VALIDATE" icon="mdi-sync")
+      q-tooltip.text-body2(slot="trigger" v-if="props.identity.state == IdentityState.TO_VALIDATE") Synchroniser l'identité
+      q-tooltip.text-body2(slot="trigger" v-else) L'état de l'identité ne permet pas de la synchroniser
+    q-btn.q-mx-xs(v-if="props.identity?._id" @click="logs" color="grey-8" icon="mdi-file-document" :href="'/jobs?filters[:concernedTo.id]=' + props.identity?._id")
+      q-tooltip.text-body2(slot="trigger") Voir les logs de l'identité
+  q-separator.q-mx-sm(vertical)
+  div
+    q-btn.q-mx-xs(v-if="props.identity?._id" @click="deleteIdentity" color="negative" icon="mdi-delete")
+      q-tooltip.text-body2(slot="trigger") Supprimer l'identité
 </template>
 
 <script lang="ts" setup>
@@ -45,7 +50,7 @@ const router = useRouter()
 const { getStateColor, getStateName } = useIdentityStates()
 const { handleError } = useErrorHandling()
 
-const emits = defineEmits(['submit', 'sync', 'logs', 'create'])
+const emits = defineEmits(['submit', 'sync', 'logs', 'create', 'delete'])
 
 async function submit() {
   // console.log('submit from actions')
@@ -55,6 +60,11 @@ async function submit() {
 async function create() {
   // console.log('submit from actions')
   emits('create')
+}
+
+
+async function deleteIdentity() {
+  emits('delete')
 }
 
 const stateName = computed(() => {

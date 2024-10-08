@@ -28,7 +28,7 @@ q-layout(view="hHh LpR lff" style="margin-top: -1px;")
           div
             .text-weight-bold.q-px-md.text-center
               | Synchronisation en cours&nbsp;&nbsp;
-              q-badge(color="amber-10") {{ eventSeamlessCurrent }}/{{ eventSeamlessTotal }}
+              q-badge(color="amber-10" v-show="eventSeamlessCurrent > 0") {{ eventSeamlessCurrent }}/{{ eventSeamlessTotal }}
           q-space
           q-btn(flat round icon="mdi-close" v-close-popup)
   q-footer(:class="$q.dark.isActive ? 'bg-dark' : 'bg-white'" bordered)

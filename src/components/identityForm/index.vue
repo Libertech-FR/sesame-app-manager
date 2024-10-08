@@ -174,6 +174,17 @@ function getTabValidations(tab: string) {
   return validations.value?.hasOwnProperty(tab) ? 'red' : false
 }
 
+async function deleteIdentity() {
+  await useHttp('/core/backends/delete', {
+    method: 'POST',
+    body: {
+      payload: [
+        props.identity._id,
+      ],
+    },
+  })
+}
+
 async function sync() {
   const { data: result, pending, error, refresh } = await useHttp<any>(`/management/identities/${props.identity._id}/state`, {
     method: 'PATCH',
@@ -210,6 +221,7 @@ defineExpose({
   sync,
   logs,
   back,
+  deleteIdentity,
 })
 </script>
 
