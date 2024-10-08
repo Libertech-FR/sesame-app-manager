@@ -84,6 +84,20 @@ function useMenu(identityStateStore, identityAffectationStore) {
       part: 'Etats',
       badgeValue: 'SYNCED',
     },
+    {
+      icon: 'mdi-check',
+      label: 'Synchro désactivé',
+      path: `/identities?sort[metadata.lastUpdatedAt]=desc&skip=0&filters[@state][]=${IdentityState.NO_SYNC}`,
+      color: 'primary',
+      part: 'Etats',
+    },
+    {
+      icon: 'mdi-account-switch-outline',
+      label: 'Fusionnées',
+      path: '/identities?sort[metadata.lastUpdatedAt]=desc&skip=0&filters[%23inetOrgPerson.employeeType]=/FUSION/',
+      color: 'primary',
+      part: 'Etats',
+    },
     ...config?.menus?.entries || [],
     {
       icon: 'mdi-account-remove',
