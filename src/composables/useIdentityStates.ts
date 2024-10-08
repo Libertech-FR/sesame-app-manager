@@ -13,6 +13,7 @@ export enum IdentityState {
   TO_CREATE = -1,
   TO_COMPLETE = -2,
   ON_ERROR = -3,
+  NO_SYNC = -99
 }
 
 export const IdentityStateList = [
@@ -24,6 +25,7 @@ export const IdentityStateList = [
   { value: IdentityState.TO_COMPLETE, text: 'A compléter', color: 'warning', icon: 'mdi-circle', display: true },
   { value: IdentityState.ON_ERROR, text: 'En erreur', color: 'negative', icon: 'mdi-circle', display: true },
   { value: IdentityState.PROCESSING, text: 'En cours de synchronisation', color: 'warning', icon: 'mdi-loading', display: true },
+  { value: IdentityState.NO_SYNC, text: 'A ne pas synchroniser', color: 'black', icon: 'mdi-publish-off', display: true },
 ];
 
 export function useIdentityStates(): useIdentityStateReturnType {
