@@ -64,7 +64,23 @@ async function create() {
 
 
 async function deleteIdentity() {
-  emits('delete')
+  $q.dialog({
+    title: 'Confirmation',
+    message: 'Voulez-vous vraiment supprimer cette identité ?',
+    persistent: true,
+    ok: {
+      push: true,
+      color: 'negative',
+      label: 'Supprimer',
+    },
+    cancel: {
+      push: true,
+      color: 'info',
+      label: 'Annuler',
+    },
+  }).onOk(() => {
+    emits('delete')
+  })
 }
 
 const stateName = computed(() => {
