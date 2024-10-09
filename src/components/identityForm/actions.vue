@@ -14,7 +14,7 @@ div.flex
       q-tooltip.text-body2(slot="trigger") Voir les logs de l'identité
   q-separator.q-mx-sm(vertical)
   div
-    q-btn.q-mx-xs(v-if="props.identity?._id" @click="deleteIdentity" color="negative" icon="mdi-delete")
+    q-btn.q-mx-xs(v-if="props.identity?._id" @click="deleteIdentity" :disabled="!props.identity.lastSync" color="negative" icon="mdi-delete")
       q-tooltip.text-body2(slot="trigger") Supprimer l'identité
 </template>
 
