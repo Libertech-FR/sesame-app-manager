@@ -22,7 +22,7 @@ type Menu = {
 }
 
 function useMenu(identityStateStore, identityAffectationStore) {
-  const menuParts = ref(['Données','Listes', 'Affectations', 'Etats','Activation'])
+  const menuParts = ref(['Données', 'Affectations', 'Etats','Activation'])
   const menus = ref([
     {
       icon: 'mdi-account',
@@ -42,6 +42,13 @@ function useMenu(identityStateStore, identityAffectationStore) {
       label: 'Journal des jobs',
       path: '/jobs/table?filters[:state]=-1',
       color: 'primary',
+      part: 'Données'
+    },
+    {
+      icon: 'mdi-set-merge',
+      label: 'Detection des doublons',
+      path: '/identities/fusion',
+      color: 'green',
       part: 'Données'
     },
     {
