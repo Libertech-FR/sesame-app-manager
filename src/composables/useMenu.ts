@@ -22,12 +22,12 @@ type Menu = {
 }
 
 function useMenu(identityStateStore, identityAffectationStore) {
-  const menuParts = ref(['Données', 'Affectations', 'Etats','Activation'])
+  const menuParts = ref(['Données', 'Listes', 'Affectations', 'Etats', 'Activation'])
   const menus = ref([
     {
       icon: 'mdi-account',
       label: 'Liste des identités',
-      path: '/identities',
+      path: '/identities?sort[metadata.lastUpdatedAt]=desc&skip=0',
       color: 'primary',
       part: 'Données',
     },
@@ -37,7 +37,7 @@ function useMenu(identityStateStore, identityAffectationStore) {
       path: '/identities/export',
       color: 'primary',
       part: 'Données'
-    },{
+    }, {
       icon: 'mdi-book-clock',
       label: 'Journal des jobs',
       path: '/jobs/table?filters[:state]=-1',
