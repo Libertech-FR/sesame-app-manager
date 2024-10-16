@@ -101,7 +101,7 @@ function useMenu(identityStateStore, identityAffectationStore) {
     {
       icon: 'mdi-account-switch-outline',
       label: 'Fusionnées',
-      path: '/identities?sort[metadata.lastUpdatedAt]=desc&skip=0&filters[^inetOrgPerson.employeeType]=/FUSION/',
+      path: '/identities?sort[metadata.lastUpdatedAt]=desc&skip=0&filters[!:primaryEmployeeNumber]=null',
       color: 'primary',
       part: 'Etats',
     },
