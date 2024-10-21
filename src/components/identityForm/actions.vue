@@ -3,7 +3,16 @@ div.flex
   div
     q-btn(color="positive" icon='mdi-content-save-plus' @click="create" v-show="isNew" v-if="crud.create")
       q-tooltip.text-body2 Créer
-    q-toggle.q-pa-md.q-gutter-y-xl(v-if="props.identity?._id" @click="activate" color="green" left-label='Inactif' label="Actif" v-model="activation")
+    q-toggle.q-pa-md.q-gutter-y-lg(  unchecked-icon="mdi-account-cancel"
+      checked-icon="mdi-account-check"
+      size="xl"
+      @click="activate"
+      :color="setActivateColor()"
+      label="Activation"
+      v-model="props.identity.dataStatus"
+      :true-value="1"
+      :false-value="0"
+      )
     q-btn.q-mx-xs(@click="sendInit" color="primary" icon="mdi-email-arrow-right"  :disabled="props.identity.state != IdentityState.SYNCED")
       q-tooltip.text-body2(slot="trigger") Envoyer le mail d'invitation
     q-btn.q-mx-xs(@click="submit" color="positive" icon="mdi-check"  v-show="!isNew" v-if="crud.update")
@@ -61,16 +70,39 @@ async function create() {
   // console.log('submit from actions')
   emits('create')
 }
+function setActivateColor(){
+  if (props.identity.lastBackendSync != ""){
+    return "green"
+  }else{
+    return "grey"
+  }
+}
+function showActivate(){
+  if (props.identity.lastBackendSync != ""){
+    return true
+  }else{
+    return false
+  }
+}
 async function activate(){
+
+
   let message=""
   let bouton = ""
-  debugger
-  if (activation.value === false){
+  let initialStatus=0
+  if (props.identity.dataStatus === 0){
     message="Voulez vous vraiment désactiver l'identité"
     bouton="Désactiver"
+    initialStatus=1
   }else{
     message="Voulez vous vraiment activer l'identité"
     bouton="Activer"
+    initialStatus=0
+  }
+  debugger
+  if (showActivate() === false){
+    props.identity.dataStatus = initialStatus
+    return
   }
 
   $q.dialog({
@@ -88,14 +120,29 @@ async function activate(){
       label: 'Annuler',
     },
   }).onOk(async() => {
+    alert('test =' + props.identity.dataStatus)
     const requestOptions={method: 'POST',
-      body:JSON.stringify({id:props.identity._id,status:activation.value})}
-    const data=await $http.post('/management/identities/activation', requestOptions)
-      .catch(error => {
-        alert('There was an error!');
+      body:JSON.stringify({id:props.identity._id,status:props.identity.dataStatus === 1 ?true:false})}
+    try{
+      const data=await $http.post('/management/identities/activation', requestOptions)
+      $q.notify({
+        message: 'Le statut a été mis à jour : ',
+        color: 'positive',
+        position: 'top-right',
+        icon: 'mdi-check-circle-outline',
       })
+    }catch(error){
+      props.identity.dataStatus = initialStatus
+      $q.notify({
+        message: 'Impossible de modifier le statut : ' + error.response._data.message,
+        color: 'negative',
+        position: 'top-right',
+        icon: 'mdi-alert-circle-outline',
+      })
+    }
+
   }).onCancel(() =>{
-    activation.value=activation.value === true? activation.value = false :activation.value = true
+    props.identity.dataStatus=initialStatus
   })
 
 }
