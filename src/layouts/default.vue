@@ -131,6 +131,7 @@ onMounted(async () => {
 })
 
 const esUrl = new URL(config.baseUrl + "/core/backends/sse")
+esUrl.searchParams.append("id", '' + auth.user?._id)
 esUrl.searchParams.append("key", '' + auth.user?.sseToken)
 var es = new ReconnectingEventSource(esUrl)
 
