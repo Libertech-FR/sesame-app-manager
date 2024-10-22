@@ -120,7 +120,6 @@ async function activate(){
       label: 'Annuler',
     },
   }).onOk(async() => {
-    alert('test =' + props.identity.dataStatus)
     const requestOptions={method: 'POST',
       body:JSON.stringify({id:props.identity._id,status:props.identity.dataStatus === 1 ?true:false})}
     try{
