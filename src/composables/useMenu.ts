@@ -19,6 +19,7 @@ type Menu = {
   part: string
   badgeValue?: string
   badge?: Badge
+  hideInMenuBar?:boolean
 }
 
 function useMenu(identityStateStore, identityAffectationStore) {
@@ -30,25 +31,37 @@ function useMenu(identityStateStore, identityAffectationStore) {
       path: '/identities?sort[metadata.lastUpdatedAt]=desc&skip=0',
       color: 'primary',
       part: 'Données',
+      hideInMenuBar: false
     },
     {
       icon: 'mdi-download-outline',
       label: 'Exporter',
       path: '/identities/export',
       color: 'primary',
-      part: 'Données'
+      part: 'Données',
+      hideInMenuBar: true
     }, {
       icon: 'mdi-book-clock',
       label: 'Journal des jobs',
       path: '/jobs/table?filters[:state]=-1',
       color: 'primary',
-      part: 'Données'
+      part: 'Données',
+      hideInMenuBar: false
     },
     {
       icon: 'mdi-set-merge',
       label: 'Detection des doublons',
       path: '/identities/fusion',
       color: 'green',
+      part: 'Données',
+      hideInMenuBar: true
+    },
+    {
+      icon: 'mdi-trash-can',
+      label: 'Corbeille',
+      path: '/identities/trash',
+      color: 'black',
+      hideInMenuBar: true,
       part: 'Données'
     },
     {
@@ -58,6 +71,7 @@ function useMenu(identityStateStore, identityAffectationStore) {
       color: 'primary',
       part: 'Etats',
       badgeValue: 'TO_VALIDATE',
+      hideInMenuBar: false
     },
     {
       icon: 'mdi-account-alert',
@@ -66,6 +80,7 @@ function useMenu(identityStateStore, identityAffectationStore) {
       color: 'primary',
       part: 'Etats',
       badgeValue: 'TO_COMPLETE',
+      hideInMenuBar: false
     },
     {
       icon: 'mdi-sync',
@@ -74,6 +89,7 @@ function useMenu(identityStateStore, identityAffectationStore) {
       color: 'primary',
       part: 'Etats',
       badgeValue: 'TO_SYNC',
+      hideInMenuBar: false
     },
     {
       icon: 'mdi-loading',
@@ -82,6 +98,7 @@ function useMenu(identityStateStore, identityAffectationStore) {
       color: 'primary',
       part: 'Etats',
       badgeValue: 'PROCESSING',
+      hideInMenuBar: false
     },
     {
       icon: 'mdi-check',
@@ -90,13 +107,7 @@ function useMenu(identityStateStore, identityAffectationStore) {
       color: 'primary',
       part: 'Etats',
       badgeValue: 'SYNCED',
-    },
-    {
-      icon: 'mdi-check',
-      label: 'Synchro désactivé',
-      path: `/identities?sort[metadata.lastUpdatedAt]=desc&skip=0&filters[@state][]=${IdentityState.NO_SYNC}`,
-      color: 'primary',
-      part: 'Etats',
+      hideInMenuBar: false
     },
     {
       icon: 'mdi-account-switch-outline',
@@ -104,6 +115,7 @@ function useMenu(identityStateStore, identityAffectationStore) {
       path: '/identities?sort[metadata.lastUpdatedAt]=desc&skip=0&filters[!:primaryEmployeeNumber]=null',
       color: 'primary',
       part: 'Etats',
+      hideInMenuBar: false
     },
     ...config?.menus?.entries || [],
     {
@@ -113,34 +125,39 @@ function useMenu(identityStateStore, identityAffectationStore) {
       color: 'primary',
       part: 'Etats',
       badgeValue: 'ON_ERROR',
+      hideInMenuBar: false
     },
     {
       icon: 'mdi-email-alert',
       label: 'Invitations non envoyés',
       path: '/identities?limit=10&skip=0&filters[&filters[%23initState]=0&sort[metadata.lastUpdatedAt]=desc',
       color: 'negative',
-      part: 'Activation'
+      part: 'Activation',
+      hideInMenuBar: false
     },
     {
       icon: 'mdi-email-fast',
       label: 'Invitations envoyées',
       path: '/identities?limit=10&skip=0&filters[&filters[%23initState]=1&sort[metadata.lastUpdatedAt]=desc',
       color: 'warning',
-      part: 'Activation'
+      part: 'Activation',
+      hideInMenuBar: false
     },
     {
       icon: 'mdi-email-open',
       label: 'Comptes activés',
       path: '/identities?limit=10&skip=0&filters[&filters[%23initState]=2&sort[metadata.lastUpdatedAt]=desc',
       color: 'positive',
-      part: 'Activation'
+      part: 'Activation',
+      hideInMenuBar: false
     },
     {
       icon: 'mdi-email-remove',
       label: 'Invitations périmées',
       path: '/identities/outdated',
       color: 'accent',
-      part: 'Activation'
+      part: 'Activation',
+      hideInMenuBar: false
     },
   ])
 
@@ -167,7 +184,7 @@ function useMenu(identityStateStore, identityAffectationStore) {
       }
       acc.push({
         ...menu,
-        badge: menu.badgeValue ? badgeInfos : undefined,
+        badge: menu.badgeValue ? badgeInfos : undefined
       })
       return acc
     }, [])

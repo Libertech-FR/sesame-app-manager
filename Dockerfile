@@ -10,15 +10,12 @@ WORKDIR /data
 RUN apt-get update && apt-get -y --no-install-recommends upgrade && apt-get install -y --no-install-recommends \
   git \
   jq \
-  nano \
-  vim \
   bash \
   bash-completion \
   iputils-ping \
   telnet \
   dnsutils \
   net-tools \
-  tcpdump \
   && apt-get clean \
   && rm -rf /var/lib/apt/lists/*
 
@@ -37,4 +34,4 @@ RUN yarn build
 
 EXPOSE 3000
 
-CMD ["yarn", "run", "start:prod"]
+CMD ["/data/scripts/checkinstall.sh;yarn", "run", "start:prod"]

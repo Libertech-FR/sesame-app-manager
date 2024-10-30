@@ -10,13 +10,14 @@ q-layout(view="hHh LpR lff" style="margin-top: -1px;")
               q-icon(name="mdi-home")
           q-separator
         q-list(v-for="part in menuParts" :key="part")
-          q-item(
-            v-for="menu in getMenuByPart(part)" :key="part" clickable v-ripple
-            :href="menu.path" :active="menu.path === $route.fullPath"
-          )
-            q-item-section(avatar)
-              q-icon(:name="menu.icon" :color="menu.color")
-            q-badge(v-if="menu.badgeValue" :color="menu.badge.color" floating) {{ menu.badge.value }}
+          div(v-for="menu in getMenuByPart(part)")
+            q-item(v-if="menu.hideInMenuBar !== true"
+              :key="part"  clickable v-ripple
+              :href="menu.path" :active="menu.path === $route.fullPath"
+            )
+              q-item-section(avatar)
+                q-icon(:name="menu.icon" :color="menu.color")
+              q-badge(v-if="menu.badgeValue" :color="menu.badge.color" floating) {{ menu.badge.value }}
           q-separator
   q-page-container
     nuxt-page
