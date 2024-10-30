@@ -20,7 +20,7 @@ RUN apt-get update && apt-get -y --no-install-recommends upgrade && apt-get inst
   && rm -rf /var/lib/apt/lists/*
 
 COPY . .
-
+RUN chmod 777 /data/scripts/checkinstall.sh
 RUN yarn install \
   --prefer-offline \
   --frozen-lockfile \
@@ -34,4 +34,4 @@ RUN yarn build
 
 EXPOSE 3000
 
-CMD ["/data/scripts/checkinstall.sh;yarn", "run", "start:prod"]
+ENTRYPOINT ["./entrypoint.sh"]
