@@ -26,7 +26,7 @@
               <q-btn round size="sm" color="green" icon="mdi-account-multiple" @click="fusion1(props.cols[0].value,props.cols[5].value)">
                  <q-tooltip class="text-body2">fusionner les deux identités</q-tooltip>
               </q-btn>
-              <q-btn round size="sm" color="green" icon="mdi-account-remove">
+              <q-btn round size="sm" color="green" icon="mdi-account-remove" @click="deleteDialog(props.cols[0].value,props.cols[5].value)">
                 <q-tooltip class="text-body2">supprimer l'identité</q-tooltip>
               </q-btn>
           </template>
@@ -37,7 +37,7 @@
               <q-btn round size="sm" color="red" icon="mdi-account-multiple" @click="fusion1(props.cols[5].value,props.cols[0].value)">
                 <q-tooltip class="text-body2">fusionner les deux identités</q-tooltip>
               </q-btn>
-               <q-btn round size="sm" color="red" icon="mdi-account-remove">
+               <q-btn round size="sm" color="red" icon="mdi-account-remove" @click="deleteDialog(props.cols[5].value,props.cols[0].value)">
                   <q-tooltip class="text-body2">supprimer l'identité</q-tooltip>
                </q-btn>
           </template>
@@ -106,7 +106,6 @@ const actions = {
     return {...data._data?.data}
   }
 }
-
 const { data: rows1, pending, error, refresh } = await useHttp('/management/identities/duplicates', {
   method: 'GET',
   transform: (result)=>{
@@ -172,6 +171,39 @@ async function submit() {
 function closeModal(){
   editForm.value=false
   refresh()
+}
+async function deleteDialog(id){
+  $q.dialog({
+    title: 'supprimer cette identité',
+    message: 'Voulez-vous supprimer cette identité ?',
+    persistent: true,
+    html: true,
+    ok: {
+      push: true,
+      color: 'positive',
+      label: 'Supprimer',
+    },
+    cancel: {
+      push: true,
+      color: 'negative',
+      label: 'Annuler',
+    },
+  }).onOk(async () => {
+    const data=await deleteIdentity(id)
+    refresh()
+  })
+}
+async function deleteIdentity(id) {
+  await $http.post('/core/backends/delete', {
+    method: 'POST',
+    body: {
+      payload: [
+        id,
+      ],
+    },
+  }).catch(error => {
+    console.error('There was an error!', error);
+  })
 }
 </script>
 <style>

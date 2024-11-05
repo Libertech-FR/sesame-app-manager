@@ -1,5 +1,9 @@
 #!/bin/bash
 
 /data/scripts/checkinstall.sh
-yarn run start:prod
+if [ "$DEV" = "1" ];then
+  yarn dev
+else
+  yarn run start:prod
+fi
 

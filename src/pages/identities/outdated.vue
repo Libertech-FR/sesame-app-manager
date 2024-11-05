@@ -1,7 +1,7 @@
 <template>
   <q-table
     flat bordered
-    title="Identités dons l'invitation n'est plus valide"
+    title="Identités dont l'invitation n'est plus valide"
     dense
     :rows="rows1"
     :columns="fieldsName"

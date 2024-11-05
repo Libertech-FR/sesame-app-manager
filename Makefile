@@ -17,13 +17,14 @@ dev:
 	docker run --rm -it \
 		-e NODE_ENV=development \
 		-e NODE_TLS_REJECT_UNAUTHORIZED=0 \
+		-e DEV=1 \
 		--add-host host.docker.internal:host-gateway \
 		--name $(APPNAME) \
 		--network dev \
 		-p $(APP_PORT):3000 \
 		-p 24678:24678 \
 		-v $(CURDIR):/data \
-		$(IMGNAME) yarn dev
+		$(IMGNAME)
 
 prod:
 	docker run --rm -it \
