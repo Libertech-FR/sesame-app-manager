@@ -11,7 +11,7 @@ q-page.container
     :visibleColumns="visibleColumns"
     :fieldsList="fieldsList"
     :selected="selected"
-    :hide-selection="false"
+    :hide-selection="true"
     :pagination="pagination"
     :pending="pending"
     :refresh="refreshEvent"
@@ -19,6 +19,7 @@ q-page.container
     :titleKey=["inetOrgPerson.cn"]
     :crud="crud"
     :actions="actions"
+    hide-left-buttons="true"
     :defaultRightPanelButton="false"
   )
     template(#right-panel-title-before="props")
@@ -30,17 +31,7 @@ q-page.container
       sesame-table-top-left( :selected="selectedValues" @refresh="refresh" @clear="clearSelected" :total="identities?.total")
     template(#body-cell-states="props")
       sesame-table-state-col(:identity="props.row")
-    template(#right-panel-actions-content-after="{target, crud, isNew}")
-      sesame-identity-form-actions(
-        :identity="target"
-        @submit="submit($event)"
-        @create="create($event)"
-        @sync="sync"
-        @logs="logs"
-        @delete="deleteIdentity"
-        :crud="crud"
-        :isNew="isNew"
-      )
+
     template(#right-panel-content="{payload, isNew}")
       sesame-identity-form(
         :identity="{...payload.target}"
@@ -133,7 +124,7 @@ function refreshEvent() {
 }
 
 const crud = {
-  create: true,
+  create: false,
   read: true,
   update: true,
   delete: false,

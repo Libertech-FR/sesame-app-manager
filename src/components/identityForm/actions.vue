@@ -22,7 +22,7 @@ div.flex
       q-tooltip.text-body2(slot="trigger" v-else) L'état de l'identité ne permet pas de la synchroniser
     q-btn.q-mx-xs(v-if="props.identity?._id" @click="logs" color="grey-8" icon="mdi-file-document" :href="'/jobs?filters[:concernedTo.id]=' + props.identity?._id")
       q-tooltip.text-body2(slot="trigger") Voir les logs de l'identité
-    q-btn.q-mx-xs(v-if="props.identity?._id" @click="deleteIdentity" :disabled="!props.identity.lastSync" color="negative" icon="mdi-delete")
+    q-btn.q-mx-xs(v-if="props.identity?._id" @click="deleteIdentity" color="negative" icon="mdi-delete")
       q-tooltip.text-body2(slot="trigger") Supprimer l'identité
 </template>
 

@@ -85,7 +85,7 @@ function useMenu(identityStateStore, identityAffectationStore) {
     {
       icon: 'mdi-sync',
       label: 'A synchroniser',
-      path: `/identities?sort[metadata.lastUpdatedAt]=desc&skip=0&filters[@state][]=${IdentityState.TO_SYNC}`,
+      path: `/identities/readonly?sort[metadata.lastUpdatedAt]=desc&skip=0&filters[@state][]=${IdentityState.TO_SYNC}`,
       color: 'primary',
       part: 'Etats',
       badgeValue: 'TO_SYNC',
@@ -94,7 +94,7 @@ function useMenu(identityStateStore, identityAffectationStore) {
     {
       icon: 'mdi-loading',
       label: 'En cours de synchro.',
-      path: `/identities?sort[metadata.lastUpdatedAt]=desc&skip=0&filters[@state][]=${IdentityState.PROCESSING}`,
+      path: `/identities/readonly?sort[metadata.lastUpdatedAt]=desc&skip=0&filters[@state][]=${IdentityState.PROCESSING}`,
       color: 'primary',
       part: 'Etats',
       badgeValue: 'PROCESSING',

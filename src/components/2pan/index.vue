@@ -12,7 +12,7 @@ q-splitter(
     q-card.full-height.q-pa-sm(bordered :class='{"hidden": isSimple && targetId}')
       q-table.sesame-sticky-last-column-table.full-height(
         v-bind="$attrs"
-        selection="multiple"
+        :selection="selectedIsHidden()"
         v-model:selected="selected"
         v-model:pagination="pagination"
         :hide-pagination="hidePagination"
@@ -33,12 +33,12 @@ q-splitter(
       )
         template(v-for="(_, name) in $slots" v-slot:[name]="slotData")
           slot(:name="name" v-bind="slotData")
-        template(v-slot:top-left)
+        template(v-slot:top-left v-if="hideLeftButtons === false")
           q-btn-group( rounded flat)
             slot(name="top-left-btn-grp" :selectedValues="selected")
               slot(name="top-left-btn-grp-content-before")
               slot(name="top-left-btn-grp-content-after")
-        template(v-slot:top-right)
+        template(v-slot:top-right v-if="hideRightButtons === false")
           q-btn-group(rounded flat)
             slot(name="top-right-btn-grp")
               slot(name="top-right-btn-grp-content-before")
@@ -125,6 +125,18 @@ const router = useRouter()
 
 const props = defineProps({
   simple: {
+    type: Boolean,
+    default: false,
+  },
+  hideSelection: {
+    type: Boolean,
+    default: false,
+  },
+  hideLeftButtons:{
+    type: Boolean,
+    default: false,
+  },
+  hideRightButtons:{
     type: Boolean,
     default: false,
   },
@@ -282,6 +294,13 @@ function highlightRow(rowKey) {
   if (!target.value) return ''
   if (target.value[props.rowKey] === rowKey) {
     return 'sesame-table-td-highlight'
+  }
+}
+function selectedIsHidden() {
+  if (props.hideSelection === false){
+    return "multiple"
+  }else {
+    return "none"
   }
 }
 

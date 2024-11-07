@@ -175,7 +175,7 @@ function getTabValidations(tab: string) {
 }
 
 async function deleteIdentity() {
-  await useHttp('/core/backends/delete', {
+  const { data: result, pending, error, refresh } = await useHttp('/core/backends/delete', {
     method: 'POST',
     body: {
       payload: [
@@ -183,6 +183,18 @@ async function deleteIdentity() {
       ],
     },
   })
+  if (error.value) {
+    // Handle error during sync
+  } else {
+    $q.notify({
+      message: "Identité supprimée",
+      color: 'positive',
+      position: 'top-right',
+      icon: 'mdi-check-circle-outline',
+    })
+    emits('refreshTarget', result.value.data)
+    // props.identity. = result.value.data
+  }
 }
 
 async function sync() {
@@ -197,7 +209,7 @@ async function sync() {
     // Handle error during sync
   } else {
     $q.notify({
-      message: 'Synchronisation effectuée',
+      message: "Mise en état, à synchroniser",
       color: 'positive',
       position: 'top-right',
       icon: 'mdi-check-circle-outline',
