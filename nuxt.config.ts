@@ -101,6 +101,7 @@ export default defineNuxtConfig({
     },
   },
   proxy: {
+    https: false,
     proxies: {
       '/api': {
         rewrite: (path: string) => path.replace(/^\/api/, ''),
@@ -108,6 +109,7 @@ export default defineNuxtConfig({
         changeOrigin: true,
       }
     },
+    cors: false,
   },
   http: {
     debug: /true|on|yes|1/i.test(`${process.env.DEBUG}`),
