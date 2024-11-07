@@ -131,7 +131,7 @@ onMounted(async () => {
   daemonVersion.value = daemonVersionRes.value?.data
 })
 
-const esUrl = new URL(config.baseUrl + "/core/backends/sse")
+const esUrl = new URL(window.location.origin + "/api/core/backends/sse")
 esUrl.searchParams.append("id", '' + auth.user?._id)
 esUrl.searchParams.append("key", '' + auth.user?.sseToken)
 var es = new ReconnectingEventSource(esUrl)

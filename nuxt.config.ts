@@ -44,6 +44,7 @@ export default defineNuxtConfig({
   },
   modules: [
     '@nuxt-alt/auth',
+    '@nuxt-alt/proxy',
     '@nuxt-alt/http',
     '@pinia/nuxt',
     'nuxt-quasar-ui',
@@ -73,17 +74,17 @@ export default defineNuxtConfig({
         },
         endpoints: {
           login: {
-            url: `${SESAME_APP_API_URL}/core/auth/local`,
+            url: `/api/core/auth/local`,
             method: 'post',
             headers: { 'Content-Type': 'application/json' },
           },
           refresh: {
-            url: `${SESAME_APP_API_URL}/core/auth/refresh`,
+            url: `/api/core/auth/refresh`,
             method: 'post',
             headers: { 'Content-Type': 'application/json' },
           },
-          logout: { url: `${SESAME_APP_API_URL}/core/auth/logout`, method: 'post' },
-          user: { url: `${SESAME_APP_API_URL}/core/auth/session`, method: 'get' },
+          logout: { url: `/api/core/auth/logout`, method: 'post' },
+          user: { url: `/api/core/auth/session`, method: 'get' },
         },
         redirect: {
           logout: '/login',
@@ -99,10 +100,19 @@ export default defineNuxtConfig({
       },
     },
   },
+  proxy: {
+    proxies: {
+      '/api': {
+        rewrite: (path: string) => path.replace(/^\/api/, ''),
+        target: SESAME_APP_API_URL,
+        changeOrigin: true,
+      }
+    },
+  },
   http: {
     debug: /true|on|yes|1/i.test(`${process.env.DEBUG}`),
-    browserBaseURL: SESAME_APP_API_URL,
-    baseURL: SESAME_APP_API_URL,
+    browserBaseURL: '/api',
+    baseURL: '/api',
   },
   dayjs: {
     locales: ['fr', 'en'],
