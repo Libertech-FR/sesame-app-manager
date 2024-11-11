@@ -13,6 +13,8 @@ div.flex
       :true-value="1"
       :false-value="0"
       )
+    q-btn.q-mx-xs(@click="resetPasswordModal = true" color="red-8" icon="mdi-account-key"  :disabled="props.identity.state != IdentityState.SYNCED")
+      q-tooltip.text-body2(slot="trigger") Définir le mot de passe
     q-btn.q-mx-xs(@click="sendInit" color="primary" icon="mdi-email-arrow-right"  :disabled="props.identity.state != IdentityState.SYNCED")
       q-tooltip.text-body2(slot="trigger") Envoyer le mail d'invitation
     q-btn.q-mx-xs(@click="submit" color="positive" icon="mdi-check"  v-show="!isNew" v-if="crud.update")
@@ -24,6 +26,24 @@ div.flex
       q-tooltip.text-body2(slot="trigger") Voir les logs de l'identité
     q-btn.q-mx-xs(v-if="props.identity?._id" @click="deleteIdentity" color="negative" icon="mdi-delete")
       q-tooltip.text-body2(slot="trigger") Supprimer l'identité
+    q-dialog(v-model="resetPasswordModal" persistent medium)
+      q-card(style="width:800px")
+       q-card-section(class="text-h6 bg-primary text-white") definition du mot de passe
+       q-card-section
+        input-new-password(v-model="newpassword"
+          :min="passwordPolicies.len"
+          :min-upper="passwordPolicies.hasUpperCase"
+          :min-lower="passwordPolicies.hasLowerCase"
+          :min-number="passwordPolicies.hasNumbers"
+          :min-special="passwordPolicies.hasSpecialChars"
+          :min-entropy="passwordPolicies.minComplexity"
+          :entropy-bad="passwordPolicies.minComplexity"
+          :entropy-good="passwordPolicies.goodComplexity"
+          :check-pwned="passwordPolicies.checkPwned")
+        q-card-actions(align="right" class="bg-white text-teal")
+          q-btn( label="Abandonner" color="negative" @click="resetPasswordModal = false" )
+          q-btn( label="Sauver" color="positive" @click="resetPasswordModal = false" :disabled="newpassword === ''")
+
 </template>
 
 <script lang="ts" setup>
@@ -35,8 +55,24 @@ import { useRouter } from 'vue-router'
 import { useFetch } from 'nuxt/app'
 import { useIdentityStates } from '~/composables'
 import { useErrorHandling } from '#imports'
+import InputNewPassword from "~/components/inputNewPassword.vue";
+const resetPasswordModal=ref(false)
+const passwordPolicies = ref({
+  bannedTime: 3600,
+  checkPwned: true,
+  goodComplexity: 60,
+  hasLowerCase: 1,
+  hasNumbers: 1,
+  hasSpecialChars: 1,
+  hasUpperCase: 1,
+  len: 10,
+  maxRetry: 10,
+  minComplexity: 20,
+  resetBySms: false,
+  redirectUrl: ''
+})
 
-
+const newpassword=ref('')
 type IdentityResponse = operations['IdentitiesController_search']['responses']['200']['content']['application/json']
 type Identity = components['schemas']['IdentitiesDto']
 const activation=ref(true)
