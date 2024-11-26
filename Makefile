@@ -24,7 +24,7 @@ dev:
 		-p $(APP_PORT):3000 \
 		-p 24678:24678 \
 		-v $(CURDIR):/data \
-		$(IMGNAME)
+		$(IMGNAME) yarn dev
 
 prod:
 	docker run --rm -it \
