@@ -20,7 +20,7 @@
         <q-icon :name="has_len" :color="has_len_color" size="xs" style="margin: 0px;"></q-icon>
         &nbsp;doit avoir au moins {{min}} caractères
       </p>
-      <p v-show="minUpper > 0" style="margin: 0px;">
+      <p  style="margin: 0px;">
         <q-icon  :name="has_upper" :color="has_upper_color" size="xs" ></q-icon>
         &nbsp;doit comporter au moins {{minUpper}} majuscules
       </p>
@@ -79,44 +79,29 @@ const progress=ref(0)
 const progress_color=ref('red')
 const typePasswordProp=ref('password')
 const typeConfirmProp=ref('password')
-const props = defineProps({
-  min: {
-    type: Number,
-    default:8},
-  minUpper:{
-    type: Number,
-    default:1
-  },
-  minLower:{
-    type: Number,
-    default:1
-  },
-  minNumber:{
-    type: Number,
-    default:1
-  },
-  minSpecial:{
-    type:Number,
-    default:1
-  },
-  minEntropy:{
-    type:Number,
-    default:30
-  },
-  entropyBad:{
-    type:Number,
-    default:10
-  },
-  entropyGood:{
-    type:Number,
-    default:80
-  },
-  checkPwned:{
-    type:Boolean,
-    default:true
-  }
-})
+const minLower=ref(1)
+const minUpper=ref(1)
+const minNumber=ref(1)
+const minSpecial=ref(1)
+const minEntropy=ref(20)
+const checkPwned=ref(false)
+const min=ref(5)
+const { data: props} = await useHttp('/management/passwd/getpolicies',
+  {
+    method:'GET',
+    transform:(result)=> {
+      return result.data
+    }
 
+  }
+)
+minLower.value=props.value.hasLowerCase
+minUpper.value=props.value.hasUpperCase
+minNumber.value=props.value.hasNumbers
+minSpecial.value=props.value.hasSpecialChars
+minEntropy.value=props.value.minComplexity
+checkPwned.value=props.value.checkPwned
+min.value=props.value.len
 async function checkPassword(ev, type) {
   let newP = newPassword.value
   let confirmP = confirmNewPassword.value
@@ -130,13 +115,16 @@ async function checkPassword(ev, type) {
       console.log('emit ' + newPassword.value)
       //avant d accepter on cherche dans l api de pwned
       try{
-        if (props.checkPwned === true ){
+        if (checkPwned.value === true ){
           const numPwns = await pwnedPassword(newP);
 
           if (numPwns >0){
             iconIsPwnedOK(false)
             $q.notify({
               message: '<text-weight-medium>Ce mot de passe est déjà apparu lors d\'une violation de données. Vous ne pouvez pas l\'utiliser</text-weight-medium>',
+              html:true,
+              color: 'negative',
+              multiLine: true,
             })
             emit('update:modelValue', '')
             return
@@ -164,7 +152,7 @@ async function checkPassword(ev, type) {
 function checkPolicy(password) {
   has_len.value='highlight_off'
   let statut=true
-  if (props.minSpecial >= 1){
+  if (minSpecial.value >= 1){
     if (/[!@#\$%\^\&*\)\(+=._-]/.test(password) === false){
       pwdColor.value = 'red'
       iconSpecialOK(false)
@@ -173,7 +161,7 @@ function checkPolicy(password) {
       iconSpecialOK(true)
     }
   }
-  if (props.minNumber >= 1) {
+  if (minNumber.value >= 1) {
     if (/\d/.test(password) === false) {
       pwdColor.value = 'red'
       iconNumberOK(false)
@@ -182,7 +170,7 @@ function checkPolicy(password) {
       iconNumberOK(true)
     }
   }
-  if (props.minLower >= 1) {
+  if (minLower.value >= 1) {
     if (/[a-z]/.test(password) === false) {
       pwdColor.value = 'red'
       iconLowerOK(false)
@@ -191,7 +179,7 @@ function checkPolicy(password) {
       iconLowerOK(true)
     }
   }
-  if (props.minUpper >= 1) {
+  if (minUpper.value >= 1) {
     if (/[A-Z]/.test(password) === false) {
       pwdColor.value = 'red'
       iconUpperOK(false)
@@ -200,8 +188,8 @@ function checkPolicy(password) {
       iconUpperOK(true)
     }
   }
-  if (password.length < props.min) {
-    console.log('trop court ' + props.min)
+  if (password.length < min.value) {
+    console.log('trop court ' + min.value)
     iconLenOK(false)
     statut=false
   }else{
@@ -287,18 +275,18 @@ function iconIsPwnedOK(value){
 }
 function complexity(password){
   console.log(stringEntropy(password))
-  if (props.minEntropy > 0){
+  if (minEntropy.value > 0){
     let c = stringEntropy(password)
     progress.value = c / 100
     console.log('entropy' + c)
-    if (c < props.entropyBad) {
+    if (c < props.value.minComplexity) {
       progress_color.value = 'red'
-    } else if (c >= props.entropyBad && c < props.entropyGood) {
+    } else if (c >= props.value.minComplexity && c < props.value.goodComplexity) {
       progress_color.value = 'warning'
     } else {
       progress_color.value = 'green'
     }
-    if (c >= props.minEntropy) {
+    if (c >= minEntropy.value) {
       return true
     } else {
       return false

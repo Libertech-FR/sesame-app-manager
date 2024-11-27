@@ -30,19 +30,10 @@ div.flex
       q-card(style="width:800px")
        q-card-section(class="text-h6 bg-primary text-white") definition du mot de passe
        q-card-section
-        input-new-password(v-model="newpassword"
-          :min="passwordPolicies.len"
-          :min-upper="passwordPolicies.hasUpperCase"
-          :min-lower="passwordPolicies.hasLowerCase"
-          :min-number="passwordPolicies.hasNumbers"
-          :min-special="passwordPolicies.hasSpecialChars"
-          :min-entropy="passwordPolicies.minComplexity"
-          :entropy-bad="passwordPolicies.minComplexity"
-          :entropy-good="passwordPolicies.goodComplexity"
-          :check-pwned="passwordPolicies.checkPwned")
+        input-new-password(v-model="newpassword")
         q-card-actions(align="right" class="bg-white text-teal")
           q-btn( label="Abandonner" color="negative" @click="resetPasswordModal = false" )
-          q-btn( label="Sauver" color="positive" @click="resetPasswordModal = false" :disabled="newpassword === ''")
+          q-btn( label="Sauver" color="positive" @click="doChangePassword" :disabled="newpassword === ''")
 
 </template>
 
@@ -57,20 +48,7 @@ import { useIdentityStates } from '~/composables'
 import { useErrorHandling } from '#imports'
 import InputNewPassword from "~/components/inputNewPassword.vue";
 const resetPasswordModal=ref(false)
-const passwordPolicies = ref({
-  bannedTime: 3600,
-  checkPwned: true,
-  goodComplexity: 60,
-  hasLowerCase: 1,
-  hasNumbers: 1,
-  hasSpecialChars: 1,
-  hasUpperCase: 1,
-  len: 10,
-  maxRetry: 10,
-  minComplexity: 20,
-  resetBySms: false,
-  redirectUrl: ''
-})
+
 
 const newpassword=ref('')
 type IdentityResponse = operations['IdentitiesController_search']['responses']['200']['content']['application/json']
@@ -97,6 +75,27 @@ const { handleError } = useErrorHandling()
 
 const emits = defineEmits(['submit', 'sync', 'logs', 'create', 'delete'])
 
+async function doChangePassword(){
+  const requestOptions={method: 'POST',
+    body:JSON.stringify({id:props.identity._id,newPassword: newpassword.value})}
+  try{
+    const data=await $http.post('/management/identities/forcepassword', requestOptions)
+    $q.notify({
+      message: 'Le mot de passe a été changé : ',
+      color: 'positive',
+      position: 'top-right',
+      icon: 'mdi-check-circle-outline',
+    })
+  }catch(error){
+    $q.notify({
+      message: 'Impossible de modifier le mot de passe : ' + error.response._data.message,
+      color: 'negative',
+      position: 'top-right',
+      icon: 'mdi-alert-circle-outline',
+    })
+  }
+  resetPasswordModal.value = false
+}
 async function submit() {
   // console.log('submit from actions')
   emits('submit')
@@ -135,7 +134,6 @@ async function activate(){
     bouton="Activer"
     initialStatus=0
   }
-  debugger
   if (showActivate() === false){
     props.identity.dataStatus = initialStatus
     return
