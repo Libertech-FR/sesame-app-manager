@@ -1,5 +1,6 @@
 import type { QTableProps } from 'quasar'
 import type { components } from '#build/types/service-api'
+import Sandbox from '@nyariv/sandboxjs'
 
 type Identity = components['schemas']['IdentitiesDto']
 
@@ -31,15 +32,23 @@ const daysjs = useDayjs()
 
 function processFieldValue(row: any, field: any) {
   if (field.type === 'function') {
-    return eval(field.value);
+    const sandbox = new Sandbox();
+    const exec = sandbox.compile('return ' + field.value, true);
+
+    return exec({ row }).run();
   }
+
   return row[field];
 }
 
 function processFormat(value: any, format: any) {
   if (format && format.type === 'function') {
-    return eval(format.value);
+    const sandbox = new Sandbox();
+    const exec = sandbox.compile('return ' + format.value, true);
+
+    return exec({ value }).run();
   }
+
   return Array.isArray(value) ? value?.join(', ') : value;
 }
 
