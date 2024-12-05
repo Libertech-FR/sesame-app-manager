@@ -19,7 +19,7 @@ div(style="cursor: pointer")
     template(v-slot:prepend)
       q-icon(name="mdi-paperclip")
   q-card(style="border-radius: 0")
-    q-img(:src="baseUrl + '/management/identities/photo/raw?' + photoUrlQuery.params" placeholder-src='/no-photo.jpg' fit='contain' height='400px')
+    q-img(:src="'/api/management/identities/photo/raw?' + photoUrlQuery.params" placeholder-src='/no-photo.jpg' fit='contain' height='400px')
 </template>
 
 <script lang="ts">
