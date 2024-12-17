@@ -4,6 +4,7 @@ import pugPlugin from 'vite-plugin-pug'
 import openapiTS from 'openapi-typescript'
 import { defineNuxtConfig } from 'nuxt/config'
 import { parse } from 'yaml'
+import consola from 'consola'
 
 const SESAME_APP_API_URL = process.env.SESAME_APP_API_URL || 'http://localhost:4002'
 
@@ -16,6 +17,19 @@ if (process.env.SESAME_APP_DARK_MODE) {
   }
 }
 
+let https = {}
+if (/yes|1|on|true/i.test(`${process.env.SESAME_HTTPS_ENABLED}`)) {
+  try {
+    https = {
+      key: readFileSync(`${process.env.SESAME_HTTPS_PATH_KEY}`, 'utf8'),
+      cert: readFileSync(`${process.env.SESAME_HTTPS_PATH_CERT}`, 'utf8'),
+    };
+    consola.info('[Nuxt] SSL certificates loaded successfully')
+  } catch (error) {
+    consola.warn('[Nuxt] Error while reading SSL certificates', error)
+  }
+}
+
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   ssr: false,
@@ -25,6 +39,7 @@ export default defineNuxtConfig({
   debug: !!process.env.DEBUG,
   devServer: {
     port: 3000,
+    https,
   },
   devtools: {
     enabled: process.env.NODE_ENV === 'development',
