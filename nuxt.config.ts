@@ -121,6 +121,7 @@ export default defineNuxtConfig({
       '/api': {
         rewrite: (path: string) => path.replace(/^\/api/, ''),
         target: SESAME_APP_API_URL,
+        secure: false,
         changeOrigin: true,
       }
     },
