@@ -103,13 +103,17 @@ onMounted(async () => {
     return
   }
 
-  const { data: orchestratorVersionRes } = await useHttp<any>('/get-update/sesame-orchestrator')
+  const { data: orchestratorVersionRes } = await useHttp<any>('/get-update/sesame-orchestrator', {
+    signal: AbortSignal.timeout(2000),
+  })
   const { data: appManagerVersionRes } = await useHttp<any>('/get-update/sesame-app-manager', {
+    signal: AbortSignal.timeout(2000),
     query: {
       current: config.appManagerVersion || '0.0.0',
     },
   })
   const { data: daemonVersionDump } = await useHttp<any>('/core/backends/execute', {
+    signal: AbortSignal.timeout(2000),
     method: 'POST',
     query: {
       timeoutDiscard: true,
@@ -122,6 +126,7 @@ onMounted(async () => {
     },
   })
   const { data: daemonVersionRes } = await useHttp<any>('/get-update/sesame-daemon', {
+    signal: AbortSignal.timeout(2000),
     query: {
       current: daemonVersionDump?.value?.response?.data[0]?.version || '0.0.0',
     },
