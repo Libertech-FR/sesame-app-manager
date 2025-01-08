@@ -80,12 +80,16 @@ const QStringControlRenderer = defineComponent({
       return this.control.label === undefined ? this.control.schema.title : this.control.label;
     },
     photoUrlQuery() {
+      const auth = useAuth()
       const query = new URLSearchParams();
       const employeeNumber = (this.jsonforms as any)?.core?.data?.employeeNumber;
       const employeeType = (this.jsonforms as any)?.core?.data?.employeeType;
 
       query.append('filters[:inetOrgPerson.employeeNumber]', employeeNumber);
       query.append('filters[:inetOrgPerson.employeeType]', employeeType);
+
+      if (auth.user?._id) query.append('id', `${auth.user?._id}`);
+      if (auth.user?.sseToken) query.append('key', `${auth.user?.sseToken}`);
 
       return {
         params: query.toString(),
