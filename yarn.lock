@@ -1105,6 +1105,11 @@
     vite-plugin-checker "^0.6.4"
     vue-bundle-renderer "^2.0.0"
 
+"@nyariv/sandboxjs@^0.8.23":
+  version "0.8.23"
+  resolved "https://registry.yarnpkg.com/@nyariv/sandboxjs/-/sandboxjs-0.8.23.tgz#6903ff28343988f12f142f79c577fbd226288920"
+  integrity sha512-OaD3i0czFTZzQFQdwgFVEqNyZVK19N6Jzmx/LjmDc+kiV751FQ2h3xscYkAeY4jfau2vZTZau+xR8fpkKrv/Ng==
+
 "@parcel/watcher-android-arm64@2.4.1":
   version "2.4.1"
   resolved "https://registry.yarnpkg.com/@parcel/watcher-android-arm64/-/watcher-android-arm64-2.4.1.tgz#c2c19a3c442313ff007d2d7a9c2c1dd3e1c9ca84"

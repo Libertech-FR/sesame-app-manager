@@ -51,6 +51,16 @@ function buildNuxt() {
 }
 
 ;(async () => {
+  if (/yes|1|on|true/i.test(`${process.env.SESAME_HTTPS_ENABLED}`)) {
+    try {
+      process.env.NITRO_SSL_KEY = readFileSync(`${process.env.SESAME_HTTPS_PATH_KEY}`, 'utf8')
+      process.env.NITRO_SSL_CERT = readFileSync(`${process.env.SESAME_HTTPS_PATH_CERT}`, 'utf8')
+      consola.info('[Nuxt] SSL certificates loaded successfully')
+    } catch (error) {
+      consola.warn('[Nuxt] Error while reading SSL certificates', error)
+    }
+  }
+
   if (hashEnv() !== readHash()) {
     consola.warn('Hash changed, rebuilding...')
     consola.info(`Hash: ${hashEnv()}, Previous: ${readHash()}`)

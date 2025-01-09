@@ -98,9 +98,10 @@ q-splitter(
             slot(name="right-panel-content-before")
             slot(name="right-panel-content-after")
         q-expansion-item.bg-blue-grey-10(v-if='debug' label='Debug' icon='mdi-bug' dark dense)
-          q-card.overflow-auto.bg-blue-grey-8.text-white(:style='{maxHeight: "250px", height: "250px"}')
-            q-card-section.q-pa-xs
-              pre.q-ma-none(v-html='JSON.stringify(target, null, 2)')
+          .outer-ne-resize(:style='{minHeight: "250px", height: "250px"}')
+            q-card.overflow-auto.bg-blue-grey-8.text-white.inner-ne-resize
+              q-card-section.q-pa-xs
+                pre.q-ma-none(v-html='JSON.stringify(target, null, 2)')
 </template>
 
 <script lang="ts" setup>
@@ -396,3 +397,6 @@ onMounted(async () => {
   }
 })
 </script>
+
+<style>
+</style>

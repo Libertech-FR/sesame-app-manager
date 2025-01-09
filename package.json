@@ -1,6 +1,6 @@
 {
   "name": "@libertech-fr/sesame-app-manager",
-  "version": "1.1.13",
+  "version": "1.1.20",
   "type": "module",
   "scripts": {
     "build": "nuxt build",
@@ -20,6 +20,7 @@
     "@nuxt-alt/auth": "^3.1.6",
     "@nuxt-alt/http": "^1.7.10",
     "@nuxt-alt/proxy": "^2.5.8",
+    "@nyariv/sandboxjs": "^0.8.23",
     "@pinia/nuxt": "^0.5.1",
     "@quasar/extras": "^1.16.9",
     "@vueuse/router": "^10.7.2",

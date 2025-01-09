@@ -34,10 +34,15 @@ const badgesValues = ref({
 })
 
 const auth = useAuth()
-const { debug } = useDebug()
+
 // console.log(auth)
 const buttons = [
-
+  {
+    icon: 'mdi-bug',
+    name: 'Debug',
+    color: 'warning',
+    action: toggleDebug,
+  },
   {
     icon: 'mdi-logout',
     name: 'Déconnexion',
@@ -63,6 +68,18 @@ async function syncAll() {
   })
   await identityStateStore.fetchToSyncCount()
   await identityStateStore.fetchSyncedCount()
+}
+
+async function toggleDebug() {
+  const route = useRoute()
+  const router = useRouter()
+
+  const query = { ...route.query }
+  query.debug = /true|on|yes|1/i.test(query.debug) ? 0 : 1
+
+  await router.replace({
+    query,
+  })
 }
 
 </script>
