@@ -17,10 +17,10 @@ if (process.env.SESAME_APP_DARK_MODE) {
   }
 }
 
-let https = {}
+let sslCfg = <any>{}
 if (/yes|1|on|true/i.test(`${process.env.SESAME_HTTPS_ENABLED}`)) {
   try {
-    https = {
+    sslCfg.https = {
       key: readFileSync(`${process.env.SESAME_HTTPS_PATH_KEY}`, 'utf8'),
       cert: readFileSync(`${process.env.SESAME_HTTPS_PATH_CERT}`, 'utf8'),
     };
@@ -39,7 +39,7 @@ export default defineNuxtConfig({
   debug: !!process.env.DEBUG,
   devServer: {
     port: 3000,
-    https,
+    ...sslCfg,
   },
   devtools: {
     enabled: process.env.NODE_ENV === 'development',
