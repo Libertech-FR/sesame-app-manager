@@ -11,8 +11,11 @@ div.flex
       label="Activation"
       v-model="props.identity.dataStatus"
       :true-value="1"
-      :false-value="0"
+      :indeterminate-value="-2"
+      :false-value="-3"
       )
+    q-btn.q-mx-xs( @click="forceChangePassword()" color="orange-8" icon="mdi-lock-reset"  :disabled="props.identity.state != IdentityState.SYNCED")
+      q-tooltip.text-body2(slot="trigger") Obliger l'utilisateur à changer son mot de passe
     q-btn.q-mx-xs(@click="resetPasswordModal = true" color="red-8" icon="mdi-account-key"  :disabled="props.identity.state != IdentityState.SYNCED")
       q-tooltip.text-body2(slot="trigger") Définir le mot de passe
     q-btn.q-mx-xs(@click="sendInit" color="primary" icon="mdi-email-arrow-right"  :disabled="props.identity.state != IdentityState.SYNCED")
@@ -48,7 +51,7 @@ import { useIdentityStates } from '~/composables'
 import { useErrorHandling } from '#imports'
 import InputNewPassword from "~/components/inputNewPassword.vue";
 const resetPasswordModal=ref(false)
-
+const forcePasswordModal=ref(false)
 
 const newpassword=ref('')
 type IdentityResponse = operations['IdentitiesController_search']['responses']['200']['content']['application/json']
@@ -118,6 +121,43 @@ function showActivate(){
   }else{
     return false
   }
+}
+async function forceChangePassword(){
+  $q.dialog({
+    title: 'Confirmation',
+    message: "Voulez vous forcer le changement de mot de passe ? ",
+    persistent: true,
+    ok: {
+      push: true,
+      color: 'positive',
+      label: 'Forcer',
+    },
+    cancel: {
+      push: true,
+      color: 'negative',
+      label: 'Annuler',
+    },
+  }).onOk(async() => {
+    const requestOptions={method: 'POST',
+      body:JSON.stringify({id:props.identity._id})}
+    try{
+      const data=await $http.post('/management/identities/needtochangepassword', requestOptions)
+      $q.notify({
+        message: 'LE changement de mot de passe est forcé : ',
+        color: 'positive',
+        position: 'top-right',
+        icon: 'mdi-check-circle-outline',
+      })
+    }catch(error){
+      $q.notify({
+        message: 'Impossible de forcer le changement de mot de passe : ' + error.response._data.message,
+        color: 'negative',
+        position: 'top-right',
+        icon: 'mdi-alert-circle-outline',
+      })
+    }
+
+  })
 }
 async function activate(){
 
