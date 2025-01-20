@@ -11,8 +11,13 @@ div.flex
       label="Activation"
       v-model="props.identity.dataStatus"
       :true-value="1"
-      :false-value="0"
+      :indeterminate-value="-2"
+      :false-value="-3"
       )
+    q-btn.q-mx-xs( @click="forceChangePassword()" color="orange-8" icon="mdi-lock-reset"  :disabled="props.identity.state != IdentityState.SYNCED")
+      q-tooltip.text-body2(slot="trigger") Obliger l'utilisateur à changer son mot de passe
+    q-btn.q-mx-xs(@click="resetPasswordModal = true" color="red-8" icon="mdi-account-key"  :disabled="props.identity.state != IdentityState.SYNCED")
+      q-tooltip.text-body2(slot="trigger") Définir le mot de passe
     q-btn.q-mx-xs(@click="sendInit" color="primary" icon="mdi-email-arrow-right"  :disabled="props.identity.state != IdentityState.SYNCED")
       q-tooltip.text-body2(slot="trigger") Envoyer le mail d'invitation
     q-btn.q-mx-xs(@click="submit" color="positive" icon="mdi-check"  v-show="!isNew" v-if="crud.update")
@@ -24,6 +29,15 @@ div.flex
       q-tooltip.text-body2(slot="trigger") Voir les logs de l'identité
     q-btn.q-mx-xs(v-if="props.identity?._id" @click="deleteIdentity" color="negative" icon="mdi-delete")
       q-tooltip.text-body2(slot="trigger") Supprimer l'identité
+    q-dialog(v-model="resetPasswordModal" persistent medium)
+      q-card(style="width:800px")
+       q-card-section(class="text-h6 bg-primary text-white") definition du mot de passe
+       q-card-section
+        input-new-password(v-model="newpassword")
+        q-card-actions(align="right" class="bg-white text-teal")
+          q-btn( label="Abandonner" color="negative" @click="resetPasswordModal = false" )
+          q-btn( label="Sauver" color="positive" @click="doChangePassword" :disabled="newpassword === ''")
+
 </template>
 
 <script lang="ts" setup>
@@ -35,8 +49,11 @@ import { useRouter } from 'vue-router'
 import { useFetch } from 'nuxt/app'
 import { useIdentityStates } from '~/composables'
 import { useErrorHandling } from '#imports'
+import InputNewPassword from "~/components/inputNewPassword.vue";
+const resetPasswordModal=ref(false)
+const forcePasswordModal=ref(false)
 
-
+const newpassword=ref('')
 type IdentityResponse = operations['IdentitiesController_search']['responses']['200']['content']['application/json']
 type Identity = components['schemas']['IdentitiesDto']
 const activation=ref(true)
@@ -61,6 +78,27 @@ const { handleError } = useErrorHandling()
 
 const emits = defineEmits(['submit', 'sync', 'logs', 'create', 'delete'])
 
+async function doChangePassword(){
+  const requestOptions={method: 'POST',
+    body:JSON.stringify({id:props.identity._id,newPassword: newpassword.value})}
+  try{
+    const data=await $http.post('/management/identities/forcepassword', requestOptions)
+    $q.notify({
+      message: 'Le mot de passe a été changé : ',
+      color: 'positive',
+      position: 'top-right',
+      icon: 'mdi-check-circle-outline',
+    })
+  }catch(error){
+    $q.notify({
+      message: 'Impossible de modifier le mot de passe : ' + error.response._data.message,
+      color: 'negative',
+      position: 'top-right',
+      icon: 'mdi-alert-circle-outline',
+    })
+  }
+  resetPasswordModal.value = false
+}
 async function submit() {
   // console.log('submit from actions')
   emits('submit')
@@ -84,6 +122,43 @@ function showActivate(){
     return false
   }
 }
+async function forceChangePassword(){
+  $q.dialog({
+    title: 'Confirmation',
+    message: "Voulez vous forcer le changement de mot de passe ? ",
+    persistent: true,
+    ok: {
+      push: true,
+      color: 'positive',
+      label: 'Forcer',
+    },
+    cancel: {
+      push: true,
+      color: 'negative',
+      label: 'Annuler',
+    },
+  }).onOk(async() => {
+    const requestOptions={method: 'POST',
+      body:JSON.stringify({id:props.identity._id})}
+    try{
+      const data=await $http.post('/management/identities/needtochangepassword', requestOptions)
+      $q.notify({
+        message: 'LE changement de mot de passe est forcé : ',
+        color: 'positive',
+        position: 'top-right',
+        icon: 'mdi-check-circle-outline',
+      })
+    }catch(error){
+      $q.notify({
+        message: 'Impossible de forcer le changement de mot de passe : ' + error.response._data.message,
+        color: 'negative',
+        position: 'top-right',
+        icon: 'mdi-alert-circle-outline',
+      })
+    }
+
+  })
+}
 async function activate(){
 
 
@@ -99,7 +174,6 @@ async function activate(){
     bouton="Activer"
     initialStatus=0
   }
-  debugger
   if (showActivate() === false){
     props.identity.dataStatus = initialStatus
     return

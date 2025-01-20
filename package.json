@@ -25,6 +25,8 @@
     "@quasar/extras": "^1.16.9",
     "@vueuse/router": "^10.7.2",
     "cookie": "^0.6.0",
+    "fast-password-entropy": "^1.1.1",
+    "hibp": "^14.1.2",
     "moment": "^2.30.1",
     "openapi-fetch": "^0.8.2",
     "pinia": "^2.1.7",
