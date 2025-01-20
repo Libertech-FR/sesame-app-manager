@@ -40,6 +40,7 @@ q-page.container
         @delete="deleteIdentity"
         :crud="crud"
         :isNew="isNew"
+        :refreshTarget="refreshTarget"
       )
     template(#right-panel-content="{payload, isNew}")
       sesame-identity-form(

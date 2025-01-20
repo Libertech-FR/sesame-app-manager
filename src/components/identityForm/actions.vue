@@ -73,6 +73,9 @@ const props = defineProps({
     type: Boolean,
     required: true,
   },
+  refreshTarget:{
+    type:Function
+  }
 })
 
 const $q = useQuasar()
@@ -154,6 +157,7 @@ async function forceChangePassword(){
         position: 'top-right',
         icon: 'mdi-check-circle-outline',
       })
+      props?.refreshTarget(props.identity)
     }catch(error){
       $q.notify({
         message: 'Impossible de forcer le changement de mot de passe : ' + error.response._data.message,
