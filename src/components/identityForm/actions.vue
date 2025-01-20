@@ -3,8 +3,11 @@ div.flex
   div
     q-btn(color="positive" icon='mdi-content-save-plus' @click="create" v-show="isNew" v-if="crud.create")
       q-tooltip.text-body2 Créer
-    q-toggle.q-pa-md.q-gutter-y-lg(  unchecked-icon="mdi-account-cancel"
+    q-toggle.q-pa-md.q-gutter-y-lg(
       checked-icon="mdi-account-check"
+      unchecked-icon="mdi-account-cancel"
+      indeterminate-icon="mdi-lock-reset"
+      keep-color
       size="xl"
       @click="activate"
       :color="setActivateColor()"
@@ -71,6 +74,7 @@ const props = defineProps({
     required: true,
   },
 })
+
 const $q = useQuasar()
 const router = useRouter()
 const { getStateColor, getStateName } = useIdentityStates()
@@ -109,8 +113,10 @@ async function create() {
   emits('create')
 }
 function setActivateColor(){
-  if (props.identity.lastBackendSync != ""){
+  if (props.identity.dataStatus === 1){
     return "green"
+  }else if(props.identity.dataStatus === -3){
+    return "negative"
   }else{
     return "grey"
   }
