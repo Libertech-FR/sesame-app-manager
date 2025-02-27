@@ -13,7 +13,7 @@ q-layout(view="hHh LpR lff" style="margin-top: -1px;")
           div(v-for="menu in getMenuByPart(part)")
             q-item(v-if="menu.hideInMenuBar !== true"
               :key="part"  clickable v-ripple
-              :href="menu.path" :active="menu.path === $route.fullPath"
+              :to="menu.path" :active="menu.path === $route.fullPath"
             )
               q-item-section(avatar)
                 q-icon(:name="menu.icon" :color="menu.color")
