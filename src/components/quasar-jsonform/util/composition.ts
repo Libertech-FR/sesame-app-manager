@@ -84,6 +84,7 @@ export const useQuasarControl = <
       : input.handleChange;
 
   const onChange = (value: any) => {
+    // console.debug('onChange', input.control.value.path, adaptValue(value))
     changeEmitter(input.control.value.path, adaptValue(value));
   };
 

@@ -81,7 +81,7 @@ const QStringControlRenderer = defineComponent({
     createValue(val, done) {
       if (!this.control.data) {
         this.control.data = []
-        this.handleChange('', null)
+        //this.handleChange('', null)
       }
       done(val, 'add-unique')
     },
@@ -125,7 +125,7 @@ const QStringControlRenderer = defineComponent({
   mounted() {
     if (!this.control.data) {
       this.control.data = []
-      this.handleChange('', null)
+      //this.handleChange('', null)
     }
   }
 });

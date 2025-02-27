@@ -10,18 +10,21 @@ div
         q-item(clickable v-close-popup v-for="schema in schemas" @click="addSchema(schema)")
           q-item-section
             q-item-label(v-text="schema.name")
-  q-tab-panels(v-model="tab")
+  q-tab-panels(v-model="tab" keep-alive)
     q-tab-panel(name="inetOrgPerson")
       sesame-json-form-renderer-api(
+        v-if='identity.inetOrgPerson'
         schemaName="inetorgperson"
         v-model:data="identity.inetOrgPerson"
         v-model:validations="validations"
         :isNew="isNew"
       )
-    q-tab-panel(v-for="tab in tabs" :key="tab" :name="tab")
+    q-tab-panel(v-for="t in tabs" :key="t" :name="t")
+      //- pre(v-html="JSON.stringify(identity.additionalFields.attributes[t], null, 2)")
       sesame-json-form-renderer-api(
-        :schemaName="tab"
-        v-model:data="identity.additionalFields.attributes[tab]"
+        v-if='identity.additionalFields.attributes[t]'
+        :schemaName="t"
+        v-model:data="identity.additionalFields.attributes[t]"
         v-model:validations="validations"
         :isNew="isNew"
       )

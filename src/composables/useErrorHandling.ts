@@ -13,7 +13,7 @@ type handleErrorPayload = {
     message?: string;
 };
 
-const $q = useQuasar();
+//const $q = useQuasar();
 
 export function useErrorHandling(): useErrorHandlingReturnType {
   function handleError(payload: handleErrorPayload) {

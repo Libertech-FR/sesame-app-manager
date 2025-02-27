@@ -1,6 +1,6 @@
 <template lang="pug">
 div
-  //- pre(v-html="JSON.stringify({ isNew }, null, 2)")
+  //- pre(v-html="JSON.stringify({ data }, null, 2)")
   json-forms(
     :data="data"
     :schema="schema"
@@ -65,11 +65,19 @@ const validations = defineModel('validations', {
 
 const data = defineModel('data', {
   type: Object,
-  default: {},
+  required: true,
 });
 
 function onChange(event: JsonFormsChangeEvent) {
-  data.value = event.data || {};
+  data.value =  event.data;
+
+  if (!event.data) {
+    console.error('error', event.errors);
+    throw createError({
+      message: 'Data is empty',
+      status: 500,
+    })
+  }
 }
 
 const getSchemaValidations = computed(() => {
@@ -99,7 +107,7 @@ const { data: result, pending, error, refresh } = await useHttp<any>(`/managemen
 
 const identityForm = inject('identityForm') as Ref<any>;
 const employeeType = computed(() => {
-  console.log('employeeType', identityForm.value?.inetOrgPerson?.employeeType);
+  //console.log('employeeType', identityForm.value?.inetOrgPerson?.employeeType);
   return identityForm.value?.inetOrgPerson?.employeeType || 'LOCAL';
 });
 
