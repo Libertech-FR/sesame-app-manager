@@ -275,6 +275,12 @@ const route = useRoute()
 const { pagination, onRequest, initializePagination } = usePagination()
 initializePagination(props.total)
 
+watch(() => props.data, async () => {
+  if (pagination.value) {
+    pagination.value.rowsNumber = props.total
+  }
+})
+
 const emit = defineEmits(['create', 'refresh', 'read', 'update', 'delete'])
 const { debug } = useDebug()
 

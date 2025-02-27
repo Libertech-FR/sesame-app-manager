@@ -19,7 +19,7 @@ q-page.container
     :titleKey=["inetOrgPerson.cn"]
     :crud="crud"
     :actions="actions"
-    hide-left-buttons="true"
+    :hide-left-buttons="true"
     :defaultRightPanelButton="false"
   )
     template(#right-panel-title-before="props")
@@ -101,6 +101,10 @@ const {
 } = await useHttp<Response>('/management/identities', {
   method: 'get',
   query: queryWithoutRead,
+  onResponse: () => {
+    const identityStateStore = useIdentityStateStore()
+    identityStateStore.fetchAllStateCount()
+  },
 })
 
 if (error.value) {

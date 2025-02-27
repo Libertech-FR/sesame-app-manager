@@ -123,6 +123,7 @@ export default defineNuxtConfig({
         target: SESAME_APP_API_URL,
         secure: false,
         changeOrigin: true,
+        xfwd: true,
       }
     },
     cors: false,

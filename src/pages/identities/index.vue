@@ -111,6 +111,10 @@ const {
 } = await useHttp<Response>('/management/identities', {
   method: 'get',
   query: queryWithoutRead,
+  onResponse: () => {
+    const identityStateStore = useIdentityStateStore()
+    identityStateStore.fetchAllStateCount()
+  },
 })
 
 if (error.value) {

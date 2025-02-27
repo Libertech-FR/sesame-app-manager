@@ -13,7 +13,7 @@ export default function usePagination() {
     rowsPerPage: 16,
     sortBy: 'metadata.lastUpdatedAt',
     descending: true,
-  })
+  }) as Ref<QTableProps['pagination']>
 
   async function initializePagination(total: number = 0) {
     if (!pagination.value) return

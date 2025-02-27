@@ -40,7 +40,7 @@ export const useIdentityStateStore = defineStore('identityStates', {
     async fetchTotalCount() {
       try {
         const { data } = await useHttp<any>('/management/identities/count?limit=99999999', {
-          lazy: true,
+          lazy: false,
           immediate: false,
         });
         this.total = data.value?.data;
@@ -52,8 +52,8 @@ export const useIdentityStateStore = defineStore('identityStates', {
     async fetchToCompleteCount() {
       try {
         const { data } = await useHttp<any>(`/management/identities/count?filters[@state][]=${IdentityState.TO_COMPLETE}&limit=99999999`, {
-          lazy: true,
-          immediate: false,
+          lazy: false,
+          immediate: true,
         });
         this[IdentityState.TO_COMPLETE] = data.value?.data;
       } catch (error) {
@@ -63,8 +63,8 @@ export const useIdentityStateStore = defineStore('identityStates', {
     async fetchToValidateCount() {
       try {
         const { data } = await useHttp<any>(`/management/identities/count?filters[@state][]=${IdentityState.TO_VALIDATE}&limit=99999999`, {
-          lazy: true,
-          immediate: false,
+          lazy: false,
+          immediate: true,
         });
         this[IdentityState.TO_VALIDATE] = data.value?.data;
       } catch (error) {
@@ -74,8 +74,8 @@ export const useIdentityStateStore = defineStore('identityStates', {
     async fetchOnErrorCount() {
       try {
         const { data } = await useHttp<any>(`/management/identities/count?filters[@state][]=${IdentityState.ON_ERROR}&limit=99999999`, {
-          lazy: true,
-          immediate: false,
+          lazy: false,
+          immediate: true,
         });
         this[IdentityState.ON_ERROR] = data.value?.data;
       } catch (error) {
@@ -85,8 +85,8 @@ export const useIdentityStateStore = defineStore('identityStates', {
     async fetchToSyncCount() {
       try {
         const { data } = await useHttp<any>(`/management/identities/count?filters[@state][]=${IdentityState.TO_SYNC}&limit=99999999`, {
-          lazy: true,
-          immediate: false,
+          lazy: false,
+          immediate: true,
         });
         this[IdentityState.TO_SYNC] = data.value?.data;
       } catch (error) {
@@ -96,8 +96,8 @@ export const useIdentityStateStore = defineStore('identityStates', {
     async fetchProcessingCount() {
       try {
         const { data } = await useHttp<any>(`/management/identities/count?filters[@state][]=${IdentityState.PROCESSING}&limit=99999999`, {
-          lazy: true,
-          immediate: false,
+          lazy: false,
+          immediate: true,
         });
         this[IdentityState.PROCESSING] = data.value?.data;
       } catch (error) {
@@ -107,8 +107,8 @@ export const useIdentityStateStore = defineStore('identityStates', {
     async fetchSyncedCount() {
       try {
         const { data } = await useHttp<any>(`/management/identities/count?filters[@state][]=${IdentityState.SYNCED}&limit=99999999`, {
-          lazy: true,
-          immediate: false,
+          lazy: false,
+          immediate: true,
         });
         this[IdentityState.SYNCED] = data.value?.data;
       } catch (error) {
