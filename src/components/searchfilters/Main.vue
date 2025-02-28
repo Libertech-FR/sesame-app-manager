@@ -17,11 +17,11 @@
               span {{ scope.opt.label }}
 
   .col-12.col-md-2(v-show="!comparator?.multiplefields")
-    q-input(v-model="search" label="Rechercher" clearable :type="searchInputType" :disable="isFieldDisabled.search" :prefix="comparator?.prefix" :suffix="comparator?.suffix")
+    q-input(v-model="search" label="Rechercher" clearable :type="searchInputType" :disable="isFieldDisabled.search" :prefix="comparator?.prefix" :suffix="comparator?.suffix" @keydown.enter.prevent="addFilter")
   .col-6.col-md-2(v-show="comparator?.multiplefields")
-    q-input(v-model="searchMin" label="Min" clearable :type="searchInputType" :disable="isFieldDisabled.search" )
+    q-input(v-model="searchMin" label="Min" clearable :type="searchInputType" :disable="isFieldDisabled.search")
   .col-6.col-md-2(v-show="comparator?.multiplefields")
-    q-input(v-model="searchMax" label="Max" clearable :type="searchInputType" :disable="isFieldDisabled.search" )
+    q-input(v-model="searchMax" label="Max" clearable :type="searchInputType" :disable="isFieldDisabled.search" @keydown.enter.prevent="addFilter")
   .col-12.col-md-1
     q-btn(color="primary" @click="addFilter" :disable="isFieldDisabled.addButton") Filtrer
   q-space
