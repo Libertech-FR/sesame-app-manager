@@ -3,7 +3,10 @@ div
   //- pre(v-html="JSON.stringify(identity, null, 2)")
   q-tabs(v-model="tab" align="justify")
     q-tab(name="inetOrgPerson" label="inetOrgPerson" :alert="getTabValidations('inetOrgPerson')" alert-icon="mdi-alert" :class="`q-mr-xs`")
-    q-tab(v-for="tab in tabs" :key="tab" :name="tab" :label="tab" :alert="getTabValidations(tab)" alert-icon="mdi-alert" :class="`q-mr-xs`")
+    q-tab.q-pr-none(v-for="tab in tabs" :key="tab" :name="tab" :alert="getTabValidations(tab)" alert-icon="mdi-alert" :class="`q-mr-xs`")
+      div.flex.row.full-height.items-center(style='flex-wrap: nowrap;')
+        .q-tab__label(v-text='tab')
+        q-btn.q-ml-sm(icon='mdi-close' flat @click.native.stop="removeTab(tab)" size="sm" dense stretch)
     q-btn-dropdown.full-height(icon="mdi-newspaper-plus" flat)
       q-tooltip.text-body2(anchor="top middle" self="center middle") Ajouter un schéma
       q-list
@@ -47,24 +50,22 @@ defineOptions({
 type IdentityResponse = operations['IdentitiesController_search']['responses']['200']['content']['application/json']
 type Identity = components['schemas']['IdentitiesDto'] & { _id: string }
 
-const props = defineProps(
-  {
-    identity: {
-      type: Object as PropType<Identity>,
-      required: true,
-      default: {
-        additionalFields: {
-          objectClasses: [],
-          attributes: {},
-        },
+const props = defineProps({
+  identity: {
+    type: Object as PropType<Identity>,
+    required: true,
+    default: {
+      additionalFields: {
+        objectClasses: [],
+        attributes: {},
       },
     },
-    isNew: {
-      type: Boolean,
-      default: false,
-    },
-  }
-)
+  },
+  isNew: {
+    type: Boolean,
+    default: false,
+  },
+})
 
 const emits = defineEmits(['refreshTarget'])
 
@@ -79,18 +80,25 @@ const validations = ref<Record<string, unknown> | null>(props.identity?.addition
 
 provide('identityForm', identity)
 
-watch(() => props.identity, () => {
-  identity.value = props.identity
-  tabs.value = props.identity?.additionalFields?.objectClasses ?? []
-  validations.value = props.identity?.additionalFields?.validations ?? null
-})
+watch(
+  () => props.identity,
+  () => {
+    identity.value = props.identity
+    tabs.value = props.identity?.additionalFields?.objectClasses ?? []
+    validations.value = props.identity?.additionalFields?.validations ?? null
+  },
+)
 
 const tab = ref('inetOrgPerson')
 const error = ref(null)
 
-const { data: schemasResult, pending, refresh } = await useHttp<any>(`/management/identities/validation`, {
+const {
+  data: schemasResult,
+  pending,
+  refresh,
+} = await useHttp<any>(`/management/identities/validation`, {
   method: 'GET',
-});
+})
 
 const schemas = computed(() => {
   return schemasResult.value.data.filter((schema: any) => {
@@ -112,17 +120,22 @@ async function submit() {
   delete sanitizedIdentity.metadata
   if (sanitizedIdentity?.additionalFields?.validations) delete sanitizedIdentity.additionalFields.validations
 
-  const { data: result, pending, error, refresh } = await useHttp<any>(`/management/identities/${props.identity._id}`, {
+  const {
+    data: result,
+    pending,
+    error,
+    refresh,
+  } = await useHttp<any>(`/management/identities/${props.identity._id}`, {
     method: 'PATCH',
     body: sanitizedIdentity,
-  });
+  })
   if (error.value) {
     console.log('error', error.value.data.validations)
     validations.value = { ...error.value.data.validations }
     // error.value = error.value.cause.response._data
     handleError({
       error: error.value,
-      message: 'Erreur lors de la sauvegarde'
+      message: 'Erreur lors de la sauvegarde',
     })
   } else {
     validations.value = null
@@ -141,14 +154,19 @@ async function create() {
   const sanitizedIdentity = { ...props.identity }
   delete sanitizedIdentity.metadata
 
-  const { data: result, pending, error, refresh } = await useHttp(`/management/identities`, {
+  const {
+    data: result,
+    pending,
+    error,
+    refresh,
+  } = await useHttp(`/management/identities`, {
     method: 'POST',
     body: { ...sanitizedIdentity },
-  });
+  })
   if (error.value) {
     handleError({
       error: error.value,
-      message: 'Erreur lors de la création'
+      message: 'Erreur lors de la création',
     })
     console.log('error', error.value.data.validations)
     validations.value = { ...error.value.data.validations }
@@ -178,19 +196,22 @@ function getTabValidations(tab: string) {
 }
 
 async function deleteIdentity() {
-  const { data: result, pending, error, refresh } = await useHttp('/core/backends/delete', {
+  const {
+    data: result,
+    pending,
+    error,
+    refresh,
+  } = await useHttp('/core/backends/delete', {
     method: 'POST',
     body: {
-      payload: [
-        props.identity._id,
-      ],
+      payload: [props.identity._id],
     },
   })
   if (error.value) {
     // Handle error during sync
   } else {
     $q.notify({
-      message: "Identité supprimée",
+      message: 'Identité supprimée',
       color: 'positive',
       position: 'top-right',
       icon: 'mdi-check-circle-outline',
@@ -201,18 +222,23 @@ async function deleteIdentity() {
 }
 
 async function sync() {
-  const { data: result, pending, error, refresh } = await useHttp<any>(`/management/identities/${props.identity._id}/state`, {
+  const {
+    data: result,
+    pending,
+    error,
+    refresh,
+  } = await useHttp<any>(`/management/identities/${props.identity._id}/state`, {
     method: 'PATCH',
     body: {
       state: IdentityState.TO_SYNC,
     },
-  });
+  })
 
   if (error.value) {
     // Handle error during sync
   } else {
     $q.notify({
-      message: "Mise en état, à synchroniser",
+      message: 'Mise en état, à synchroniser',
       color: 'positive',
       position: 'top-right',
       icon: 'mdi-check-circle-outline',
@@ -220,6 +246,30 @@ async function sync() {
     emits('refreshTarget', result.value.data)
     // props.identity. = result.value.data
   }
+}
+
+function removeTab(tab) {
+  $q.dialog({
+    title: 'Suppression',
+    message: 'Voulez-vous supprimer ce schéma ?',
+    persistent: true,
+    ok: {
+      push: true,
+      color: 'negative',
+      label: 'Supprimer',
+    },
+    cancel: {
+      push: true,
+      color: 'primary',
+      label: 'Annuler',
+    },
+  }).onOk(() => {
+    const index = tabs.value.indexOf(tab)
+    tabs.value.splice(index, 1)
+    if (identity.value?.additionalFields?.attributes[tab]) {
+      delete identity.value.additionalFields.attributes[tab]
+    }
+  })
 }
 
 function logs() {
@@ -239,7 +289,6 @@ defineExpose({
   deleteIdentity,
 })
 </script>
-
 
 <style scoped>
 /* Your styles here */
