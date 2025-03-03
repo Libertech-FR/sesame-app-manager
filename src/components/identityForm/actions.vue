@@ -28,7 +28,7 @@ div.flex
     q-btn.q-mx-xs(v-if="props.identity?._id" @click="sync" color="orange-8" :disabled="props.identity.state != IdentityState.TO_VALIDATE" icon="mdi-sync")
       q-tooltip.text-body2(slot="trigger" v-if="props.identity.state == IdentityState.TO_VALIDATE") Synchroniser l'identité
       q-tooltip.text-body2(slot="trigger" v-else) L'état de l'identité ne permet pas de la synchroniser
-    q-btn.q-mx-xs(v-if="props.identity?._id" @click="logs" color="grey-8" icon="mdi-file-document" :href="'/jobs?filters[:concernedTo.id]=' + props.identity?._id")
+    q-btn.q-mx-xs(v-if="props.identity?._id" color="grey-8" icon="mdi-file-document" :href="'/jobs?filters[:concernedTo.id]=' + props.identity?._id" target="_blank")
       q-tooltip.text-body2(slot="trigger") Voir les logs de l'identité
     q-btn.q-mx-xs(v-if="props.identity?._id" @click="deleteIdentity" color="negative" icon="mdi-delete")
       q-tooltip.text-body2(slot="trigger") Supprimer l'identité
@@ -52,14 +52,14 @@ import { useRouter } from 'vue-router'
 import { useFetch } from 'nuxt/app'
 import { useIdentityStates } from '~/composables'
 import { useErrorHandling } from '#imports'
-import InputNewPassword from "~/components/inputNewPassword.vue";
-const resetPasswordModal=ref(false)
-const forcePasswordModal=ref(false)
+import InputNewPassword from '~/components/inputNewPassword.vue'
+const resetPasswordModal = ref(false)
+const forcePasswordModal = ref(false)
 
-const newpassword=ref('')
+const newpassword = ref('')
 type IdentityResponse = operations['IdentitiesController_search']['responses']['200']['content']['application/json']
 type Identity = components['schemas']['IdentitiesDto']
-const activation=ref(true)
+const activation = ref(true)
 const props = defineProps({
   identity: {
     type: Object as PropType<Identity>,
@@ -73,9 +73,9 @@ const props = defineProps({
     type: Boolean,
     required: true,
   },
-  refreshTarget:{
-    type:Function
-  }
+  refreshTarget: {
+    type: Function,
+  },
 })
 
 const $q = useQuasar()
@@ -85,18 +85,17 @@ const { handleError } = useErrorHandling()
 
 const emits = defineEmits(['submit', 'sync', 'logs', 'create', 'delete'])
 
-async function doChangePassword(){
-  const requestOptions={method: 'POST',
-    body:JSON.stringify({id:props.identity._id,newPassword: newpassword.value})}
-  try{
-    const data=await $http.post('/management/identities/forcepassword', requestOptions)
+async function doChangePassword() {
+  const requestOptions = { method: 'POST', body: JSON.stringify({ id: props.identity._id, newPassword: newpassword.value }) }
+  try {
+    const data = await $http.post('/management/identities/forcepassword', requestOptions)
     $q.notify({
       message: 'Le mot de passe a été changé : ',
       color: 'positive',
       position: 'top-right',
       icon: 'mdi-check-circle-outline',
     })
-  }catch(error){
+  } catch (error) {
     $q.notify({
       message: 'Impossible de modifier le mot de passe : ' + error.response._data.message,
       color: 'negative',
@@ -115,26 +114,26 @@ async function create() {
   // console.log('submit from actions')
   emits('create')
 }
-function setActivateColor(){
-  if (props.identity.dataStatus === 1){
-    return "green"
-  }else if(props.identity.dataStatus === -3){
-    return "negative"
-  }else{
-    return "grey"
+function setActivateColor() {
+  if (props.identity.dataStatus === 1) {
+    return 'green'
+  } else if (props.identity.dataStatus === -3) {
+    return 'negative'
+  } else {
+    return 'grey'
   }
 }
-function showActivate(){
-  if (props.identity.lastBackendSync != ""){
+function showActivate() {
+  if (props.identity.lastBackendSync != '') {
     return true
-  }else{
+  } else {
     return false
   }
 }
-async function forceChangePassword(){
+async function forceChangePassword() {
   $q.dialog({
     title: 'Confirmation',
-    message: "Voulez vous forcer le changement de mot de passe ? ",
+    message: 'Voulez vous forcer le changement de mot de passe ? ',
     persistent: true,
     ok: {
       push: true,
@@ -146,11 +145,10 @@ async function forceChangePassword(){
       color: 'negative',
       label: 'Annuler',
     },
-  }).onOk(async() => {
-    const requestOptions={method: 'POST',
-      body:JSON.stringify({id:props.identity._id})}
-    try{
-      const data=await $http.post('/management/identities/needtochangepassword', requestOptions)
+  }).onOk(async () => {
+    const requestOptions = { method: 'POST', body: JSON.stringify({ id: props.identity._id }) }
+    try {
+      const data = await $http.post('/management/identities/needtochangepassword', requestOptions)
       $q.notify({
         message: 'LE changement de mot de passe est forcé : ',
         color: 'positive',
@@ -158,7 +156,7 @@ async function forceChangePassword(){
         icon: 'mdi-check-circle-outline',
       })
       props?.refreshTarget(props.identity)
-    }catch(error){
+    } catch (error) {
       $q.notify({
         message: 'Impossible de forcer le changement de mot de passe : ' + error.response._data.message,
         color: 'negative',
@@ -166,25 +164,22 @@ async function forceChangePassword(){
         icon: 'mdi-alert-circle-outline',
       })
     }
-
   })
 }
-async function activate(){
-
-
-  let message=""
-  let bouton = ""
-  let initialStatus=0
-  if (props.identity.dataStatus === 0){
-    message="Voulez vous vraiment désactiver l'identité"
-    bouton="Désactiver"
-    initialStatus=1
-  }else{
-    message="Voulez vous vraiment activer l'identité"
-    bouton="Activer"
-    initialStatus=0
+async function activate() {
+  let message = ''
+  let bouton = ''
+  let initialStatus = 0
+  if (props.identity.dataStatus === 0) {
+    message = "Voulez vous vraiment désactiver l'identité"
+    bouton = 'Désactiver'
+    initialStatus = 1
+  } else {
+    message = "Voulez vous vraiment activer l'identité"
+    bouton = 'Activer'
+    initialStatus = 0
   }
-  if (showActivate() === false){
+  if (showActivate() === false) {
     props.identity.dataStatus = initialStatus
     return
   }
@@ -203,33 +198,31 @@ async function activate(){
       color: 'negative',
       label: 'Annuler',
     },
-  }).onOk(async() => {
-    const requestOptions={method: 'POST',
-      body:JSON.stringify({id:props.identity._id,status:props.identity.dataStatus === 1 ?true:false})}
-    try{
-      const data=await $http.post('/management/identities/activation', requestOptions)
-      $q.notify({
-        message: 'Le statut a été mis à jour : ',
-        color: 'positive',
-        position: 'top-right',
-        icon: 'mdi-check-circle-outline',
-      })
-    }catch(error){
-      props.identity.dataStatus = initialStatus
-      $q.notify({
-        message: 'Impossible de modifier le statut : ' + error.response._data.message,
-        color: 'negative',
-        position: 'top-right',
-        icon: 'mdi-alert-circle-outline',
-      })
-    }
-
-  }).onCancel(() =>{
-    props.identity.dataStatus=initialStatus
   })
-
+    .onOk(async () => {
+      const requestOptions = { method: 'POST', body: JSON.stringify({ id: props.identity._id, status: props.identity.dataStatus === 1 ? true : false }) }
+      try {
+        const data = await $http.post('/management/identities/activation', requestOptions)
+        $q.notify({
+          message: 'Le statut a été mis à jour : ',
+          color: 'positive',
+          position: 'top-right',
+          icon: 'mdi-check-circle-outline',
+        })
+      } catch (error) {
+        props.identity.dataStatus = initialStatus
+        $q.notify({
+          message: 'Impossible de modifier le statut : ' + error.response._data.message,
+          color: 'negative',
+          position: 'top-right',
+          icon: 'mdi-alert-circle-outline',
+        })
+      }
+    })
+    .onCancel(() => {
+      props.identity.dataStatus = initialStatus
+    })
 }
-
 
 async function deleteIdentity() {
   $q.dialog({
@@ -265,17 +258,22 @@ async function sync() {
   emits('sync')
 }
 
-async function sendInit(){
+async function sendInit() {
   //envoi le mail
 
-  const { data: result, pending, error, refresh } = await useHttp(`/management/passwd/init`, {
+  const {
+    data: result,
+    pending,
+    error,
+    refresh,
+  } = await useHttp(`/management/passwd/init`, {
     method: 'POST',
-    body: { uid: props.identity.inetOrgPerson.uid  },
-  });
+    body: { uid: props.identity.inetOrgPerson.uid },
+  })
   if (error.value) {
     handleError({
       error: error.value,
-      message: 'Erreur lors de l\'envoi du mail'
+      message: "Erreur lors de l'envoi du mail",
     })
   } else {
     $q.notify({
@@ -285,10 +283,6 @@ async function sendInit(){
       icon: 'mdi-check-circle-outline',
     })
   }
-}
-
-function logs() {
-  router.push(`/jobs?filters[:concernedTo.id]=${(props.identity as any)._id}`)
 }
 
 function back() {
