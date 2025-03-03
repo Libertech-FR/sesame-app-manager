@@ -83,7 +83,7 @@ import { IdentityState } from '~/composables'
 import { useIdentityStateStore } from '~/stores/identityState'
 import { useIdentityAffectationStore } from '~/stores/identityAffectation'
 import { useMenu } from '~/composables'
-import ReconnectingEventSource from "reconnecting-eventsource";
+import ReconnectingEventSource from 'reconnecting-eventsource'
 
 const identityStateStore = useIdentityStateStore()
 
@@ -93,7 +93,6 @@ const config = useAppConfig()
 let orchestratorVersion = ref<object | null>(null)
 let appManagerVersion = ref<object | null>(null)
 let daemonVersion = ref<object | null>(null)
-
 
 onMounted(async () => {
   if (process.env.NODE_ENV === 'development') {
@@ -136,9 +135,9 @@ onMounted(async () => {
   daemonVersion.value = daemonVersionRes.value?.data
 })
 
-const esUrl = new URL(window.location.origin + "/api/core/backends/sse")
-esUrl.searchParams.append("id", '' + auth.user?._id)
-esUrl.searchParams.append("key", '' + auth.user?.sseToken)
+const esUrl = new URL(window.location.origin + '/api/core/backends/sse')
+esUrl.searchParams.append('id', '' + auth.user?._id)
+esUrl.searchParams.append('key', '' + auth.user?.sseToken)
 var es = new ReconnectingEventSource(esUrl)
 
 // console.log('identityStateStore.getProcessingCount', identityStateStore.getProcessingCount)
@@ -184,7 +183,6 @@ async function onmessage(event) {
         }
         break
     }
-
   } catch (e) {
     console.error(e)
   }
