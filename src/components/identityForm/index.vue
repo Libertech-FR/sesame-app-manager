@@ -67,6 +67,15 @@ const props = defineProps({
   },
 })
 
+watch(
+  () => props.identity._id,
+  (id) => {
+    if (!props.identity.additionalFields?.objectClasses.includes(tab.value)) {
+      tab.value = 'inetOrgPerson'
+    }
+  },
+)
+
 const emits = defineEmits(['refreshTarget'])
 
 const $q = useQuasar()
@@ -113,6 +122,7 @@ async function addSchema(schema) {
   if (!identity.value.additionalFields.attributes) identity.value.additionalFields.attributes = {}
   identity.value.additionalFields.attributes[schema.name] = {}
   identity.value.additionalFields.objectClasses.push(schema.name)
+  tab.value = schema.name
 }
 
 async function submit() {
@@ -248,7 +258,7 @@ async function sync() {
   }
 }
 
-function removeTab(tab) {
+function removeTab(t) {
   $q.dialog({
     title: 'Suppression',
     message: 'Voulez-vous supprimer ce schéma ?',
@@ -264,11 +274,12 @@ function removeTab(tab) {
       label: 'Annuler',
     },
   }).onOk(() => {
-    const index = tabs.value.indexOf(tab)
+    const index = tabs.value.indexOf(t)
     tabs.value.splice(index, 1)
-    if (identity.value?.additionalFields?.attributes[tab]) {
-      delete identity.value.additionalFields.attributes[tab]
+    if (identity.value?.additionalFields?.attributes[t]) {
+      delete identity.value.additionalFields.attributes[t]
     }
+    tab.value = 'inetOrgPerson'
   })
 }
 
