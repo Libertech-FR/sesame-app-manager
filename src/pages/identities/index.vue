@@ -43,8 +43,9 @@ q-page.container
         :refreshTarget="refreshTarget"
       )
     template(#right-panel-content="{payload, isNew}")
+      //- pre(v-html='JSON.stringify(payload.target, null, 2)')
       sesame-identity-form(
-        :identity="{...payload.target}"
+        :identity="payload.target"
         ref="form"
         :isNew="isNew"
         @refresh="refresh"
@@ -64,7 +65,7 @@ import type { components, operations } from '#build/types/service-api'
 import { useErrorHandling } from '#imports'
 import { useIdentityStates, useIdentityInitStates } from '~/composables'
 import { identity } from '@vueuse/core'
-import { useIdentityStateStore } from "~/stores/identityState"
+import { useIdentityStateStore } from '~/stores/identityState'
 type Identity = components['schemas']['IdentitiesDto']
 type Response = operations['IdentitiesController_search']['responses']['200']['content']['application/json']
 
@@ -129,7 +130,7 @@ const { columns, visibleColumns, columnsType } = useColumnsIdentites()
 const selected = ref([])
 
 function clearSelected() {
-  (twopan as any).value.clearSelected()
+  ;(twopan as any).value.clearSelected()
 }
 
 function refreshEvent() {
@@ -182,6 +183,9 @@ const actions = {
   add: async () => {
     return {
       state: IdentityState.TO_CREATE,
+      inetOrgPerson: {
+        mail: '',
+      },
       additionalFields: {
         attributes: {},
         objectClasses: [],

@@ -13,18 +13,14 @@ div
 </template>
 
 <script setup lang="ts">
-import { JsonForms } from '@jsonforms/vue';
-import {
-  defaultStyles,
-  mergeStyles,
-  vanillaRenderers,
-} from "@jsonforms/vue-vanilla";
+import { JsonForms } from '@jsonforms/vue'
+import { defaultStyles, mergeStyles, vanillaRenderers } from '@jsonforms/vue-vanilla'
 
-import type { JsonFormsChangeEvent } from '@jsonforms/vue';
-import { QuasarJsonformRenderer } from './quasar-jsonform';
-import { computed, provide, ref } from 'vue';
-import { useFetch } from 'nuxt/app';
-import type { ErrorObject } from 'ajv';
+import type { JsonFormsChangeEvent } from '@jsonforms/vue'
+import { QuasarJsonformRenderer } from './quasar-jsonform'
+import { computed, provide, ref } from 'vue'
+import { useFetch } from 'nuxt/app'
+import type { ErrorObject } from 'ajv'
 import type { components, operations } from '#build/types/service-api'
 type Identity = components['schemas']['IdentitiesDto'] & { _id: string }
 
@@ -33,15 +29,15 @@ const customStyle = mergeStyles(defaultStyles, {
     input: 'inputstyle',
     error: 'errorstyle',
   },
-});
+})
 
-provide('styles', customStyle);
+provide('styles', customStyle)
 
 const renderers = Object.freeze([
   //...vanillaRenderers,
   ...QuasarJsonformRenderer,
   // Add custom renderers here
-]);
+])
 
 const props = defineProps({
   schemaName: {
@@ -56,23 +52,23 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
-});
+})
 
 const validations = defineModel('validations', {
   type: Object,
   default: {},
-});
+})
 
 const data = defineModel('data', {
   type: Object,
-  required: true,
-});
+  // required: true,
+})
 
 function onChange(event: JsonFormsChangeEvent) {
-  data.value =  event.data;
+  data.value = event.data
 
   if (!event.data) {
-    console.error('error', event.errors);
+    console.error('error', event.errors)
     throw createError({
       message: 'Data is empty',
       status: 500,
@@ -82,9 +78,9 @@ function onChange(event: JsonFormsChangeEvent) {
 
 const getSchemaValidations = computed(() => {
   if (!props.validations || !props.validations[props.schemaName]) {
-    return [];
+    return []
   }
-  const errorObject: ErrorObject[] = [];
+  const errorObject: ErrorObject[] = []
   let validationList = props.validations[props.schemaName]
   for (const key in validationList) {
     errorObject.push({
@@ -92,26 +88,36 @@ const getSchemaValidations = computed(() => {
       instancePath: `/${key}`,
       keyword: 'type',
       params: {},
-    });
+    })
   }
-  return errorObject;
+  return errorObject
 })
 
 const mode = computed(() => {
-  return props.isNew ? 'create' : 'update';
-});
+  return props.isNew ? 'create' : 'update'
+})
 
-const { data: result, pending, error, refresh } = await useHttp<any>(`/management/identities/validation/${props.schemaName}`, {
+const {
+  data: result,
+  pending,
+  error,
+  refresh,
+} = await useHttp<any>(`/management/identities/validation/${props.schemaName}`, {
   method: 'GET',
-});
+})
 
-const identityForm = inject('identityForm') as Ref<any>;
+const identityForm = inject('identityForm') as Ref<any>
 const employeeType = computed(() => {
   //console.log('employeeType', identityForm.value?.inetOrgPerson?.employeeType);
-  return identityForm.value?.inetOrgPerson?.employeeType || 'LOCAL';
-});
+  return identityForm.value?.inetOrgPerson?.employeeType || 'LOCAL'
+})
 
-const { data: resultUi, pending: pendingUi, error: errorUi, refresh: refreshUi } = await useHttp<any>(`/management/identities/jsonforms/${props.schemaName}`, {
+const {
+  data: resultUi,
+  pending: pendingUi,
+  error: errorUi,
+  refresh: refreshUi,
+} = await useHttp<any>(`/management/identities/jsonforms/${props.schemaName}`, {
   method: 'POST',
   params: {
     mode,
@@ -123,12 +129,12 @@ const { data: resultUi, pending: pendingUi, error: errorUi, refresh: refreshUi }
   body: {
     employeeType,
   },
-});
+})
 
 // const schema = ref({ ...result.value.data });
 // const uischema = ref({ ...resultUi.value.data });
-const schema = computed(() => result.value?.data);
-const uischema = computed(() => resultUi.value?.data);
+const schema = computed(() => result.value?.data)
+const uischema = computed(() => resultUi.value?.data)
 </script>
 
 <style>
@@ -172,7 +178,9 @@ const uischema = computed(() => resultUi.value?.data);
   /* Supprime le contour par défaut lors de la sélection */
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
   /* Légère ombre pour un effet en profondeur */
-  transition: border-color 0.2s, box-shadow 0.2s;
+  transition:
+    border-color 0.2s,
+    box-shadow 0.2s;
   /* Transition douce pour l'interaction */
 }
 
@@ -188,7 +196,6 @@ const uischema = computed(() => resultUi.value?.data);
   color: red;
   /* Set border color to red for error */
 }
-
 
 .description {
   display: none;
