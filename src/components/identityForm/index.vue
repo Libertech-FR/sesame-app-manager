@@ -6,7 +6,7 @@ div
     q-tab.q-pr-none(v-for="tab in tabs" :key="tab" :name="tab" :alert="getTabValidations(tab)" alert-icon="mdi-alert" :class="`q-mr-xs`")
       div.flex.row.full-height.items-center(style='flex-wrap: nowrap;')
         .q-tab__label(v-text='tab')
-        q-btn.q-ml-sm(icon='mdi-close' flat @click.native.stop="removeTab(tab)" size="sm" dense stretch)
+        q-btn.q-ml-sm(icon='mdi-delete-circle' flat color='negative' @click.native.stop="removeTab(tab)" size="sm" dense stretch)
     q-btn-dropdown.full-height(icon="mdi-newspaper-plus" flat)
       q-tooltip.text-body2(anchor="top middle" self="center middle") Ajouter un schéma
       q-list
