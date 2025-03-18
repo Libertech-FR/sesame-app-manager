@@ -2,6 +2,8 @@
 div
   //- pre(v-html="JSON.stringify({ data }, null, 2)")
   json-forms(
+    :ajv="customAjv.value"
+    :i18n="i18n"
     :data="data"
     :schema="schema"
     :uischema="uischema"
@@ -20,8 +22,12 @@ import type { JsonFormsChangeEvent } from '@jsonforms/vue'
 import { QuasarJsonformRenderer } from './quasar-jsonform'
 import { computed, provide, ref } from 'vue'
 import { useFetch } from 'nuxt/app'
+import localize from 'ajv-i18n'
 import type { ErrorObject } from 'ajv'
+import ajvErrors from 'ajv-errors'
+import { createAjv } from '@jsonforms/core'
 import type { components, operations } from '#build/types/service-api'
+import def from 'ajv-i18n'
 type Identity = components['schemas']['IdentitiesDto'] & { _id: string }
 
 const customStyle = mergeStyles(defaultStyles, {
@@ -59,6 +65,31 @@ const validations = defineModel('validations', {
   default: {},
 })
 
+const createTranslator = (locale) => (key: string, defaultMessage: string | undefined, context: { error: ErrorObject }) => {
+  const regex = /^(?!.*\s)([a-zA-Z0-9_-]+)(\.[a-zA-Z0-9_-]+)*$/
+  if (regex.test(key) || defaultMessage) {
+    return defaultMessage
+  }
+
+  const err = [context.error]
+  localize[locale](err)
+
+  return err[0].message
+}
+
+const i18n = ref({
+  locale: 'fr',
+  translate: computed(() => createTranslator('fr')),
+})
+
+const customAjv = ref(
+  createAjv({
+    allErrors: true,
+    verbose: true,
+    strict: false,
+  }),
+)
+
 const data = defineModel('data', {
   type: Object,
   // required: true,
@@ -88,7 +119,7 @@ const getSchemaValidations = computed(() => {
       instancePath: `/${key}`,
       keyword: 'type',
       params: {},
-    })
+    } as any)
   }
   return errorObject
 })
