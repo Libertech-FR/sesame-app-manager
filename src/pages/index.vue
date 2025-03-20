@@ -18,22 +18,18 @@ q-page.q-px-md(style="margin: auto; max-width: 1366px;")
             style="font-size: 18px;"
             tile
           )
-            q-badge(v-if="item.badgeValue" :color="item.badge.color" floating v-text="item?.badge?.value")
+            q-badge(v-if="item.badge" :color="item.badge.color" floating v-text="item?.badge?.value")
       q-separator.q-mt-md.q-mb-sm(v-if="i < menuParts.length - 1")
 </template>
 
 <script lang="ts" setup>
 import { useIdentityStateStore } from '~/stores/identityState'
-import { useIdentityAffectationStore } from '~/stores/identityAffectation'
 import { useMenu } from '~/composables'
 
 const router = useRouter()
 const identityStateStore = useIdentityStateStore()
-const identityAffectationStore = useIdentityAffectationStore()
-const { fetchAllStateCount } = identityStateStore
-const { fetchAllAffectationCount } = identityAffectationStore
 
-const { getMenu, badgesValues, menuParts, getMenuByPart } = useMenu(identityStateStore, identityAffectationStore)
+const { getMenu, menuParts, getMenuByPart } = useMenu(identityStateStore)
 
 function push(path: string) {
   router.push(path)

@@ -90,7 +90,7 @@ onMounted(() => {
 
 async function refreshTarget(target: Identity) {
   twopan.value.read(target)
-  await identityStateStore.fetchToSyncCount()
+  await identityStateStore.fetchAllStateCount()
   refreshEvent()
 }
 

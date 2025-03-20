@@ -1,14 +1,13 @@
-import { useIdentityAffectationStore } from "~/stores/identityAffectation"
 import { IdentityState, useIdentityStates } from "./useIdentityStates"
-import { useIdentityStateStore } from "~/stores/identityState"
+import qs from 'qs'
 
-const { getStateInfos } = useIdentityStates()
+const { getStateBadge } = useIdentityStates()
 const config = useAppConfig()
 
 type Badge = {
-  name: string
   color: string
-  value: string
+  name?: string
+  value?: string
 }
 
 type Menu = {
@@ -17,19 +16,19 @@ type Menu = {
   path: string
   color: string
   part: string
-  badgeValue?: string
   badge?: Badge
-  hideInMenuBar?:boolean
+  hideInMenuBar?: boolean
 }
 
-function useMenu(identityStateStore, identityAffectationStore) {
+function useMenu(identityStateStore) {
   const menuParts = ref(['Données', 'Listes', 'Affectations', 'Etats', 'Activation'])
-  const menus = ref([
+  const menus = ref<Menu[]>([
     {
       icon: 'mdi-account',
       label: 'Liste des identités',
-      path: '/identities?sort[metadata.lastUpdatedAt]=desc&skip=0',
+      path: '/identities?sort[metadata.lastUpdatedAt]=desc&skip=0&filters',
       color: 'primary',
+      badge: { color: 'primary' },
       part: 'Données',
       hideInMenuBar: false
     },
@@ -69,8 +68,8 @@ function useMenu(identityStateStore, identityAffectationStore) {
       label: 'A valider',
       path: `/identities?sort[metadata.lastUpdatedAt]=desc&skip=0&filters[@state][]=${IdentityState.TO_VALIDATE}`,
       color: 'primary',
+      badge: getStateBadge(IdentityState.TO_VALIDATE),
       part: 'Etats',
-      badgeValue: 'TO_VALIDATE',
       hideInMenuBar: false
     },
     {
@@ -78,8 +77,8 @@ function useMenu(identityStateStore, identityAffectationStore) {
       label: 'A compléter',
       path: `/identities?sort[metadata.lastUpdatedAt]=desc&skip=0&filters[@state][]=${IdentityState.TO_COMPLETE}`,
       color: 'primary',
+      badge: getStateBadge(IdentityState.TO_COMPLETE),
       part: 'Etats',
-      badgeValue: 'TO_COMPLETE',
       hideInMenuBar: false
     },
     {
@@ -87,8 +86,8 @@ function useMenu(identityStateStore, identityAffectationStore) {
       label: 'A synchroniser',
       path: `/identities/readonly?sort[metadata.lastUpdatedAt]=desc&skip=0&filters[@state][]=${IdentityState.TO_SYNC}`,
       color: 'primary',
+      badge: getStateBadge(IdentityState.TO_SYNC),
       part: 'Etats',
-      badgeValue: 'TO_SYNC',
       hideInMenuBar: false
     },
     {
@@ -96,17 +95,17 @@ function useMenu(identityStateStore, identityAffectationStore) {
       label: 'En cours de synchro.',
       path: `/identities/readonly?sort[metadata.lastUpdatedAt]=desc&skip=0&filters[@state][]=${IdentityState.PROCESSING}`,
       color: 'primary',
+      badge: getStateBadge(IdentityState.PROCESSING),
       part: 'Etats',
-      badgeValue: 'PROCESSING',
       hideInMenuBar: false
     },
     {
       icon: 'mdi-check',
       label: 'Synchronisées',
       path: `/identities?sort[metadata.lastUpdatedAt]=desc&skip=0&filters[@state][]=${IdentityState.SYNCED}`,
+      badge: getStateBadge(IdentityState.SYNCED),
       color: 'primary',
       part: 'Etats',
-      badgeValue: 'SYNCED',
       hideInMenuBar: false
     },
     {
@@ -123,8 +122,8 @@ function useMenu(identityStateStore, identityAffectationStore) {
       label: 'En erreur',
       path: `/identities?sort[metadata.lastUpdatedAt]=desc&skip=0&filters[@state][]=${IdentityState.ON_ERROR}`,
       color: 'primary',
+      badge: getStateBadge(IdentityState.ON_ERROR),
       part: 'Etats',
-      badgeValue: 'ON_ERROR',
       hideInMenuBar: false
     },
     {
@@ -133,6 +132,7 @@ function useMenu(identityStateStore, identityAffectationStore) {
       path: '/identities?limit=10&skip=0&filters[&filters[%23initState]=0&sort[metadata.lastUpdatedAt]=desc',
       color: 'negative',
       part: 'Activation',
+      badge: { color: 'grey' },
       hideInMenuBar: false
     },
     {
@@ -141,6 +141,7 @@ function useMenu(identityStateStore, identityAffectationStore) {
       path: '/identities?limit=10&skip=0&filters[&filters[%23initState]=1&sort[metadata.lastUpdatedAt]=desc',
       color: 'warning',
       part: 'Activation',
+      badge: { color: 'grey' },
       hideInMenuBar: false
     },
     {
@@ -149,6 +150,7 @@ function useMenu(identityStateStore, identityAffectationStore) {
       path: '/identities?limit=10&skip=0&filters[&filters[%23initState]=2&sort[metadata.lastUpdatedAt]=desc',
       color: 'positive',
       part: 'Activation',
+      badge: { color: 'grey' },
       hideInMenuBar: false
     },
     {
@@ -161,41 +163,60 @@ function useMenu(identityStateStore, identityAffectationStore) {
     },
   ])
 
-  const badgesValues = ref({
-    TO_VALIDATE: computed(() => (identityStateStore.getToValidateCount > 9999 ? '9999+' : identityStateStore.getToValidateCount)),
-    TO_COMPLETE: computed(() => (identityStateStore.getToCompleteCount > 9999 ? '9999+' : identityStateStore.getToCompleteCount)),
-    TO_SYNC: computed(() => (identityStateStore.getToSyncCount > 9999 ? '9999+' : identityStateStore.getToSyncCount)),
-    PROCESSING: computed(() => (identityStateStore.getProcessingCount > 9999 ? '9999+' : identityStateStore.getProcessingCount)),
-    SYNCED: computed(() => (identityStateStore.getSyncedCount > 9999 ? '9999+' : identityStateStore.getSyncedCount)),
-    ON_ERROR: computed(() => (identityStateStore.getOnErrorCount > 9999 ? '9999+' : identityStateStore.getOnErrorCount)),
-    ETD: computed(() => (identityAffectationStore.getEtdCount > 9999 ? '9999+' : identityAffectationStore.getEtdCount)),
-    ADM: computed(() => (identityAffectationStore.getAdmCount > 9999 ? '9999+' : identityAffectationStore.getAdmCount)),
-    ESN: computed(() => (identityAffectationStore.getEsnCount > 9999 ? '9999+' : identityAffectationStore.getEsnCount)),
-  })
+  function normalizeLabel(label: string): string {
+    return label.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, '').replace(/ /g, '_').replace(/\./g, '')
+  }
 
   function getMenu(): Menu[] {
-    const menuWithBadgeValue: Menu[] = menus.value.reduce((acc: Menu[], menu) => {
-      const badgeType = menu.badgeValue ? menu.badgeValue : 'UNKNOWN'
-      const stateInfo = getStateInfos(IdentityState[badgeType])
-      const badgeInfos: Badge = {
-        name: stateInfo.name,
-        color: stateInfo.color === 'grey' ? 'primary' : stateInfo.color,
-        value: badgesValues.value[badgeType] || '0',
-      }
+    const menuList: Menu[] = menus.value.reduce((acc: Menu[], menu) => {
+      const label = normalizeLabel(menu.label)
+      const stateValue = identityStateStore.getStateValue(label)
+      const value = stateValue > 9999 ? '9999+' : stateValue?.toString() || '0'
+
+      console.log('stateValue', label, stateValue, value)
+
+      // const badgeType = menu.badgeValue ? menu.badgeValue : 'UNKNOWN'
+      // const stateInfo = getStateInfos(IdentityState[badgeType])
+      // const badge: Badge = {
+
+      //   // name: label,
+      //   // name: stateInfo.name,
+      //   // color: 'red',
+      //   // color: stateInfo.color === 'grey' ? 'primary' : stateInfo.color,
+      //   value,
+      // }
       acc.push({
         ...menu,
-        badge: menu.badgeValue ? badgeInfos : undefined
+        badge: menu.badge ? <Badge>{
+          ...menu?.badge,
+          value,
+        } : undefined,
       })
       return acc
     }, [])
-    return menuWithBadgeValue
+    return menuList
   }
 
   function getMenuByPart(part: string): Menu[] {
     return getMenu().filter((menu) => menu.part === part)
   }
 
-  return { getMenu, menuParts, badgesValues, getMenuByPart }
+  async function initialize() {
+    const filters = {}
+    for (const menu of menus.value) {
+      if (menu.path && menu.badge) {
+        const label = normalizeLabel(menu.label)
+        const params = new URL(window.location.host + menu.path).searchParams
+        const queryString = qs.parse(params.toString())
+
+        filters[label] = queryString['filters']
+      }
+    }
+
+    await identityStateStore.initialize(filters)
+  }
+
+  return { getMenu, menuParts, getMenuByPart, initialize }
 }
 
 export { useMenu }

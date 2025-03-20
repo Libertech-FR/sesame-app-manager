@@ -58,7 +58,7 @@ import type { components, operations } from '#build/types/service-api'
 import { useErrorHandling } from '#imports'
 import { useIdentityStates, useIdentityInitStates } from '~/composables'
 import { identity } from '@vueuse/core'
-import { useIdentityStateStore } from "~/stores/identityState"
+import { useIdentityStateStore } from '~/stores/identityState'
 type Identity = components['schemas']['IdentitiesDto']
 type Response = operations['IdentitiesController_search']['responses']['200']['content']['application/json']
 
@@ -83,7 +83,7 @@ onMounted(() => {
 
 async function refreshTarget(target: Identity) {
   twopan.value.read(target)
-  await identityStateStore.fetchToSyncCount()
+  await identityStateStore.fetchAllStateCount()
   refreshEvent()
 }
 
@@ -119,7 +119,7 @@ const { columns, visibleColumns, columnsType } = useColumnsIdentites()
 const selected = ref([])
 
 function clearSelected() {
-  (twopan as any).value.clearSelected()
+  ;(twopan as any).value.clearSelected()
 }
 
 function refreshEvent() {

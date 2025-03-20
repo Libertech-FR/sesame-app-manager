@@ -67,9 +67,11 @@ const validations = defineModel('validations', {
 
 const createTranslator = (locale) => (key: string, defaultMessage: string | undefined, context: { error: ErrorObject }) => {
   const regex = /^(?!.*\s)([a-zA-Z0-9_-]+)(\.[a-zA-Z0-9_-]+)*$/
-  if (regex.test(key) || defaultMessage) {
+  if (regex.test(key) || defaultMessage || !context.error.schema) {
     return defaultMessage
   }
+
+  console.debug('Translating', key, 'with context', context)
 
   const err = [context.error]
   localize[locale](err)
@@ -97,6 +99,8 @@ const data = defineModel('data', {
 
 function onChange(event: JsonFormsChangeEvent) {
   data.value = event.data
+
+  console.log('onChange', event)
 
   if (!event.data) {
     console.error('error', event.errors)

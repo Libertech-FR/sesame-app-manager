@@ -23,9 +23,9 @@ div
 </template>
 
 <script lang="ts" setup>
-import { useIdentityStateStore } from "~/stores/identityState"
-import {ref} from "vue";
-let settings=ref(false)
+import { useIdentityStateStore } from '~/stores/identityState'
+import { ref } from 'vue'
+let settings = ref(false)
 
 const identityStateStore = useIdentityStateStore()
 
@@ -55,8 +55,8 @@ const buttons = [
 ]
 
 const emits = defineEmits(['syncing'])
-function displaySettings(){
-  settings.value=true
+function displaySettings() {
+  settings.value = true
 }
 async function syncAll() {
   emits('syncing', { count: badgesValues.value.TO_SYNC })
@@ -66,8 +66,7 @@ async function syncAll() {
       async: true,
     },
   })
-  await identityStateStore.fetchToSyncCount()
-  await identityStateStore.fetchSyncedCount()
+  await identityStateStore.fetchAllStateCount()
 }
 
 async function toggleDebug() {
@@ -81,5 +80,4 @@ async function toggleDebug() {
     query,
   })
 }
-
 </script>

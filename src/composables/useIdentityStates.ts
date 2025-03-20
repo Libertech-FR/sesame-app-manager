@@ -1,7 +1,10 @@
+import { omit } from "radash";
+
 type useIdentityStateReturnType = {
   getStateColor: (state: number) => string;
   getStateName: (state: number) => string;
   getStateInfos: (state: number) => { color: string, name: string, value: number };
+  getStateBadge: (state: number) => { color: string, name: string };
 };
 
 export enum IdentityState {
@@ -57,6 +60,10 @@ export function useIdentityStates(): useIdentityStateReturnType {
     };
   }
 
-  return { getStateColor, getStateName, getStateInfos };
+  function getStateBadge(state: number): { color: string, name: string, icon: string } {
+    return omit(getStateInfos(state), ['value']);
+  }
+
+  return { getStateColor, getStateName, getStateInfos, getStateBadge };
 }
 

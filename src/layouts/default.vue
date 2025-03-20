@@ -17,7 +17,7 @@ q-layout(view="hHh LpR lff" style="margin-top: -1px;")
             )
               q-item-section(avatar)
                 q-icon(:name="menu.icon" :color="menu.color")
-              q-badge(v-if="menu.badgeValue" :color="menu.badge.color" floating) {{ menu.badge.value }}
+              q-badge(v-if="menu.badge" :color="menu.badge.color" floating) {{ menu.badge.value }}
           q-separator
   q-page-container
     nuxt-page
@@ -81,7 +81,6 @@ q-layout(view="hHh LpR lff" style="margin-top: -1px;")
 import { ref } from 'vue'
 import { IdentityState } from '~/composables'
 import { useIdentityStateStore } from '~/stores/identityState'
-import { useIdentityAffectationStore } from '~/stores/identityAffectation'
 import { useMenu } from '~/composables'
 import ReconnectingEventSource from 'reconnecting-eventsource'
 
@@ -143,7 +142,7 @@ var es = new ReconnectingEventSource(esUrl)
 // console.log('identityStateStore.getProcessingCount', identityStateStore.getProcessingCount)
 
 const eventSeamless = ref(false)
-const eventSeamlessTotal = ref(identityStateStore.getProcessingCount)
+const eventSeamlessTotal = ref(identityStateStore.getStateValue(IdentityState.PROCESSING))
 const eventSeamlessCurrent = ref(0)
 const eventSeamlessCurrentJobs = ref({})
 
@@ -157,8 +156,8 @@ async function onmessage(event) {
 
     if (/^job:/.test(data.channel)) {
       if (eventSeamlessTotal.value === 0) {
-        await identityStateStore.fetchProcessingCount()
-        eventSeamlessTotal.value = identityStateStore.getProcessingCount
+        await identityStateStore.fetchAllStateCount()
+        eventSeamlessTotal.value = identityStateStore.getStateValue(IdentityState.PROCESSING)
       }
     }
 
@@ -199,16 +198,11 @@ function syncing(payload: { count: number }) {
 const drawer = ref(true)
 
 const router = useRouter()
-const identityAffectationStore = useIdentityAffectationStore()
-const { fetchAllStateCount } = identityStateStore
-const { fetchAllAffectationCount } = identityAffectationStore
-await identityStateStore.fetchAllStateCount()
-await identityAffectationStore.fetchAllAffectationCount()
+// await identityStateStore.fetchAllStateCount()
 
-const { getMenu, badgesValues, menuParts, getMenuByPart } = useMenu(identityStateStore, identityAffectationStore)
+const { getMenu, menuParts, getMenuByPart, initialize } = useMenu(identityStateStore)
 
-// const { fetchAllStateCount } = identityStore
-// await identityStore.fetchAllStateCount()
+await initialize()
 
 function push(path: string) {
   router.push(path)
