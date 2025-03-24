@@ -17,7 +17,7 @@ div
     q-tab-panel(name="inetOrgPerson")
       sesame-json-form-renderer-api(
         v-if='identity.inetOrgPerson'
-        schemaName="inetorgperson"
+        schemaName="inetOrgPerson"
         v-model:data="identity.inetOrgPerson"
         v-model:validations="validations"
         :isNew="isNew"
