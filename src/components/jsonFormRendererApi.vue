@@ -100,7 +100,7 @@ const data = defineModel('data', {
 function onChange(event: JsonFormsChangeEvent) {
   data.value = event.data
 
-  console.log('onChange', event)
+  // console.log('onChange', event)
 
   if (!event.data) {
     console.error('error', event.errors)

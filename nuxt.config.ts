@@ -150,6 +150,9 @@ export default defineNuxtConfig({
         actions: [{ icon: 'mdi-close', color: 'white' }],
       },
     },
+    extras: {
+      animations: 'all',
+    },
   },
   vite: {
     define: {

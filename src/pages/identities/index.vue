@@ -38,6 +38,7 @@ q-page.container
         @sync="sync"
         @logs="logs"
         @delete="deleteIdentity"
+        :validations="getValidations(target)"
         :crud="crud"
         :isNew="isNew"
         :refreshTarget="refreshTarget"
@@ -221,6 +222,10 @@ const fieldsList = computed(() => {
     return acc
   }, [])
 })
+
+function getValidations(target: Identity) {
+  return target?.additionalFields?.validations ? target?.additionalFields?.validations : {}
+}
 
 provide('fieldsList', fieldsList.value)
 </script>

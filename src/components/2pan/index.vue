@@ -133,11 +133,11 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
-  hideLeftButtons:{
+  hideLeftButtons: {
     type: Boolean,
     default: false,
   },
-  hideRightButtons:{
+  hideRightButtons: {
     type: Boolean,
     default: false,
   },
@@ -175,7 +175,7 @@ const props = defineProps({
   },
   refresh: {
     type: Function,
-    default: () => { },
+    default: () => {},
   },
   total: {
     type: Number,
@@ -231,9 +231,11 @@ const props = defineProps({
         return row
       },
 
-      cancel: async () => { },
-      add: async () => { return {} },
-      onMounted: async () => { },
+      cancel: async () => {},
+      add: async () => {
+        return {}
+      },
+      onMounted: async () => {},
     },
   },
 })
@@ -275,11 +277,14 @@ const route = useRoute()
 const { pagination, onRequest, initializePagination } = usePagination()
 initializePagination(props.total)
 
-watch(() => props.data, async () => {
-  if (pagination.value) {
-    pagination.value.rowsNumber = props.total
-  }
-})
+watch(
+  () => props.data,
+  async () => {
+    if (pagination.value) {
+      pagination.value.rowsNumber = props.total
+    }
+  },
+)
 
 const emit = defineEmits(['create', 'refresh', 'read', 'update', 'delete'])
 const { debug } = useDebug()
@@ -304,10 +309,10 @@ function highlightRow(rowKey) {
   }
 }
 function selectedIsHidden() {
-  if (props.hideSelection === false){
-    return "multiple"
-  }else {
-    return "none"
+  if (props.hideSelection === false) {
+    return 'multiple'
+  } else {
+    return 'none'
   }
 }
 
@@ -334,7 +339,7 @@ async function read(row) {
 async function add() {
   const read = NEW_ID
   targetId.value = read
-  target.value = await props.actions.add() || {}
+  target.value = (await props.actions.add()) || {}
   await router.push({ query: { ...route.query, read } })
 }
 
@@ -404,5 +409,4 @@ onMounted(async () => {
 })
 </script>
 
-<style>
-</style>
+<style></style>

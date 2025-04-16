@@ -173,7 +173,7 @@ function useMenu(identityStateStore) {
       const stateValue = identityStateStore.getStateValue(label)
       const value = stateValue > 9999 ? '9999+' : stateValue?.toString() || '0'
 
-      console.log('stateValue', label, stateValue, value)
+      // console.log('stateValue', label, stateValue, value)
 
       // const badgeType = menu.badgeValue ? menu.badgeValue : 'UNKNOWN'
       // const stateInfo = getStateInfos(IdentityState[badgeType])

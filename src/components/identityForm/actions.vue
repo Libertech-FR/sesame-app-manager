@@ -1,9 +1,25 @@
 <template lang="pug">
 div.flex
   div
+    q-btn.sesame.infinite.animated.flash(color="negative" @click="validationsModal = true" v-if="!isNew && hasValidations()" outline)
+      q-tooltip.text-body2(slot="trigger") Afficher les erreurs
+      q-icon.text-negative(name='mdi-alert-box')
+    q-dialog(v-model="validationsModal")
+      q-card(style="min-width: 350px")
+        q-card-section.q-pa-sm.bg-negative.text-white.flex
+          q-icon(name='mdi-alert-box' size="2rem")
+          div.text-h6.q-ml-md Erreurs de validation
+        q-card-section.q-py-sm
+          q-list(separator)
+            q-item(v-for="field in Object.keys(validations)" :key="field")
+              q-item-section.text-negative
+                q-item-label {{ field }}
+                q-item-label(v-for='f in validations[field]' caption) - {{ f }}
+        q-card-actions(align="right")
+          q-btn(flat label="Fermer" color="primary" v-close-popup)
     q-btn(color="positive" icon='mdi-content-save-plus' @click="create" v-show="isNew" v-if="crud.create")
       q-tooltip.text-body2 Créer
-    q-toggle.q-pa-md.q-gutter-y-lg(
+    q-toggle.q-px-md.q-gutter-y-lg(
       checked-icon="mdi-account-check"
       unchecked-icon="mdi-account-cancel"
       indeterminate-icon="mdi-lock-reset"
@@ -76,6 +92,10 @@ const props = defineProps({
   refreshTarget: {
     type: Function,
   },
+  validations: {
+    type: Object,
+    default: {},
+  },
 })
 
 const $q = useQuasar()
@@ -84,6 +104,8 @@ const { getStateColor, getStateName } = useIdentityStates()
 const { handleError } = useErrorHandling()
 
 const emits = defineEmits(['submit', 'sync', 'logs', 'create', 'delete'])
+
+const validationsModal = ref(false)
 
 async function doChangePassword() {
   const requestOptions = { method: 'POST', body: JSON.stringify({ id: props.identity._id, newPassword: newpassword.value }) }
@@ -105,6 +127,18 @@ async function doChangePassword() {
   }
   resetPasswordModal.value = false
 }
+
+function hasValidations() {
+  if (props.validations) {
+    for (const field in props.validations) {
+      if (Object.keys(props.validations[field]).length > 0) {
+        return true
+      }
+    }
+  }
+  return false
+}
+
 async function submit() {
   // console.log('submit from actions')
   emits('submit')
