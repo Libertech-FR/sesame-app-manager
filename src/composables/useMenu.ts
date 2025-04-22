@@ -206,7 +206,7 @@ function useMenu(identityStateStore) {
     for (const menu of menus.value) {
       if (menu.path && menu.badge) {
         const label = normalizeLabel(menu.label)
-        const params = new URL(window.location.host + menu.path).searchParams
+        const params = new URL(window.location.origin + menu.path).searchParams
         const queryString = qs.parse(params.toString())
 
         filters[label] = queryString['filters']
