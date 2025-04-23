@@ -28,9 +28,16 @@ import { ref } from 'vue'
 let settings = ref(false)
 
 const identityStateStore = useIdentityStateStore()
+const stateValue = ref(0)
+
+watch(
+  () => identityStateStore.getStateValue('a_synchroniser'),
+  (newValue) => (stateValue.value = newValue),
+  { immediate: true },
+)
 
 const badgesValues = ref({
-  TO_SYNC: computed(() => (identityStateStore.getToSyncCount > 9999 ? '9999+' : identityStateStore.getToSyncCount)),
+  TO_SYNC: computed(() => (stateValue.value > 9999 ? '9999+' : stateValue.value)),
 })
 
 const auth = useAuth()

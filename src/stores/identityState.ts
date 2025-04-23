@@ -8,7 +8,8 @@ export const useIdentityStateStore = defineStore('identityStates', {
     counters: {},
   }),
   getters: {
-    getStateValue: (state) => (key: IdentityState) => state.counters[key],
+    
+    getStateValue: (state) => (key: IdentityState | string) => state.counters[key],
   },
   actions: {
     async initialize(filters = {}) {
