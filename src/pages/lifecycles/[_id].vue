@@ -157,7 +157,7 @@ function getIconState(lifecycle) {
 function getLifecycleText(lifecycle) {
   switch (lifecycle) {
     case IdentityLifecycle.DELETED:
-      return 'Le compte est supprimer !'
+      return 'Le compte est supprimé !'
     case IdentityLifecycle.WAIT:
       return 'Le compte est en attente de validation !'
     case IdentityLifecycle.OFFICIAL:
