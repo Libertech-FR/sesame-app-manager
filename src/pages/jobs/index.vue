@@ -15,6 +15,7 @@ div
       template(#loading)
         .row.justify-center.q-my-md
           q-spinner-dots(color="primary" size="40px")
+      //- q-timeline-entry.text-h5(icon='mdi-flag' title='Début de la liste des journaux' color="green")
 
       template(v-for="(day, keyCompute) in computedJobsByDays" :key="keyCompute")
         q-timeline-entry.text-h5(
@@ -62,6 +63,7 @@ div
                 pre(v-html="JSON.stringify(job.params, null, 2)")
               q-tab-panel(name="result")
                 pre(v-html="JSON.stringify(job.result, null, 2)")
+      q-timeline-entry.text-h5(v-if='empty' icon='mdi-flag-off' title='Fin de la liste...' color="red")
 </template>
 
 <script lang="ts" setup>
@@ -82,22 +84,22 @@ div
 const scrollTargetRef = ref(null)
 const tabs = ref([])
 
-const $route = useRoute();
-const $router = useRouter();
-const $dayjs = useDayjs();
+const $route = useRoute()
+const $router = useRouter()
+const $dayjs = useDayjs()
 
-const offset = ref(0);
+const offset = ref(0)
 const query = computed(() => {
   return {
     limit: 10,
     skip: offset.value * 10,
     'sort[metadata.lastUpdatedAt]': 'desc',
     ...$route.query,
-  };
-});
+  }
+})
 
 const jobsBy = computed({
-  get: () => $route.query.jobsBy ? `${$route.query.jobsBy}` : undefined,
+  get: () => ($route.query.jobsBy ? `${$route.query.jobsBy}` : undefined),
   set: (value) => {
     tabs.value = [] // Reset tabs when changing jobsBy
     $router.replace({
@@ -119,8 +121,8 @@ const jobsByOptions = [
   { label: 'Année', value: 'YYYY' },
 ]
 
-
-const jobs = ref<any>([]);
+const empty = ref(false)
+const jobs = ref<any>([])
 
 const computedJobsByDays = computed(() => {
   const jobsByDays = {}
@@ -132,33 +134,39 @@ const computedJobsByDays = computed(() => {
     jobsByDays[day].push(job)
   })
   return jobsByDays
-});
+})
 
 const load = async (index, done) => {
-  offset.value = index - 1;
+  offset.value = index - 1
   const { data, pending, error, refresh } = await useHttp<any>(`/core/jobs/`, {
     method: 'GET',
     query,
-  });
+  })
 
-  jobs.value.push(...data.value.data);
-  done(data.value.data.length === 0);
+  jobs.value.push(...data.value.data)
+  empty.value = data.value.data.length === 0
+  done(data.value.data.length === 0)
 }
-function getColorState(state){
-  switch(state){
+
+function getColorState(state) {
+  switch (state) {
     case -1:
       return 'negative'
     case 9:
       return 'positive'
+    default:
+      return 'primary'
   }
-  return 'primary'
 }
-function getIconState(state){
-  switch(state){
+
+function getIconState(state) {
+  switch (state) {
     case -1:
-      return "mdi-account-remove"
+      return 'mdi-account-remove'
     case 9:
-      return "mdi-account-check"
+      return 'mdi-account-check'
+    default:
+      return 'mdi-help'
   }
 }
 </script>

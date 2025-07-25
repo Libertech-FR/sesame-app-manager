@@ -44,8 +44,39 @@ div.flex
     q-btn.q-mx-xs(v-if="props.identity?._id" @click="sync" color="orange-8" :disabled="props.identity.state != IdentityState.TO_VALIDATE" icon="mdi-sync")
       q-tooltip.text-body2(slot="trigger" v-if="props.identity.state == IdentityState.TO_VALIDATE") Synchroniser l'identité
       q-tooltip.text-body2(slot="trigger" v-else) L'état de l'identité ne permet pas de la synchroniser
-    q-btn.q-mx-xs(v-if="props.identity?._id" color="grey-8" icon="mdi-file-document" :href="'/jobs?filters[:concernedTo.id]=' + props.identity?._id" target="_blank")
+
+    q-btn.q-mx-xs(v-if="props.identity?._id" @click.prevent="dialogLog = true" color="grey-8" icon="mdi-file-document" :href="'/jobs?filters[:concernedTo.id]=' + props.identity?._id" target="_blank")
       q-tooltip.text-body2(slot="trigger") Voir les logs de l'identité
+    q-dialog(v-model="dialogLog" full-height full-width persistent)
+      q-card
+        q-toolbar.absolute.bg-purple.text-white(dense)
+          q-toolbar-title Journaux de l'identité {{ props.identity?.inetOrgPerson?.cn }}
+          q-btn(icon="mdi-close" @click="dialogLog = false" dense flat)
+        object.absolute.full-width(
+          type="text/html"
+          :data="'/jobs?filters[:concernedTo.id]=' + props.identity?._id + '&embedded=1'"
+          style="height: calc(100% - 56px); margin-top: 50px; z-index: 1;"
+        )
+        .fit.items-center.column.justify-center
+          q-circular-progress(indeterminate size='80px')
+          span.q-mt-md Chargement en cours ...
+
+    q-btn.q-mx-xs(v-if="props.identity?._id" @click.prevent="dialogLifecycle = true" color="purple-8" icon="mdi-clock" :href="'/lifecycles/' + props.identity?._id" target="_blank")
+      q-tooltip.text-body2(slot="trigger") Voir le cycle de vie de l'identité
+    q-dialog(v-model="dialogLifecycle" full-height full-width persistent)
+      q-card
+        q-toolbar.absolute.bg-purple.text-white(dense)
+          q-toolbar-title Cycle de vie de l'identité {{ props.identity?.inetOrgPerson?.cn }}
+          q-btn(icon="mdi-close" @click="dialogLifecycle = false" dense flat)
+        object.absolute.full-width(
+          type="text/html"
+          :data="'/lifecycles/' + props.identity?._id + '?embedded=1'"
+          style="height: calc(100% - 56px); margin-top: 50px; z-index: 1;"
+        )
+        .fit.items-center.column.justify-center
+          q-circular-progress(indeterminate size='80px')
+          span.q-mt-md Chargement en cours ...
+
     q-btn.q-mx-xs(v-if="props.identity?._id" @click="deleteIdentity" color="negative" icon="mdi-delete")
       q-tooltip.text-body2(slot="trigger") Supprimer l'identité
     q-dialog(v-model="resetPasswordModal" persistent medium)
@@ -106,6 +137,9 @@ const { handleError } = useErrorHandling()
 const emits = defineEmits(['submit', 'sync', 'logs', 'create', 'delete'])
 
 const validationsModal = ref(false)
+
+const dialogLog = ref(false)
+const dialogLifecycle = ref(false)
 
 async function doChangePassword() {
   const requestOptions = { method: 'POST', body: JSON.stringify({ id: props.identity._id, newPassword: newpassword.value }) }
