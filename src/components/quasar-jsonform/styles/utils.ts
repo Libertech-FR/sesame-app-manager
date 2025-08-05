@@ -1,4 +1,4 @@
-import { Styles } from './style';
+import type { Styles } from './types';
 import cloneDeep from 'lodash/cloneDeep';
 import mergeWith from 'lodash/mergeWith';
 

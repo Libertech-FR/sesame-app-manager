@@ -1,4 +1,4 @@
-import { Styles } from './style';
+import type { Styles } from './types';
 
 export const defaultStyles: Styles = {
   control: {

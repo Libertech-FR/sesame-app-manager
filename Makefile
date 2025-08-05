@@ -51,10 +51,7 @@ install:
 		$(IMGNAME) yarn install
 
 exec:
-	docker run -it --rm \
-		-e NODE_ENV=development \
-		-v $(CURDIR):/data \
-		$(IMGNAME) bash
+	docker exec -it $(APPNAME) bash
 
 generate-ssl-cert: ## Générer les certificats HTTPS auto-signés
 	@echo "Génération des certificats HTTPS auto-signés..."

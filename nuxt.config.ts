@@ -4,9 +4,17 @@ import pugPlugin from 'vite-plugin-pug'
 import openapiTS from 'openapi-typescript'
 import { defineNuxtConfig } from 'nuxt/config'
 import { parse } from 'yaml'
-import consola from 'consola'
+import * as consola from 'consola'
 
 const SESAME_APP_API_URL = process.env.SESAME_APP_API_URL || 'http://localhost:4002'
+const SESAME_ALLOWED_HOSTS = process.env.SESAME_ALLOWED_HOSTS ? process.env.SESAME_ALLOWED_HOSTS.split(',') : []
+
+if (SESAME_ALLOWED_HOSTS.length === 0 && !/localhost/.test(SESAME_APP_API_URL) && process.env.NODE_ENV === 'development') {
+  SESAME_ALLOWED_HOSTS.push(new URL(SESAME_APP_API_URL).hostname)
+}
+
+consola.info(`[Nuxt] SESAME_APP_API_URL: ${SESAME_APP_API_URL}`)
+consola.info(`[Nuxt] SESAME_ALLOWED_HOSTS: ${SESAME_ALLOWED_HOSTS}`)
 
 let SESAME_APP_DARK_MODE: 'auto' | boolean = false
 if (process.env.SESAME_APP_DARK_MODE) {
@@ -32,6 +40,7 @@ if (/yes|1|on|true/i.test(`${process.env.SESAME_HTTPS_ENABLED}`)) {
 
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
+  compatibilityDate: '2024-04-03',
   ssr: false,
   telemetry: false,
   pages: true,
@@ -66,6 +75,7 @@ export default defineNuxtConfig({
     '@vueuse/nuxt',
     'dayjs-nuxt',
     '@nuxt/devtools',
+    'nuxt-monaco-editor',
   ],
   auth: {
     globalMiddleware: true,
@@ -154,7 +164,18 @@ export default defineNuxtConfig({
       animations: 'all',
     },
   },
+  monacoEditor: {
+    locale: 'fr',
+    removeSourceMaps: false,
+    componentName: {
+      codeEditor: 'MonacoEditor',
+      diffEditor: 'MonacoDiffEditor',
+    },
+  },
   vite: {
+    server: {
+      allowedHosts: ['localhost', ...SESAME_ALLOWED_HOSTS],
+    },
     define: {
       'process.env.DEBUG': process.env.NODE_ENV === 'development',
     },
