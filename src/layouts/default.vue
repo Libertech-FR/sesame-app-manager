@@ -15,7 +15,7 @@ q-layout(view="hHh LpR lff" style="margin-top: -1px;")
               :key="part" clickable v-ripple
               :to="menu.path" :active="menu.path === $route.fullPath" active-class="q-item--active"
             )
-              q-separator(vertical color='primary' size="5px" style='position: absolute; left: 0; height: 100%; margin-top: -8px;')
+              q-separator(v-if='menu.path === $route.fullPath' vertical color='primary' size="5px" style='position: absolute; left: 0; height: 100%; margin-top: -8px;')
               q-item-section(avatar)
                 q-icon(:name="menu.icon" :color="menu.color")
               q-badge(v-if="menu.badge" :color="menu.badge.color" floating) {{ menu.badge.value }}
