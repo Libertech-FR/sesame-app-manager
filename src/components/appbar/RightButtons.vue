@@ -81,7 +81,7 @@ async function toggleDebug() {
   const router = useRouter()
 
   const query = { ...route.query }
-  query.debug = /true|on|yes|1/i.test(query.debug) ? 0 : 1
+  query.debug = /true|on|yes|1/i.test(query.debug as string) ? '0' : '1'
 
   await router.replace({
     query,
