@@ -3,8 +3,7 @@
     //- pre(v-html="JSON.stringify(expanded)")
     q-table(
       flat bordered dense
-      ref="tableRef"
-      title="Derniers cycles de vie"
+      title="Derniers cycles déclenchés"
       :rows="rows"
       :columns="columns"
       row-key="_id"
@@ -31,8 +30,9 @@
           )
             template(v-if="col.name === 'identity'")
               q-chip(
+                href='javascript:void(0)'
                 v-if="props.row?.refId?.inetOrgPerson?.cn"
-                @click="push(`/identities?read=${props.row.refId._id}&filters[^inetOrgPerson.cn]=/${props.row?.refId?.inetOrgPerson?.cn}/i&skip=0&limit=16&sort[metadata.lastUpdatedAt]=desc`)"
+                @click="open(`/identities?read=${props.row.refId._id}&filters[^inetOrgPerson.cn]=/${props.row?.refId?.inetOrgPerson?.cn}/i&skip=0&limit=16&sort[metadata.lastUpdatedAt]=desc`)"
                 icon="mdi-account" clickable dense
               ) {{ props.row?.refId?.inetOrgPerson?.cn }}
               span(v-else) Inconnu
@@ -49,7 +49,6 @@
         q-tr(v-if="props.expand" :props="props")
           q-td(colspan="100%" style="padding: 0;")
             MonacoEditor(
-              v-if="isMounted"
               :model-value="JSON.stringify(props.row, null, 2)"
               lang="json"
               :options="monacoOptions"
@@ -84,8 +83,6 @@ export default {
   name: 'LifecyclesTablePage',
   data() {
     return {
-      isMounted: false,
-      tableRef: ref(),
       filter: ref(''),
       expanded: ref<any[]>([]),
       columns: [
@@ -103,7 +100,7 @@ export default {
           align: 'left',
           field: (row) => row.lifecycle,
           format: (lifecycle) => cycleToText(lifecycle),
-          sortable: true,
+          sortable: false,
         },
         {
           name: 'date',
@@ -185,14 +182,8 @@ export default {
       }
     },
   },
-  mounted() {
-    this.isMounted = true
-  },
-  beforeUnmount() {
-    this.isMounted = false
-  },
   methods: {
-    onRequest(props) {
+    async onRequest(props) {
       const { page, rowsPerPage: limit, sortBy, descending } = props.pagination
       const filter = props.filter
 
@@ -202,9 +193,10 @@ export default {
         sortBy,
         descending,
         filter,
+        props,
       })
 
-      this.router.push({
+      await this.router.replace({
         query: {
           ...this.router.currentRoute.value.query,
           page,
@@ -218,7 +210,7 @@ export default {
       this.expanded = this.expanded.includes(props.row._id) ? [] : [props.row._id]
       // props.expand = !props.expand
     },
-    push(path) {
+    open(path) {
       window.open(path, '_blank')
     },
   },
