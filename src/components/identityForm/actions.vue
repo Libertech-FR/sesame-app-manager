@@ -33,61 +33,85 @@ div.flex
       :indeterminate-value="-2"
       :false-value="-3"
       )
-    q-btn.q-mx-xs( @click="forceChangePassword()" color="orange-8" icon="mdi-lock-reset"  :disabled="props.identity.state != IdentityState.SYNCED")
-      q-tooltip.text-body2(slot="trigger") Obliger l'utilisateur à changer son mot de passe
-    q-btn.q-mx-xs(@click="resetPasswordModal = true" color="red-8" icon="mdi-account-key"  :disabled="props.identity.state != IdentityState.SYNCED")
-      q-tooltip.text-body2(slot="trigger") Définir le mot de passe
-    q-btn.q-mx-xs(@click="sendInit" color="primary" icon="mdi-email-arrow-right"  :disabled="props.identity.state != IdentityState.SYNCED")
-      q-tooltip.text-body2(slot="trigger") Envoyer le mail d'invitation
-    q-btn.q-mx-xs(@click="submit" color="positive" icon="mdi-check"  v-show="!isNew" v-if="crud.update")
-      q-tooltip.text-body2(slot="trigger") Enregistrer les modifications
-    q-btn.q-mx-xs(v-if="props.identity?._id" @click="sync" color="orange-8" :disabled="props.identity.state != IdentityState.TO_VALIDATE" icon="mdi-sync")
-      q-tooltip.text-body2(slot="trigger" v-if="props.identity.state == IdentityState.TO_VALIDATE") Synchroniser l'identité
-      q-tooltip.text-body2(slot="trigger" v-else) L'état de l'identité ne permet pas de la synchroniser
+    q-btn-group(push)
+      q-btn( @click="forceChangePassword()" color="orange-8" icon="mdi-lock-reset"  :disabled="props.identity.state != IdentityState.SYNCED")
+        q-tooltip.text-body2(slot="trigger") Obliger l'utilisateur à changer son mot de passe
+      q-btn(@click="resetPasswordModal = true" color="red-8" icon="mdi-account-key"  :disabled="props.identity.state != IdentityState.SYNCED")
+        q-tooltip.text-body2(slot="trigger") Définir le mot de passe
+      q-btn(@click="sendInit" color="primary" icon="mdi-email-arrow-right"  :disabled="props.identity.state != IdentityState.SYNCED")
+        q-tooltip.text-body2(slot="trigger") Envoyer le mail d'invitation
 
-    q-btn.q-mx-xs(v-if="props.identity?._id" @click.prevent="dialogLog = true" color="grey-8" icon="mdi-file-document" :href="'/jobs?filters[:concernedTo.id]=' + props.identity?._id" target="_blank")
-      q-tooltip.text-body2(slot="trigger") Voir les logs de l'identité
-    q-dialog(v-model="dialogLog" full-height full-width persistent)
-      q-card
-        q-toolbar.absolute.bg-purple.text-white(dense)
-          q-toolbar-title Journaux de l'identité {{ props.identity?.inetOrgPerson?.cn }}
-          q-btn(icon="mdi-close" @click="dialogLog = false" dense flat)
-        object.absolute.full-width(
-          type="text/html"
-          :data="'/jobs?filters[:concernedTo.id]=' + props.identity?._id + '&embedded=1'"
-          style="height: calc(100% - 56px); margin-top: 50px; z-index: 1;"
-        )
-        .fit.items-center.column.justify-center
-          q-circular-progress(indeterminate size='80px')
-          span.q-mt-md Chargement en cours ...
+      q-separator(size='3px' vertical)
 
-    q-btn.q-mx-xs(v-if="props.identity?._id" @click.prevent="dialogLifecycle = true" color="purple-8" icon="mdi-clock" :href="'/lifecycles/' + props.identity?._id" target="_blank")
-      q-tooltip.text-body2(slot="trigger") Voir le cycle de vie de l'identité
-    q-dialog(v-model="dialogLifecycle" full-height full-width persistent)
-      q-card
-        q-toolbar.absolute.bg-purple.text-white(dense)
-          q-toolbar-title Cycle de vie de l'identité {{ props.identity?.inetOrgPerson?.cn }}
-          q-btn(icon="mdi-close" @click="dialogLifecycle = false" dense flat)
-        object.absolute.full-width(
-          type="text/html"
-          :data="'/lifecycles/' + props.identity?._id + '?embedded=1'"
-          style="height: calc(100% - 56px); margin-top: 50px; z-index: 1;"
-        )
-        .fit.items-center.column.justify-center
-          q-circular-progress(indeterminate size='80px')
-          span.q-mt-md Chargement en cours ...
+      q-btn(@click="submit" color="positive" icon="mdi-check"  v-show="!isNew" v-if="crud.update")
+        q-tooltip.text-body2(slot="trigger") Enregistrer les modifications
+      q-btn(v-if="props.identity?._id" @click="sync" color="orange-8" :disabled="props.identity.state != IdentityState.TO_VALIDATE" icon="mdi-sync")
+        q-tooltip.text-body2(slot="trigger" v-if="props.identity.state == IdentityState.TO_VALIDATE") Synchroniser l'identité
+        q-tooltip.text-body2(slot="trigger" v-else) L'état de l'identité ne permet pas de la synchroniser
 
-    q-btn.q-mx-xs(v-if="props.identity?._id" @click="deleteIdentity" color="negative" icon="mdi-delete")
-      q-tooltip.text-body2(slot="trigger") Supprimer l'identité
-    q-dialog(v-model="resetPasswordModal" persistent medium)
-      q-card(style="width:800px")
-       q-card-section(class="text-h6 bg-primary text-white") definition du mot de passe
-       q-card-section
-        input-new-password(v-model="newpassword")
-        q-card-actions(align="right" class="bg-white text-teal")
-          q-btn( label="Abandonner" color="negative" @click="resetPasswordModal = false" )
-          q-btn( label="Sauver" color="positive" @click="doChangePassword" :disabled="newpassword === ''")
+      q-separator(size='3px' vertical)
 
+      q-btn-dropdown.text-white(dropdown-icon="mdi-dots-vertical" style='background-color: rgba(0, 0, 0, .6)' no-caps)
+        q-list
+          a(:href="'/jobs?filters[:concernedTo.id]=' + props.identity?._id" target="_blank" style='text-decoration: none; color: inherit' @click.prevent="dialogLog = true")
+            q-item(v-if="props.identity?._id" clickable v-close-popup)
+              q-item-section(avatar)
+                q-icon(name="mdi-file-document" color="grey-6")
+              q-item-section
+                q-item-label Voir les logs
+              q-item-section(side)
+                q-btn(icon="mdi-open-in-new" size='sm' flat dense @click.stop="open('/jobs?filters[:concernedTo.id]=' + props.identity?._id)")
+          a(:href="'/lifecycles/' + props.identity?._id" target="_blank" style='text-decoration: none; color: inherit' @click.prevent="dialogLifecycle = true")
+            q-item(v-if="props.identity?._id" clickable v-close-popup)
+              q-item-section(avatar)
+                q-icon(name="mdi-clock" color="purple-8")
+              q-item-section
+                q-item-label Voir le cycle de vie
+              q-item-section(side)
+                q-btn(icon="mdi-open-in-new" size='sm' flat dense @click.stop="open('/lifecycles/' + props.identity?._id)")
+          q-separator(size='3px')
+          q-item(v-if="props.identity?._id" clickable v-close-popup @click="deleteIdentity")
+            q-item-section(avatar)
+              q-icon(name="mdi-delete" color="negative")
+            q-item-section
+              q-item-label Supprimer l'identité
+
+  q-dialog(v-model="dialogLog" full-height full-width persistent)
+    q-card
+      q-toolbar.absolute.bg-purple.text-white(dense)
+        q-toolbar-title Journaux de l'identité {{ props.identity?.inetOrgPerson?.cn }}
+        q-btn(icon="mdi-close" @click="dialogLog = false" dense flat)
+      object.absolute.full-width(
+        type="text/html"
+        :data="'/jobs?filters[:concernedTo.id]=' + props.identity?._id + '&embedded=1'"
+        style="height: calc(100% - 56px); margin-top: 50px; z-index: 1;"
+      )
+      .fit.items-center.column.justify-center
+        q-circular-progress(indeterminate size='80px')
+        span.q-mt-md Chargement en cours ...
+
+  q-dialog(v-model="resetPasswordModal" persistent medium)
+    q-card(style="width:800px")
+      q-card-section(class="text-h6 bg-primary text-white") definition du mot de passe
+      q-card-section
+      input-new-password(v-model="newpassword")
+      q-card-actions(align="right" class="bg-white text-teal")
+        q-btn( label="Abandonner" color="negative" @click="resetPasswordModal = false" )
+        q-btn( label="Sauver" color="positive" @click="doChangePassword" :disabled="newpassword === ''")
+
+  q-dialog(v-model="dialogLifecycle" full-height full-width persistent)
+    q-card
+      q-toolbar.absolute.bg-purple.text-white(dense)
+        q-toolbar-title Cycle de vie de l'identité {{ props.identity?.inetOrgPerson?.cn }}
+        q-btn(icon="mdi-close" @click="dialogLifecycle = false" dense flat)
+      object.absolute.full-width(
+        type="text/html"
+        :data="'/lifecycles/' + props.identity?._id + '?embedded=1'"
+        style="height: calc(100% - 56px); margin-top: 50px; z-index: 1;"
+      )
+      .fit.items-center.column.justify-center
+        q-circular-progress(indeterminate size='80px')
+        span.q-mt-md Chargement en cours ...
 </template>
 
 <script lang="ts" setup>
@@ -182,6 +206,7 @@ async function create() {
   // console.log('submit from actions')
   emits('create')
 }
+
 function setActivateColor() {
   if (props.identity.dataStatus === 1) {
     return 'green'
@@ -191,6 +216,7 @@ function setActivateColor() {
     return 'grey'
   }
 }
+
 function showActivate() {
   if (props.identity.lastBackendSync != '') {
     return true
@@ -198,6 +224,7 @@ function showActivate() {
     return false
   }
 }
+
 async function forceChangePassword() {
   $q.dialog({
     title: 'Confirmation',
@@ -234,6 +261,7 @@ async function forceChangePassword() {
     }
   })
 }
+
 async function activate() {
   let message = ''
   let bouton = ''
@@ -355,5 +383,9 @@ async function sendInit() {
 
 function back() {
   router.push('/identities')
+}
+
+function open(url: string) {
+  window.open(url, '_blank')
 }
 </script>
