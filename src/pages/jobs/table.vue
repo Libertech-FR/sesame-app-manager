@@ -15,7 +15,7 @@
         </q-tr>
       </template>
       <template v-slot:body="props">
-        <q-tr :props="props" :class="{ 'bg-primary': props.expand }">
+        <q-tr :props="props" :class="{ 'bg-primary': props.expand, 'text-white': props.expand }">
           <q-td v-for="col in props.cols" :key="col.name" :props="props">
             {{ col.name === 'state' ? getStatusText(col.value) : col.value }}
           </q-td>
@@ -25,14 +25,17 @@
         </q-tr>
         <q-tr v-show="props.expand" :props="props">
           <q-td colspan="100%" style="padding: 0">
-            <MonacoEditor :model-value="JSON.stringify(props.row?.result, null, 2)" :options="monacoOptions" lang="json" style="height: 50vh" />
+            <MonacoEditor style="height: 35vh; width: 100%" :model-value="JSON.stringify(props.row?.result, null, 2)" :options="monacoOptions" lang="json" />
+            <q-separator class="q-my-none" size="8px" color="primary" />
           </q-td>
         </q-tr>
       </template>
     </q-table>
   </q-page>
 </template>
-<script setup>
+<script lang="ts" setup>
+import * as Monaco from 'monaco-editor'
+
 const $dayjs = useDayjs()
 const $route = useRoute()
 const router = useRouter()
@@ -134,12 +137,14 @@ const isDark = computed(() => {
 })
 
 const monacoOptions = computed(() => {
-  return {
+  return <Monaco.editor.IStandaloneEditorConstructionOptions>{
     theme: isDark.value ? 'vs-dark' : 'vs-light',
     readOnly: true,
     minimap: {
       enabled: true,
     },
+    scrollBeyondLastColumn: 0,
+    scrollBeyondLastLine: false,
   }
 })
 </script>

@@ -23,7 +23,7 @@
           ) {{ col.label }}
           q-th
       template(#body="props")
-        q-tr(:props="props" :class="{ 'bg-primary': props.expand }")
+        q-tr(:props="props" :class="{ 'bg-primary': props.expand, 'text-white': props.expand }")
           q-td(
             v-for="col in props.cols.filter(c => c.name !== 'expand')"
             :key="col.name"
@@ -34,7 +34,7 @@
               @click="expandRow(props)"
               :icon="props.expand ? 'mdi-minus' : 'mdi-plus'"
               :disable="!props.row"
-              size="sm" color="primary"
+              size="sm" color="secondary"
               round dense elevation="0"
             )
         q-tr(v-if="props.expand" :props="props")
@@ -43,8 +43,9 @@
               :model-value="JSON.stringify(props.row, null, 2)"
               lang="json"
               :options="monacoOptions"
-              style="height: 400px; width: 100%;"
+              style="height: 35vh; width: 100%"
             )
+            q-separator(class="q-my-none" size="8px" color="primary")
 </template>
 
 <script lang="ts">
@@ -121,6 +122,8 @@ export default {
         minimap: {
           enabled: true,
         },
+        scrollBeyondLastColumn: 0,
+        scrollBeyondLastLine: false,
       }
     },
   },
