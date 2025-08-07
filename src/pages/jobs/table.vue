@@ -20,7 +20,11 @@
             <template v-if="col.name === 'identity'">
               <q-chip
                 v-if="props.row?.concernedTo?.name"
-                @click="open(`/identities?read=${props.row?.concernedTo?.id}&skip=0&limit=16&sort[metadata.lastUpdatedAt]=desc`)"
+                @click="
+                  open(
+                    `/identities?read=${props.row?.concernedTo?.id}&filters[^inetOrgPerson.cn]=/${props.row?.concernedTo?.name}/i&skip=0&limit=16&sort[metadata.lastUpdatedAt]=desc`,
+                  )
+                "
                 icon="mdi-account"
                 clickable
                 dense
@@ -40,7 +44,7 @@
             <q-btn size="sm" :disable="!props.row?.result" :color="getColorState(props.row.state)" round dense @click="expandRow(props)" :icon="getIconState(props.row.state)" />
           </q-td>
         </q-tr>
-        <q-tr v-show="props.expand" :props="props">
+        <q-tr v-if="props.expand" :props="props">
           <q-td colspan="100%" style="padding: 0">
             <MonacoEditor style="height: 35vh; width: 100%" :model-value="JSON.stringify(props.row?.result, null, 2)" :options="monacoOptions" lang="json" />
             <q-separator class="q-my-none" size="8px" color="primary" />

@@ -32,7 +32,7 @@
             template(v-if="col.name === 'identity'")
               q-chip(
                 v-if="props.row?.refId?.inetOrgPerson?.cn"
-                @click="push(`/identities?read=${props.row.refId._id}&skip=0&limit=16&sort[metadata.lastUpdatedAt]=desc`)"
+                @click="push(`/identities?read=${props.row.refId._id}&filters[^inetOrgPerson.cn]=/${props.row?.refId?.inetOrgPerson?.cn}/i&skip=0&limit=16&sort[metadata.lastUpdatedAt]=desc`)"
                 icon="mdi-account" clickable dense
               ) {{ props.row?.refId?.inetOrgPerson?.cn }}
               span(v-else) Inconnu
@@ -49,6 +49,7 @@
         q-tr(v-if="props.expand" :props="props")
           q-td(colspan="100%" style="padding: 0;")
             MonacoEditor(
+              v-if="isMounted"
               :model-value="JSON.stringify(props.row, null, 2)"
               lang="json"
               :options="monacoOptions"
@@ -58,23 +59,35 @@
 </template>
 
 <script lang="ts">
-import exp from 'constants'
 import dayjs from 'dayjs'
+import { IdentityLifecycle } from '~/composables/useIdentityLifecycle'
+
+// Helper function to convert cycle to text
+function cycleToText(cycle: string): string {
+  switch (cycle) {
+    case IdentityLifecycle.DELETED:
+      return 'Suppression'
+    case IdentityLifecycle.INACTIVE:
+      return 'Inactif'
+    case IdentityLifecycle.PROVISIONAL:
+      return 'Provisionnel'
+    case IdentityLifecycle.ACTIVE:
+      return 'Actif'
+    case IdentityLifecycle.OFFICIAL:
+      return 'Officiel'
+    default:
+      return 'Inconnu'
+  }
+}
 
 export default {
   name: 'LifecyclesTablePage',
   data() {
     return {
+      isMounted: false,
       tableRef: ref(),
       filter: ref(''),
       expanded: ref<any[]>([]),
-      pagination: ref({
-        sortBy: 'desc',
-        descending: false,
-        page: 1,
-        rowsPerPage: 3,
-        rowsNumber: 10,
-      }),
       columns: [
         {
           name: 'identity',
@@ -89,7 +102,7 @@ export default {
           label: 'Cycle déclanché',
           align: 'left',
           field: (row) => row.lifecycle,
-          format: (lifecycle) => `${this.cycleToText(lifecycle)}`,
+          format: (lifecycle) => cycleToText(lifecycle),
           sortable: true,
         },
         {
@@ -105,7 +118,25 @@ export default {
     }
   },
   async setup() {
+    const route = useRoute()
     const router = useRouter()
+
+    const pagination = ref({
+      sortBy: 'desc',
+      descending: false,
+      page: route.query.page ? parseInt(route.query.page as string, 10) : 1,
+      rowsPerPage: route.query.limit ? parseInt(route.query.limit as string, 10) : 16,
+      rowsNumber: 0,
+    })
+
+    const query = computed(() => {
+      return {
+        page: pagination.value.page,
+        limit: pagination.value.rowsPerPage,
+        'sort[date]': 'desc',
+        ...route.query,
+      }
+    })
 
     const {
       data: rows,
@@ -114,10 +145,22 @@ export default {
       refresh,
     } = await useHttp(`/management/lifecycle/recent`, {
       method: 'GET',
+      query,
+      onRequest() {
+        pagination.value.page = parseInt(route.query.page as string, 10) || 1
+        pagination.value.rowsPerPage = parseInt(route.query.limit as string, 10) || 16
+        // pagination.value.sortBy = sortBy
+        // pagination.value.descending = descending
+      },
+      onResponse({ response }) {
+        pagination.value.rowsNumber = response._data.total || 0
+      },
       transform: (context: { statusCode: number; data: any[] }) => context?.data || [],
     })
 
     return {
+      pagination,
+
       rows,
       pending,
       error,
@@ -142,48 +185,42 @@ export default {
       }
     },
   },
+  mounted() {
+    this.isMounted = true
+  },
+  beforeUnmount() {
+    this.isMounted = false
+  },
   methods: {
     onRequest(props) {
-      const { page, rowsPerPage, sortBy, descending } = props.pagination
+      const { page, rowsPerPage: limit, sortBy, descending } = props.pagination
       const filter = props.filter
 
       console.log('Requesting data with:', {
         page,
-        rowsPerPage,
+        limit,
         sortBy,
         descending,
         filter,
+      })
+
+      this.router.push({
+        query: {
+          ...this.router.currentRoute.value.query,
+          page,
+          limit,
+          // 'sort[date]': descending ? `-${sortBy}` : sortBy,
+          // filter,
+        },
       })
     },
     expandRow(props) {
       this.expanded = this.expanded.includes(props.row._id) ? [] : [props.row._id]
       // props.expand = !props.expand
     },
-    cycleToText(cycle) {
-      switch (cycle) {
-        case IdentityLifecycle.DELETED:
-          return 'Suppression'
-        case IdentityLifecycle.INACTIVE:
-          return 'Inactif'
-        case IdentityLifecycle.PROVISIONAL:
-          return 'Provisionnel'
-        case IdentityLifecycle.ACTIVE:
-          return 'Actif'
-        case IdentityLifecycle.OFFICIAL:
-          return 'Officiel'
-
-        default:
-          return 'Inconnu'
-      }
-    },
     push(path) {
       window.open(path, '_blank')
     },
-  },
-  onMounted() {
-    this.$nextTick(() => {
-      this.tableRef.value.requestServerInteraction()
-    })
   },
 }
 </script>
