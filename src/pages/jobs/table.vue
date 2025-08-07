@@ -17,7 +17,24 @@
       <template v-slot:body="props">
         <q-tr :props="props" :class="{ 'bg-primary': props.expand, 'text-white': props.expand }">
           <q-td v-for="col in props.cols" :key="col.name" :props="props">
-            {{ col.name === 'state' ? getStatusText(col.value) : col.value }}
+            <template v-if="col.name === 'identity'">
+              <q-chip
+                v-if="props.row?.concernedTo?.name"
+                @click="open(`/identities?read=${props.row?.concernedTo?.id}&skip=0&limit=16&sort[metadata.lastUpdatedAt]=desc`)"
+                icon="mdi-account"
+                clickable
+                dense
+              >
+                {{ props.row.concernedTo?.name }}
+              </q-chip>
+              <span v-else>Inconnu</span>
+            </template>
+            <template v-else-if="col.name === 'state'">
+              <span>{{ col.name === 'state' ? getStatusText(col.value) : col.value }}</span>
+            </template>
+            <template v-else>
+              <span>{{ col.value || col.field(props.row) || '' }}</span>
+            </template>
           </q-td>
           <q-td class="text-center" auto-width>
             <q-btn size="sm" :disable="!props.row?.result" :color="getColorState(props.row.state)" round dense @click="expandRow(props)" :icon="getIconState(props.row.state)" />
@@ -48,7 +65,7 @@ const columns = [
   {
     name: 'identity',
     title: 'Identité',
-    field: (row) => row?.concernedTo?.name,
+    field: (row) => row?.concernedTo || {},
     align: 'left',
     label: 'Identité',
   },
@@ -123,6 +140,10 @@ function getIconState(state) {
 }
 function push(path) {
   router.push(path)
+}
+
+function open(path) {
+  window.open(path, '_blank')
 }
 
 function expandRow(props) {

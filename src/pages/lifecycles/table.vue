@@ -28,7 +28,16 @@
             v-for="col in props.cols.filter(c => c.name !== 'expand')"
             :key="col.name"
             :props="props"
-          ) {{ col.value }}
+          )
+            template(v-if="col.name === 'identity'")
+              q-chip(
+                v-if="props.row?.refId?.inetOrgPerson?.cn"
+                @click="push(`/identities?read=${props.row.refId._id}&skip=0&limit=16&sort[metadata.lastUpdatedAt]=desc`)"
+                icon="mdi-account" clickable dense
+              ) {{ props.row?.refId?.inetOrgPerson?.cn }}
+              span(v-else) Inconnu
+            template(v-else)
+              span {{ col.value || col.field(props.row) || "" }}
           q-td.text-center(auto-width)
             q-btn(
               @click="expandRow(props)"
@@ -71,17 +80,16 @@ export default {
           name: 'identity',
           align: 'center',
           label: 'Identité(e)',
-          field: (row) => row?.refId?.inetOrgPerson?.cn || '<Inconnu>',
-          format: (cn) => `${cn}`,
+          field: (row) => row?.refId || {},
           sortable: true,
         },
         {
           name: 'lifecycle',
           required: true,
-          label: 'Cycle',
+          label: 'Cycle déclanché',
           align: 'left',
           field: (row) => row.lifecycle,
-          format: (lifecycle) => `${lifecycle}`,
+          format: (lifecycle) => `${this.cycleToText(lifecycle)}`,
           sortable: true,
         },
         {
@@ -97,6 +105,8 @@ export default {
     }
   },
   async setup() {
+    const router = useRouter()
+
     const {
       data: rows,
       pending,
@@ -106,9 +116,14 @@ export default {
       method: 'GET',
       transform: (context: { statusCode: number; data: any[] }) => context?.data || [],
     })
+
     return {
       rows,
       pending,
+      error,
+      refresh,
+
+      router,
     }
   },
   computed: {
@@ -143,6 +158,26 @@ export default {
     expandRow(props) {
       this.expanded = this.expanded.includes(props.row._id) ? [] : [props.row._id]
       // props.expand = !props.expand
+    },
+    cycleToText(cycle) {
+      switch (cycle) {
+        case IdentityLifecycle.DELETED:
+          return 'Suppression'
+        case IdentityLifecycle.INACTIVE:
+          return 'Inactif'
+        case IdentityLifecycle.PROVISIONAL:
+          return 'Provisionnel'
+        case IdentityLifecycle.ACTIVE:
+          return 'Actif'
+        case IdentityLifecycle.OFFICIAL:
+          return 'Officiel'
+
+        default:
+          return 'Inconnu'
+      }
+    },
+    push(path) {
+      window.open(path, '_blank')
     },
   },
   onMounted() {
