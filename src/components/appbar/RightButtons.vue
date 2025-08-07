@@ -5,7 +5,7 @@ div
 
   q-btn(v-if="badgesValues.TO_SYNC > 0" icon="mdi-sync" square color="amber-9" size="md" :label="badgesValues.TO_SYNC +' items à Synchroniser'" @click="syncAll")
   q-btn( icon="mdi-cog" size="md" flat @click="displaySettings")
-  q-btn( @click="$q.dark.toggle()" flat size="md" icon="mdi-theme-light-dark")
+  q-btn( @click="toogleDark" flat size="md" icon="mdi-theme-light-dark")
   q-btn-dropdown(icon="mdi-account-circle-outline" :label="auth?.user?.displayName" round flat size="md")
     q-list
       q-item.q-pa-none(v-for="button in buttons" :key="button.name")
@@ -86,5 +86,11 @@ async function toggleDebug() {
   await router.replace({
     query,
   })
+}
+const $q = useQuasar()
+
+function toogleDark() {
+  $q.dark.toggle()
+  window.sessionStorage.setItem('darkMode', $q.dark.isActive ? 'true' : 'false')
 }
 </script>
