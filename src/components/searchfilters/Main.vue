@@ -1,5 +1,5 @@
 <template lang="pug">
-.row.q-gutter-sm.items-center.q-mt-sm
+.row.q-gutter-sm.items-center.q-mt-none
   //- .col.col-md-2
   //-     q-select(:options="fieldTypes" label="Type de champ" v-model="fieldType" clearable @update:model-value="clearFields(['field', 'comparator'])")
   .col.col-md-2

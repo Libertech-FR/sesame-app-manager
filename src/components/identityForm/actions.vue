@@ -20,6 +20,7 @@ div.flex
     q-btn(color="positive" icon='mdi-content-save-plus' @click="create" v-show="isNew" v-if="crud.create")
       q-tooltip.text-body2 Créer
     q-toggle.q-px-md.q-gutter-y-lg(
+      v-if="props.identity?._id"
       checked-icon="mdi-account-check"
       unchecked-icon="mdi-account-cancel"
       indeterminate-icon="mdi-lock-reset"
@@ -33,12 +34,12 @@ div.flex
       :indeterminate-value="-2"
       :false-value="-3"
       )
-    q-btn-group(push)
-      q-btn( @click="forceChangePassword()" color="orange-8" icon="mdi-lock-reset"  :disabled="props.identity.state != IdentityState.SYNCED")
+    q-btn-group(v-if="props.identity?._id" push flat)
+      q-btn(@click="forceChangePassword()" color="orange-8" icon="mdi-lock-reset" :disabled="props.identity.state != IdentityState.SYNCED" padding='5px 10px' dense)
         q-tooltip.text-body2(slot="trigger") Obliger l'utilisateur à changer son mot de passe
-      q-btn(@click="resetPasswordModal = true" color="red-8" icon="mdi-account-key"  :disabled="props.identity.state != IdentityState.SYNCED")
+      q-btn(@click="resetPasswordModal = true" color="red-8" icon="mdi-account-key" :disabled="props.identity.state != IdentityState.SYNCED" padding='5px 10px' dense)
         q-tooltip.text-body2(slot="trigger") Définir le mot de passe
-      q-btn(@click="sendInit" color="primary" icon="mdi-email-arrow-right"  :disabled="props.identity.state != IdentityState.SYNCED")
+      q-btn(@click="sendInit" color="primary" icon="mdi-email-arrow-right"  :disabled="props.identity.state != IdentityState.SYNCED" padding='5px 10px' dense)
         q-tooltip.text-body2(slot="trigger") Envoyer le mail d'invitation
 
       q-separator(size='3px' vertical)
@@ -49,9 +50,9 @@ div.flex
         q-tooltip.text-body2(slot="trigger" v-if="props.identity.state == IdentityState.TO_VALIDATE") Synchroniser l'identité
         q-tooltip.text-body2(slot="trigger" v-else) L'état de l'identité ne permet pas de la synchroniser
 
-      q-separator(size='3px' vertical)
+      q-separator(v-if="props.identity?._id" size='3px' vertical)
 
-      q-btn-dropdown.text-white(dropdown-icon="mdi-dots-vertical" style='background-color: rgba(0, 0, 0, .6)' no-caps)
+      q-btn-dropdown.text-white(v-if="props.identity?._id" dropdown-icon="mdi-dots-vertical" style='background-color: rgba(0, 0, 0, .6)' padding='5px 10px' dense no-caps)
         q-list
           a(:href="'/jobs?filters[:concernedTo.id]=' + props.identity?._id" target="_blank" style='text-decoration: none; color: inherit' @click.prevent="dialogLog = true")
             q-item(v-if="props.identity?._id" clickable v-close-popup)

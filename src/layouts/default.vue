@@ -12,9 +12,10 @@ q-layout(view="hHh LpR lff" style="margin-top: -1px;")
         q-list(v-for="part in menuParts" :key="part")
           div(v-for="menu in getMenuByPart(part)")
             q-item(v-if="menu.hideInMenuBar !== true"
-              :key="part"  clickable v-ripple
-              :to="menu.path" :active="menu.path === $route.fullPath"
+              :key="part" clickable v-ripple
+              :to="menu.path" :active="menu.path === $route.fullPath" active-class="q-item--active"
             )
+              q-separator(vertical color='primary' size="5px" style='position: absolute; left: 0; height: 100%; margin-top: -8px;')
               q-item-section(avatar)
                 q-icon(:name="menu.icon" :color="menu.color")
               q-badge(v-if="menu.badge" :color="menu.badge.color" floating) {{ menu.badge.value }}

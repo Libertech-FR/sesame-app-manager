@@ -1,10 +1,10 @@
 <template lang="pug" @keypress.enter="addFilter">
-.q-pa-sm
+.q-pb-sm
   sesameSearchfiltersMain(ref="mainData")
     template(#rightSelect)
       slot(name="rightSelect")
   //Filters chips
-  .row.q-gutter-sm.items-center.q-mt-sm
+  .row.q-gutter-sm.items-center.q-mt-xs
     q-chip(
       v-for="filter in filterArray" :key="filter.field"
       removable @remove="removeFilter(filter)" @click="editFilter(filter)" clickable

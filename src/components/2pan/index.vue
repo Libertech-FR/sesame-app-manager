@@ -67,24 +67,24 @@ q-splitter(
     q-avatar(v-if='!isSimple' size="sm" color="primary" icon="mdi-unfold-more-vertical" class="text-white")
 
   template(#after)
-    q-card.full-height.q-pa-sm(bordered :class='{"hidden": isSimple && !targetId}')
+    q-card.full-height.q-pa-none(bordered :class='{"hidden": isSimple && !targetId}')
       q-card-section.q-pa-none.flex.items-center.full-height.justify-center(v-if='!targetId')
         slot(name="right-panel-empty")
           slot(name="right-panel-empty-content-before")
           p Selectionnez une entrée pour afficher son contenu...
           slot(name="right-panel-empty-content-after")
       div.full-height.q-pa-none.flex.justify-start(v-else style='flex-flow: column; overflow-y: auto;')
-        q-card-actions
+        q-toolbar.q-py-none(style='height: 50px;')
+          q-btn(color="primary" icon="mdi-chevron-left" @click="cancel" tooltip="Retour" dense)
+            q-tooltip.text-body2 Retour
+          q-separator.q-mx-sm(vertical)
           slot(name="right-panel-title" :target="target")
             slot(name="right-panel-title-before" :target="target")
-            q-toolbar-title(v-text='getTitle' style='flex: 100 1 0%')
+            q-toolbar-title(v-html=`isNew ? defaultTitle : getTitle` style='flex: 100 1 0%')
             slot(name="right-panel-title-after" :target="target")
           q-space
           slot(name="right-panel-actions")
             slot(name="right-panel-actions-content-before" :target="target")
-            q-btn(color="primary", icon="mdi-chevron-left" @click="cancel" tooltip="Retour")
-              q-tooltip.text-body2 Retour
-            q-separator.q-mx-sm(vertical)
             slot(name="right-panel-actions-content" v-if="defaultRightPanelButton" :target="target" :isNew="isNew" :crud="crud")
               q-btn(color="positive" icon='mdi-content-save-plus' @click="create(target)" v-show="isNew" v-if="crud.create")
                 q-tooltip.text-body2 Créer
@@ -240,6 +240,7 @@ const props = defineProps({
   },
 })
 
+const defaultTitle = "<span class='text-grey-8'>Création d'un nouveau élément</span>"
 const simple = ref(props.simple)
 const isSimple = computed(() => {
   if ($q.platform.is.mobile) return true

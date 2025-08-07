@@ -46,6 +46,13 @@ function useMenu(identityStateStore) {
       color: 'primary',
       part: 'Données',
       hideInMenuBar: false
+    }, {
+      icon: 'mdi-timeline-clock-outline',
+      label: 'Journal des jobs',
+      path: '/lifecycles/table',
+      color: 'primary',
+      part: 'Données',
+      hideInMenuBar: false
     },
     {
       icon: 'mdi-set-merge',

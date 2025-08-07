@@ -1,7 +1,7 @@
 <template lang="pug">
 div
   //- pre(v-html="JSON.stringify(identity, null, 2)")
-  q-tabs(v-model="tab" align="justify")
+  q-tabs(v-model="tab" align="justify" dense)
     q-tab(name="inetOrgPerson" label="inetOrgPerson" :alert="getTabValidations('inetOrgPerson')" alert-icon="mdi-alert" :class="`q-mr-xs`")
     q-tab.q-pr-none(v-for="tab in tabs" :key="tab" :name="tab" :alert="getTabValidations(tab)" alert-icon="mdi-alert" :class="`q-mr-xs`")
       div.flex.row.full-height.items-center(style='flex-wrap: nowrap;')
