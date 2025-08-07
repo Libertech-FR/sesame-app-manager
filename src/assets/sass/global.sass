@@ -6,8 +6,10 @@ blockquote
   border-left: 4px solid $primary
 
 .sesame-sticky-last-column-table
-  thead tr:last-child th:last-child
-    background-color: $tooltip-color
+  thead
+    tr:last-child
+      th:last-child
+        background-color: $tooltip-color
   td:last-child
     background-color: $tooltip-color
   th:last-child,
@@ -16,13 +18,18 @@ blockquote
     right: -1px
     z-index: 1
 
+body
+  background-color: #fff
 body.body--dark
+  background-color: $dark-page
   .q-editor__content
     color: $dark
     background-color: $tooltip-color
   .sesame-sticky-last-column-table
-    thead tr:last-child th:last-child
-      background-color: $dark
+    thead
+      tr:last-child
+        th:last-child
+          background-color: $dark
     td:last-child
       background-color: $dark
 
