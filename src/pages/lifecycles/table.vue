@@ -88,7 +88,7 @@ export default {
       columns: [
         {
           name: 'identity',
-          align: 'center',
+          align: 'left',
           label: 'Identité(e)',
           field: (row) => row?.refId || {},
           sortable: true,
