@@ -5,6 +5,7 @@ import openapiTS from 'openapi-typescript'
 import { defineNuxtConfig } from 'nuxt/config'
 import { parse } from 'yaml'
 import * as consola from 'consola'
+import setupApp from './src/server/extension.setup'
 
 const SESAME_APP_API_URL = process.env.SESAME_APP_API_URL || 'http://localhost:4002'
 const SESAME_ALLOWED_HOSTS = process.env.SESAME_ALLOWED_HOSTS ? process.env.SESAME_ALLOWED_HOSTS.split(',') : []
@@ -65,6 +66,7 @@ export default defineNuxtConfig({
   appConfig: {
     baseUrl: SESAME_APP_API_URL,
     appManagerVersion: process.env.npm_package_version,
+    customSlots: {},
   },
   modules: [
     '@nuxt-alt/auth',
@@ -76,6 +78,7 @@ export default defineNuxtConfig({
     'dayjs-nuxt',
     '@nuxt/devtools',
     'nuxt-monaco-editor',
+    ...setupApp(),
   ],
   auth: {
     globalMiddleware: true,
