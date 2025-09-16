@@ -27,14 +27,15 @@ export default function (): string[] {
     if (existsSync(EXTENSIONS_FILE_PATH)) {
       const list = parseExtensionsList()
       for (const extension of list) {
-        consola.info(`[Extension] Found extension: ${extension.name} (enabled: ${extension.enabled})`)
+        const extensionPath = `${dirname(dirname(__dirname))}/extensions/${extension.path}`
+        const extensionFile = extensionParseFile(extensionPath)
+
+        consola.info(`[Extension] Found extension: ${extensionFile?.information?.name} (enabled: ${extension.enabled})`)
 
         if (extension.enabled) {
-          const extensionPath = `${dirname(dirname(__dirname))}/extensions/${extension.path}`
-          const extensionFile = extensionParseFile(extensionPath)
           if (extensionFile.settings.app.target) {
             const extensionAppTarget = `${extensionPath}/${extensionFile.settings.app.target}`
-            appList.push(process.env.NODE_ENV === 'development' ? `${extensionAppTarget}/src/module` : `${extensionAppTarget}/dist/module.cjs`) // TODO: target dev and prod parameters
+            appList.push(`${extensionAppTarget}`) // TODO: target dev and prod parameters
           }
         }
       }
