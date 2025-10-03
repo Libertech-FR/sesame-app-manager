@@ -52,6 +52,26 @@ div.flex
 
       q-separator(v-if="props.identity?._id" size='3px' vertical)
 
+      div(ref='targetEl' style='display: height: 36px;')
+        q-tooltip.text-body2(:target="targetEl" anchor="top middle" self="bottom middle") État du cycle de vie : {{ stateName }}
+        q-btn-dropdown.q-pl-sm.full-height(icon='mdi-clock' color='purple-8' square unelevated dense)
+          q-list
+            q-item(
+              v-for='stateItem in stateList' :key='stateItem.key'
+              @click="switchLifecycle(stateItem.key)"
+              :active='stateItem.key === props.identity.lifecycle'
+              active-class="bg-purple-8 text-white"
+              clickable v-close-popup
+            )
+              q-item-section(avatar)
+                q-icon(:name="stateItem.icon || 'mdi-help-rhombus-outline'" :color="stateItem.color")
+              q-item-section
+                q-item-label
+                  span(v-text='stateItem.label')
+                  | &nbsp;
+                  small(v-text='("(" + stateItem.key + ")")')
+      q-separator(size='3px' vertical)
+
       q-btn-dropdown.text-white(v-if="props.identity?._id" dropdown-icon="mdi-dots-vertical" style='background-color: rgba(0, 0, 0, .6)' padding='5px 10px' dense no-caps)
         q-list
           a(:href="'/jobs?filters[:concernedTo.id]=' + props.identity?._id" target="_blank" style='text-decoration: none; color: inherit' @click.prevent="dialogLog = true")
@@ -128,6 +148,7 @@ import InputNewPassword from '~/components/inputNewPassword.vue'
 const resetPasswordModal = ref(false)
 const forcePasswordModal = ref(false)
 
+const targetEl = ref()
 const newpassword = ref('')
 type IdentityResponse = operations['IdentitiesController_search']['responses']['200']['content']['application/json']
 type Identity = components['schemas']['IdentitiesDto']
@@ -157,6 +178,7 @@ const props = defineProps({
 const $q = useQuasar()
 const router = useRouter()
 const { getStateColor, getStateName } = useIdentityStates()
+const { getLifecycleColor, getLifecycleName, getLifecycleIcon, stateList } = await useIdentityLifecycles()
 const { handleError } = useErrorHandling()
 
 const emits = defineEmits(['submit', 'sync', 'logs', 'create', 'delete'])
@@ -165,6 +187,27 @@ const validationsModal = ref(false)
 
 const dialogLog = ref(false)
 const dialogLifecycle = ref(false)
+
+async function switchLifecycle(lifecycle: string) {
+  const requestOptions = { method: 'POST', body: JSON.stringify({ lifecycle }) }
+  try {
+    const data = await $http.patch(`/management/identities/${props.identity._id}/lifecycle`, requestOptions)
+    $q.notify({
+      message: 'Le cycle de vie a été mis à jour : ' + data._data?.data?.lifecycle,
+      color: 'positive',
+      position: 'top-right',
+      icon: 'mdi-check-circle-outline',
+    })
+    props?.refreshTarget(props.identity)
+  } catch (error) {
+    $q.notify({
+      message: 'Impossible de modifier le cycle de vie : ' + error.response._data.message,
+      color: 'negative',
+      position: 'top-right',
+      icon: 'mdi-alert-circle-outline',
+    })
+  }
+}
 
 async function doChangePassword() {
   const requestOptions = { method: 'POST', body: JSON.stringify({ id: props.identity._id, newPassword: newpassword.value }) }
@@ -346,9 +389,24 @@ const stateName = computed(() => {
   return getStateName(state)
 })
 
+const lifecycleName = computed(() => {
+  const lifecycle = props.identity?.lifecycle
+  return getLifecycleName(lifecycle)
+})
+
 const stateColor = computed(() => {
   const state = props.identity?.state
   return getStateColor(state)
+})
+
+const lifecycleColor = computed(() => {
+  const lifecycle = props.identity?.lifecycle
+  return getLifecycleColor(lifecycle)
+})
+
+const lifecycleIcon = computed(() => {
+  const lifecycle = props.identity?.lifecycle
+  return getLifecycleIcon(lifecycle)
 })
 
 async function sync() {
