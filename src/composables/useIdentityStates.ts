@@ -5,6 +5,7 @@ type useIdentityStateReturnType = {
   getStateName: (state: number) => string;
   getStateInfos: (state: number) => { color: string, name: string, value: number };
   getStateBadge: (state: number) => { color: string, name: string };
+  getStateIcon: (state: number) => string;
 };
 
 export enum IdentityState {
@@ -24,7 +25,7 @@ export const IdentityStateList = [
   { value: IdentityState.TO_SYNC, text: 'A Synchroniser', color: 'orange-8', icon: 'mdi-circle', display: true },
   { value: IdentityState.TO_VALIDATE, text: 'A valider', color: 'info', icon: 'mdi-circle', display: true },
   { value: IdentityState.UNKNOWN, text: 'Inconnu', color: 'grey', icon: 'mdi-circle', display: true },
-  { value: IdentityState.TO_CREATE, text: 'A créer', color: 'grey', icon: 'mdi-circle', display: false },
+  { value: IdentityState.TO_CREATE, text: 'A créer', color: 'grey', icon: 'mdi-circle', display: true },
   { value: IdentityState.TO_COMPLETE, text: 'A compléter', color: 'warning', icon: 'mdi-circle', display: true },
   { value: IdentityState.ON_ERROR, text: 'En erreur', color: 'negative', icon: 'mdi-circle', display: true },
   { value: IdentityState.PROCESSING, text: 'En cours de synchronisation', color: 'warning', icon: 'mdi-loading', display: true },
@@ -64,6 +65,6 @@ export function useIdentityStates(): useIdentityStateReturnType {
     return omit(getStateInfos(state), ['value']);
   }
 
-  return { getStateColor, getStateName, getStateInfos, getStateBadge };
+  return { getStateColor, getStateName, getStateInfos, getStateBadge, getStateIcon };
 }
 

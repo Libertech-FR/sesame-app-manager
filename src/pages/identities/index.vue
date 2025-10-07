@@ -23,11 +23,11 @@ q-page.container
   )
     template(#right-panel-title-before="props")
       q-icon(name="mdi-circle" :color="getStateColor(props?.target?.state)" :style='{color: getStateColor(props?.target?.state).startsWith("#") ? getStateColor(props?.target?.state) : "inherit"}' class="q-mr-xs")
-        q-tooltip.text-body2(slot="trigger") Initialisation du compte : {{ getStateName(props.target.state) }}
+        q-tooltip.text-body2(slot="trigger") Initialisation du compte : {{ getStateName(props.target.state) }} ({{ props?.target?.state || '?' }})
       q-icon(:name="getInitStateIcon(props?.target?.initState)" :color="getInitStateColor(props?.target?.initState)" :style='{color: getInitStateColor(props?.target?.initState).startsWith("#") ? getInitStateColor(props?.target?.initState) : "inherit"}' class="q-mr-xs")
-        q-tooltip.text-body2(slot="trigger") Initialisation du compte : {{ getInitStateName(props.target.initState) }}
+        q-tooltip.text-body2(slot="trigger") Initialisation du compte : {{ getInitStateName(props.target.initState) }} ({{ props?.target?.initState || '?' }})
       q-icon(:name="getLifecycleIcon(props?.target?.lifecycle)" :color="getLifecycleColor(props?.target?.lifecycle)" :style='{color: getLifecycleColor(props?.target?.lifecycle).startsWith("#") ? getLifecycleColor(props?.target?.lifecycle) : "inherit"}' class="q-mr-xs")
-        q-tooltip.text-body2(slot="trigger") Cycle de vie : {{ getLifecycleName(props.target.lifecycle) }}
+        q-tooltip.text-body2(slot="trigger") Cycle de vie : {{ getLifecycleName(props.target.lifecycle) }} ({{ props?.target?.lifecycle || '?' }})
     template(#top-left-btn-grp="{selectedValues}")
       sesame-table-top-left( :selected="selectedValues" @refresh="refresh" @clear="clearSelected" :total="identities?.total")
     template(#body-cell-states="props")
@@ -86,7 +86,7 @@ const { handleError } = useErrorHandling()
 const form = ref<any>(null)
 const { getStateColor, getStateName } = useIdentityStates()
 const { getInitStateColor, getInitStateName, getInitStateIcon } = useIdentityInitStates()
-const { getLifecycleColor, getLifecycleIcon, getLifecycleName } = useIdentityLifecycles()
+const { getLifecycleColor, getLifecycleIcon, getLifecycleName } = await useIdentityLifecycles()
 
 onMounted(() => {
   initializePagination(identities.value?.total)
