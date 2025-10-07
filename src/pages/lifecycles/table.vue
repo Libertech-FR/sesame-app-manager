@@ -28,7 +28,11 @@
             :key="col.name"
             :props="props"
           )
-            template(v-if="col.name === 'identity'")
+            template(v-if="col.name === 'lifecycle'")
+              q-icon(:name="getLifecycleIcon(props.row.lifecycle)" :color="getLifecycleColor(props.row.lifecycle)" :style='{color: getLifecycleColor(props?.row?.lifecycle).startsWith("#") ? getLifecycleColor(props?.row?.lifecycle) : "inherit"}' left)
+              span {{ getLifecycleName(props.row.lifecycle) }} &nbsp;
+              small(v-text="'(' + props.row?.lifecycle + ')'")
+            template(v-else-if="col.name === 'identity'")
               q-chip(
                 href='javascript:void(0)'
                 v-if="props.row?.refId?.inetOrgPerson?.cn"
@@ -59,25 +63,6 @@
 
 <script lang="ts">
 import dayjs from 'dayjs'
-import { IdentityLifecycle } from '~/composables/useIdentityLifecycle'
-
-// Helper function to convert cycle to text
-function cycleToText(cycle: string): string {
-  switch (cycle) {
-    case IdentityLifecycle.DELETED:
-      return 'Suppression'
-    case IdentityLifecycle.INACTIVE:
-      return 'Inactif'
-    case IdentityLifecycle.PROVISIONAL:
-      return 'Provisionnel'
-    case IdentityLifecycle.ACTIVE:
-      return 'Actif'
-    case IdentityLifecycle.OFFICIAL:
-      return 'Officiel'
-    default:
-      return 'Inconnu'
-  }
-}
 
 export default {
   name: 'LifecyclesTablePage',
@@ -86,37 +71,25 @@ export default {
       filter: ref(''),
       expanded: ref<any[]>([]),
       columns: [
-        {
-          name: 'identity',
-          align: 'left',
-          label: 'Identité(e)',
-          field: (row) => row?.refId || {},
-          sortable: true,
-        },
+        { name: 'identity', align: 'left', label: 'Identité(e)', field: (row) => row?.refId || {}, sortable: true },
         {
           name: 'lifecycle',
           required: true,
           label: 'Cycle déclanché',
           align: 'left',
           field: (row) => row.lifecycle,
-          format: (lifecycle) => cycleToText(lifecycle),
+          // format: (lifecycle) => getLifecycleName(lifecycle),
           sortable: false,
         },
-        {
-          name: 'date',
-          required: true,
-          label: 'Date',
-          align: 'left',
-          field: (row) => row.date,
-          format: (date) => `${dayjs(date).format('DD/MM/YYYY HH:mm:ss')}`,
-          sortable: true,
-        },
+        { name: 'date', required: true, label: 'Date', align: 'left', field: (row) => row.date, format: (date) => `${dayjs(date).format('DD/MM/YYYY HH:mm:ss')}`, sortable: true },
       ],
     }
   },
   async setup() {
     const route = useRoute()
     const router = useRouter()
+
+    const { getLifecycleName, getLifecycleIcon, getLifecycleColor } = await useIdentityLifecycles()
 
     const pagination = ref({
       sortBy: 'desc',
@@ -127,12 +100,7 @@ export default {
     })
 
     const query = computed(() => {
-      return {
-        page: pagination.value.page,
-        limit: pagination.value.rowsPerPage,
-        'sort[date]': 'desc',
-        ...route.query,
-      }
+      return { page: pagination.value.page, limit: pagination.value.rowsPerPage, 'sort[date]': 'desc', ...route.query }
     })
 
     const {
@@ -158,6 +126,10 @@ export default {
     return {
       pagination,
 
+      getLifecycleName,
+      getLifecycleIcon,
+      getLifecycleColor,
+
       rows,
       pending,
       error,
@@ -171,15 +143,7 @@ export default {
       return this.$q.dark.isActive
     },
     monacoOptions() {
-      return {
-        theme: this.isDark ? 'vs-dark' : 'vs-light',
-        readOnly: true,
-        minimap: {
-          enabled: true,
-        },
-        scrollBeyondLastColumn: 0,
-        scrollBeyondLastLine: false,
-      }
+      return { theme: this.isDark ? 'vs-dark' : 'vs-light', readOnly: true, minimap: { enabled: true }, scrollBeyondLastColumn: 0, scrollBeyondLastLine: false }
     },
   },
   methods: {
@@ -187,14 +151,7 @@ export default {
       const { page, rowsPerPage: limit, sortBy, descending } = props.pagination
       const filter = props.filter
 
-      console.log('Requesting data with:', {
-        page,
-        limit,
-        sortBy,
-        descending,
-        filter,
-        props,
-      })
+      console.log('Requesting data with:', { page, limit, sortBy, descending, filter, props })
 
       await this.router.replace({
         query: {
