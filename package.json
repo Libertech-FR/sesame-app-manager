@@ -54,7 +54,7 @@
     "dayjs-nuxt": "^2.1.11",
     "eslint": "^9.35.0",
     "memfs": "^4.39.0",
-    "nuxt": "^4.1.2",
+    "nuxt": "^3.16.0",
     "nuxt-monaco-editor": "^1.4.0",
     "nuxt-quasar-ui": "^2.1.13",
     "openapi-typescript": "^7.9.1",
