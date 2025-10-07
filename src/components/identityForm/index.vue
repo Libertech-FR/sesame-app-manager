@@ -1,7 +1,7 @@
 <template lang="pug">
 div
   //- pre(v-html="JSON.stringify(identity, null, 2)")
-  q-tabs(v-model="tab" align="justify" dense)
+  q-tabs(v-model="tab" align="justify" outside-arrows mobile-arrows inline-label dense)
     q-tab(name="inetOrgPerson" label="inetOrgPerson" :alert="getTabValidations('inetOrgPerson')" alert-icon="mdi-alert" :class="`q-mr-xs`")
     q-tab.q-pr-none(v-for="tab in tabs" :key="tab" :name="tab" :alert="getTabValidations(tab)" alert-icon="mdi-alert" :class="`q-mr-xs`")
       div.flex.row.full-height.items-center(style='flex-wrap: nowrap;')
@@ -43,28 +43,14 @@ import { useFetch } from 'nuxt/app'
 import { useIdentityStates } from '~/composables'
 import { useErrorHandling } from '#imports'
 
-defineOptions({
-  name: 'IdentityForm',
-})
+defineOptions({ name: 'IdentityForm' })
 
 type IdentityResponse = operations['IdentitiesController_search']['responses']['200']['content']['application/json']
 type Identity = components['schemas']['IdentitiesDto'] & { _id: string }
 
 const props = defineProps({
-  identity: {
-    type: Object as PropType<Identity>,
-    required: true,
-    default: {
-      additionalFields: {
-        objectClasses: [],
-        attributes: {},
-      },
-    },
-  },
-  isNew: {
-    type: Boolean,
-    default: false,
-  },
+  identity: { type: Object as PropType<Identity>, required: true, default: { additionalFields: { objectClasses: [], attributes: {} } } },
+  isNew: { type: Boolean, default: false },
 })
 
 watch(
@@ -101,13 +87,7 @@ watch(
 const tab = ref('inetOrgPerson')
 const error = ref(null)
 
-const {
-  data: schemasResult,
-  pending,
-  refresh,
-} = await useHttp<any>(`/management/identities/validation`, {
-  method: 'GET',
-})
+const { data: schemasResult, pending, refresh } = await useHttp<any>(`/management/identities/validation`, { method: 'GET' })
 
 const schemas = computed(() => {
   return schemasResult.value.data.filter((schema: any) => {
@@ -130,31 +110,15 @@ async function submit() {
   delete sanitizedIdentity.metadata
   if (sanitizedIdentity?.additionalFields?.validations) delete sanitizedIdentity.additionalFields.validations
 
-  const {
-    data: result,
-    pending,
-    error,
-    refresh,
-  } = await useHttp<any>(`/management/identities/${props.identity._id}`, {
-    method: 'PATCH',
-    body: sanitizedIdentity,
-  })
+  const { data: result, pending, error, refresh } = await useHttp<any>(`/management/identities/${props.identity._id}`, { method: 'PATCH', body: sanitizedIdentity })
   if (error.value) {
     console.log('error', error.value.data.validations)
     validations.value = { ...error.value.data.validations }
     // error.value = error.value.cause.response._data
-    handleError({
-      error: error.value,
-      message: 'Erreur lors de la sauvegarde',
-    })
+    handleError({ error: error.value, message: 'Erreur lors de la sauvegarde' })
   } else {
     validations.value = null
-    $q.notify({
-      message: 'Sauvegarde effectuée',
-      color: 'positive',
-      position: 'top-right',
-      icon: 'mdi-check-circle-outline',
-    })
+    $q.notify({ message: 'Sauvegarde effectuée', color: 'positive', position: 'top-right', icon: 'mdi-check-circle-outline' })
     emits('refreshTarget', { ...result.value.data })
   }
 }
@@ -164,29 +128,13 @@ async function create() {
   const sanitizedIdentity = { ...props.identity }
   delete sanitizedIdentity.metadata
 
-  const {
-    data: result,
-    pending,
-    error,
-    refresh,
-  } = await useHttp(`/management/identities`, {
-    method: 'POST',
-    body: { ...sanitizedIdentity },
-  })
+  const { data: result, pending, error, refresh } = await useHttp(`/management/identities`, { method: 'POST', body: { ...sanitizedIdentity } })
   if (error.value) {
-    handleError({
-      error: error.value,
-      message: 'Erreur lors de la création',
-    })
+    handleError({ error: error.value, message: 'Erreur lors de la création' })
     console.log('error', error.value.data.validations)
     validations.value = { ...error.value.data.validations }
   } else {
-    $q.notify({
-      message: 'Création effectuée',
-      color: 'positive',
-      position: 'top-right',
-      icon: 'mdi-check-circle-outline',
-    })
+    $q.notify({ message: 'Création effectuée', color: 'positive', position: 'top-right', icon: 'mdi-check-circle-outline' })
     emits('refreshTarget', {})
   }
 }
@@ -206,26 +154,11 @@ function getTabValidations(tab: string) {
 }
 
 async function deleteIdentity() {
-  const {
-    data: result,
-    pending,
-    error,
-    refresh,
-  } = await useHttp('/core/backends/delete', {
-    method: 'POST',
-    body: {
-      payload: [props.identity._id],
-    },
-  })
+  const { data: result, pending, error, refresh } = await useHttp('/core/backends/delete', { method: 'POST', body: { payload: [props.identity._id] } })
   if (error.value) {
     // Handle error during sync
   } else {
-    $q.notify({
-      message: 'Identité supprimée',
-      color: 'positive',
-      position: 'top-right',
-      icon: 'mdi-check-circle-outline',
-    })
+    $q.notify({ message: 'Identité supprimée', color: 'positive', position: 'top-right', icon: 'mdi-check-circle-outline' })
     emits('refreshTarget', result.value.data)
     // props.identity. = result.value.data
   }
@@ -237,22 +170,12 @@ async function sync() {
     pending,
     error,
     refresh,
-  } = await useHttp<any>(`/management/identities/${props.identity._id}/state`, {
-    method: 'PATCH',
-    body: {
-      state: IdentityState.TO_SYNC,
-    },
-  })
+  } = await useHttp<any>(`/management/identities/${props.identity._id}/state`, { method: 'PATCH', body: { state: IdentityState.TO_SYNC } })
 
   if (error.value) {
     // Handle error during sync
   } else {
-    $q.notify({
-      message: 'Mise en état, à synchroniser',
-      color: 'positive',
-      position: 'top-right',
-      icon: 'mdi-check-circle-outline',
-    })
+    $q.notify({ message: 'Mise en état, à synchroniser', color: 'positive', position: 'top-right', icon: 'mdi-check-circle-outline' })
     emits('refreshTarget', result.value.data)
     // props.identity. = result.value.data
   }
@@ -263,16 +186,8 @@ function removeTab(t) {
     title: 'Suppression',
     message: 'Voulez-vous supprimer ce schéma ?',
     persistent: true,
-    ok: {
-      push: true,
-      color: 'negative',
-      label: 'Supprimer',
-    },
-    cancel: {
-      push: true,
-      color: 'primary',
-      label: 'Annuler',
-    },
+    ok: { push: true, color: 'negative', label: 'Supprimer' },
+    cancel: { push: true, color: 'primary', label: 'Annuler' },
   }).onOk(() => {
     const index = tabs.value.indexOf(t)
     tabs.value.splice(index, 1)
@@ -291,14 +206,7 @@ function back() {
   router.push('/identities')
 }
 
-defineExpose({
-  submit,
-  create,
-  sync,
-  logs,
-  back,
-  deleteIdentity,
-})
+defineExpose({ submit, create, sync, logs, back, deleteIdentity })
 </script>
 
 <style scoped>
